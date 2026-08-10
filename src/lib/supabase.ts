@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
+import reetwearJson from './reetwear_data.json';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xmqnkpzhqegqazefnrwn.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey || 'dummy_key_for_client_init');
 
 export interface Product {
   id: string;
@@ -13,14 +14,13 @@ export interface Product {
   compare_at_price?: number;
   category: string;
   fabric: string;
-  description: string;
   images: string[];
+  description: string;
   sizes: string[];
-  in_stock: boolean;
   is_featured?: boolean;
   is_new?: boolean;
-  rating: number;
-  reviews_count: number;
+  rating?: number;
+  reviews_count?: number;
 }
 
 export interface Category {
@@ -32,208 +32,195 @@ export interface Category {
 }
 
 export interface OrderItem {
-  id: string;
+  product_id: string;
   title: string;
-  price: number;
   quantity: number;
+  price: number;
   selected_size: string;
-  image: string;
   custom_measurements?: string;
+  image: string;
 }
 
 export interface Order {
   id?: string;
   customer_name: string;
-  customer_email: string;
   customer_phone: string;
-  city: string;
+  customer_email?: string;
   address: string;
+  city: string;
   payment_method: 'cod' | 'bank_transfer';
   total_amount: number;
   items: OrderItem[];
-  status?: 'pending' | 'processing' | 'shipped' | 'delivered';
   created_at?: string;
+  status?: string;
 }
 
-// Fallback Luxury Pakistani Fashion Products (Reet Wear Catalog)
-export const MOCK_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    title: 'Gul-e-Rana Handmade Embroidered Chiffon Pret',
-    slug: 'gul-e-rana-embroidered-chiffon-pret',
-    price: 8999,
-    compare_at_price: 11500,
-    category: 'Chiffon Formals',
-    fabric: 'Pure Chiffon & Organza Dupatta',
-    description: 'Exquisite maroon hand-crafted heavy embroidered long shirt paired with thread-work zari organza dupatta and dyed viscose trousers.',
-    images: [
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800',
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'XL', 'Custom Stitching'],
-    in_stock: true,
-    is_featured: true,
-    is_new: true,
-    rating: 5.0,
-    reviews_count: 48
+// Full Real Product Catalog from https://reetwear.pk/ (191+ Real Articles)
+export const MOCK_PRODUCTS: Product[] = (reetwearJson as Product[]);
+
+export const MOCK_CATEGORIES: Category[] = [
+  { 
+    id: '1', 
+    name: 'Bridal & Formals', 
+    slug: 'bridal-formals', 
+    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/GULNAAR.png?v=1784821889', 
+    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Bridal & Formals').length || 24 
   },
-  {
-    id: '2',
-    title: 'Noor-e-Zahra Velvet Heavy Festive Suit',
-    slug: 'noor-e-zahra-velvet-festive-suit',
-    price: 14999,
-    compare_at_price: 18000,
-    category: 'Velvet Luxury',
-    fabric: 'Micro Velvet 9000 & Zari Tilla',
-    description: 'Royal emerald green luxury velvet shirt with tilla work detailing, crushed silk dupatta, and embroidered trouser borders.',
-    images: [
-      'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=800',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'XL'],
-    in_stock: true,
-    is_featured: true,
-    is_new: true,
-    rating: 4.9,
-    reviews_count: 62
+  { 
+    id: '2', 
+    name: 'Velvet & Silk Couture', 
+    slug: 'velvet-silk-couture', 
+    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/BLACK_BLING.png?v=1784821888', 
+    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Velvet & Silk Couture').length || 38 
   },
-  {
-    id: '3',
-    title: 'Mehrunisa Printed Luxury Lawn 3-Piece',
-    slug: 'mehrunisa-printed-luxury-lawn-3pc',
-    price: 5499,
-    compare_at_price: 6999,
-    category: 'Lawn Pret',
-    fabric: 'Premium Swiss Lawn & Silk Dupatta',
-    description: 'Vibrant sapphire blue digital printed swiss lawn shirt with silk tissue dupatta and dyed cambric trouser.',
-    images: [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'XL'],
-    in_stock: true,
-    is_featured: true,
-    is_new: false,
-    rating: 4.8,
-    reviews_count: 34
+  { 
+    id: '3', 
+    name: 'Chiffon & Organza Formals', 
+    slug: 'chiffon-organza-formals', 
+    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SHAHEE_BLUE.png?v=1784821880', 
+    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Chiffon & Organza Formals').length || 42 
   },
-  {
-    id: '4',
-    title: 'Shahbano Dori Work Organza Angrakha',
-    slug: 'shahbano-dori-work-organza-angrakha',
-    price: 12500,
-    compare_at_price: 15000,
-    category: 'Chiffon Formals',
-    fabric: 'Sheer Organza & Raw Silk',
-    description: 'Blush pink hand-embellished angrakha featuring pearl beads, dori work border, raw silk flared trousers, and mukesh net dupatta.',
-    images: [
-      'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=800',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'Custom Stitching'],
-    in_stock: true,
-    is_featured: false,
-    is_new: true,
-    rating: 5.0,
-    reviews_count: 29
+  { 
+    id: '4', 
+    name: 'Luxury Pret', 
+    slug: 'luxury-pret', 
+    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/PALE_PURPLE.png?v=1784821844', 
+    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Luxury Pret').length || 45 
   },
-  {
-    id: '5',
-    title: 'Daria Raw Silk Embroidered Kurti Pret',
-    slug: 'daria-raw-silk-embroidered-kurti',
-    price: 6499,
-    compare_at_price: 7999,
-    category: 'Pret Collection',
-    fabric: 'Korean Raw Silk',
-    description: 'Contemporary jet black raw silk embroidered kurti with gold sequin neckline and tailored culottes.',
-    images: [
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'XL'],
-    in_stock: true,
-    is_featured: true,
-    is_new: false,
-    rating: 4.7,
-    reviews_count: 19
-  },
-  {
-    id: '6',
-    title: 'Zainab Heavily Embroidered Bridal Peshwas',
-    slug: 'zainab-embroidered-bridal-peshwas',
-    price: 18999,
-    compare_at_price: 24000,
-    category: 'Velvet Luxury',
-    fabric: 'Raw Silk & Tissue Zari',
-    description: 'Deep crimson heavy bridal peshwas with handworked zardozi neckline, dabka borders, and full velvet shawl.',
-    images: [
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800',
-      'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=800'
-    ],
-    sizes: ['S', 'M', 'L', 'Custom Stitching'],
-    in_stock: true,
-    is_featured: true,
-    is_new: true,
-    rating: 5.0,
-    reviews_count: 85
+  { 
+    id: '5', 
+    name: 'Pret & Co-Ords', 
+    slug: 'pret-co-ords', 
+    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/NORA.png?v=1784821888', 
+    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Pret & Co-Ords').length || 32 
   }
 ];
 
-export const MOCK_CATEGORIES: Category[] = [
-  { id: '1', name: 'Velvet Luxury', slug: 'velvet-luxury', image: 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=600', item_count: 14 },
-  { id: '2', name: 'Chiffon Formals', slug: 'chiffon-formals', image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600', item_count: 22 },
-  { id: '3', name: 'Lawn Pret', slug: 'lawn-pret', image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600', item_count: 18 },
-  { id: '4', name: 'Handmade Party Wear', slug: 'handmade-party-wear', image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600', item_count: 12 }
-];
-
-// Helper Functions
-export async function getProducts(categorySlug?: string): Promise<Product[]> {
+// Helper to get custom and base products combined
+export function getStoredProducts(): Product[] {
+  if (typeof window === 'undefined') {
+    return MOCK_PRODUCTS;
+  }
   try {
-    let query = supabase.from('products').select('*');
-    if (categorySlug) {
-      query = query.eq('category', categorySlug);
-    }
-    const { data, error } = await query;
-    if (error || !data || data.length === 0) {
-      return categorySlug 
-        ? MOCK_PRODUCTS.filter(p => p.category.toLowerCase().includes(categorySlug.toLowerCase()))
-        : MOCK_PRODUCTS;
-    }
-    return data as Product[];
+    const custom = localStorage.getItem('zehra_custom_products');
+    const deleted = localStorage.getItem('zehra_deleted_products');
+    const deletedIds: string[] = deleted ? JSON.parse(deleted) : [];
+    const customList: Product[] = custom ? JSON.parse(custom) : [];
+    
+    // Filter out deleted base products and prepend custom products
+    const filteredBase = MOCK_PRODUCTS.filter(p => !deletedIds.includes(p.id) && !deletedIds.includes(p.slug));
+    
+    // Combine custom (at the top) + filtered base products
+    return [...customList, ...filteredBase];
   } catch {
     return MOCK_PRODUCTS;
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
-  try {
-    const { data, error } = await supabase.from('products').select('*').eq('slug', slug).single();
-    if (error || !data) {
-      return MOCK_PRODUCTS.find(p => p.slug === slug) || MOCK_PRODUCTS[0];
-    }
-    return data as Product;
-  } catch {
-    return MOCK_PRODUCTS.find(p => p.slug === slug) || MOCK_PRODUCTS[0];
+export async function getProducts(categorySlug?: string): Promise<Product[]> {
+  const allProds = getStoredProducts();
+  if (categorySlug) {
+    const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+    return allProds.filter(p => 
+      p.category.toLowerCase().includes(term) || 
+      p.category.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+    );
   }
+  return allProds;
+}
+
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  const allProds = getStoredProducts();
+  const found = allProds.find(p => p.slug === slug || p.id === slug);
+  return found || allProds[0] || null;
+}
+
+export async function addProduct(product: Product): Promise<{ success: boolean; product: Product }> {
+  const newProduct: Product = {
+    ...product,
+    id: product.id || 'prod-' + Date.now(),
+    slug: product.slug || product.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    rating: product.rating || 5.0,
+    reviews_count: product.reviews_count || 1,
+    is_new: true
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_custom_products');
+      const list: Product[] = existing ? JSON.parse(existing) : [];
+      list.unshift(newProduct);
+      localStorage.setItem('zehra_custom_products', JSON.stringify(list));
+    } catch (e) {
+      console.error('LocalStorage product save error:', e);
+    }
+  }
+
+  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+    try {
+      await supabase.from('products').insert([newProduct]);
+    } catch (err) {
+      console.warn('Supabase product insert notice:', err);
+    }
+  }
+
+  return { success: true, product: newProduct };
+}
+
+export async function updateProduct(product: Product): Promise<{ success: boolean; product: Product }> {
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_custom_products');
+      let list: Product[] = existing ? JSON.parse(existing) : [];
+      const index = list.findIndex(p => p.id === product.id || p.slug === product.slug);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...product };
+      } else {
+        list.unshift(product);
+      }
+      localStorage.setItem('zehra_custom_products', JSON.stringify(list));
+    } catch (e) {
+      console.error('LocalStorage product update error:', e);
+    }
+  }
+
+  return { success: true, product };
+}
+
+export async function deleteProduct(idOrSlug: string): Promise<{ success: boolean }> {
+  if (typeof window !== 'undefined') {
+    try {
+      // Remove from custom products
+      const custom = localStorage.getItem('zehra_custom_products');
+      if (custom) {
+        let list: Product[] = JSON.parse(custom);
+        list = list.filter(p => p.id !== idOrSlug && p.slug !== idOrSlug);
+        localStorage.setItem('zehra_custom_products', JSON.stringify(list));
+      }
+
+      // Mark in deleted products list to hide from base products
+      const deleted = localStorage.getItem('zehra_deleted_products');
+      const deletedList: string[] = deleted ? JSON.parse(deleted) : [];
+      if (!deletedList.includes(idOrSlug)) {
+        deletedList.push(idOrSlug);
+        localStorage.setItem('zehra_deleted_products', JSON.stringify(deletedList));
+      }
+    } catch (e) {
+      console.error('LocalStorage product delete error:', e);
+    }
+  }
+
+  return { success: true };
 }
 
 export async function getCategories(): Promise<Category[]> {
-  try {
-    const { data, error } = await supabase.from('categories').select('*');
-    if (error || !data || data.length === 0) {
-      return MOCK_CATEGORIES;
-    }
-    return data as Category[];
-  } catch {
-    return MOCK_CATEGORIES;
-  }
+  return MOCK_CATEGORIES;
 }
 
-// In-memory fallback order storage for immediate admin preview
 let inMemoryOrders: Order[] = [];
 
 export async function createOrder(order: Order): Promise<{ success: boolean; orderId: string }> {
-  const generatedId = 'RW-' + Math.floor(100000 + Math.random() * 900000);
+  const generatedId = 'ZS-' + Math.floor(100000 + Math.random() * 900000);
   const newOrder: Order = {
     ...order,
     id: generatedId,
@@ -241,27 +228,102 @@ export async function createOrder(order: Order): Promise<{ success: boolean; ord
     created_at: new Date().toISOString()
   };
 
-  try {
-    const { error } = await supabase.from('orders').insert([newOrder]);
-    if (error) {
-      console.warn('Supabase DB notice (using fallback order memory):', error.message);
+  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+    try {
+      const { error } = await supabase.from('orders').insert([newOrder]);
+      if (error) {
+        console.warn('Supabase DB Notice:', error.message);
+      }
+    } catch (err) {
+      console.warn('Supabase fallback:', err);
     }
-  } catch (err) {
-    console.warn('Supabase client fallback:', err);
   }
 
   inMemoryOrders.unshift(newOrder);
+
+  // Sync with LocalStorage for 100% guaranteed persistence across refreshes
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_orders');
+      const ordersList: Order[] = existing ? JSON.parse(existing) : [];
+      ordersList.unshift(newOrder);
+      localStorage.setItem('zehra_orders', JSON.stringify(ordersList));
+    } catch (err) {
+      console.error('LocalStorage order save error:', err);
+    }
+  }
+
   return { success: true, orderId: generatedId };
 }
 
 export async function getOrders(): Promise<Order[]> {
-  try {
-    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-    if (error || !data || data.length === 0) {
-      return inMemoryOrders;
+  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+    try {
+      const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        return data as Order[];
+      }
+    } catch (err) {
+      console.warn('Supabase fetch notice:', err);
     }
-    return data as Order[];
-  } catch {
-    return inMemoryOrders;
   }
+
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_orders');
+      if (existing) {
+        const localOrders: Order[] = JSON.parse(existing);
+        return localOrders;
+      }
+    } catch (err) {
+      console.error('LocalStorage order read error:', err);
+    }
+  }
+
+  return inMemoryOrders;
+}
+
+export async function updateOrderStatus(orderId: string, status: string): Promise<{ success: boolean }> {
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_orders');
+      if (existing) {
+        const ordersList: Order[] = JSON.parse(existing);
+        const updated = ordersList.map(o => o.id === orderId ? { ...o, status } : o);
+        localStorage.setItem('zehra_orders', JSON.stringify(updated));
+      }
+    } catch (err) {
+      console.error('Update order error:', err);
+    }
+  }
+
+  inMemoryOrders = inMemoryOrders.map(o => o.id === orderId ? { ...o, status } : o);
+
+  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+    try {
+      await supabase.from('orders').update({ status }).eq('id', orderId);
+    } catch (err) {
+      console.warn('Supabase update order status:', err);
+    }
+  }
+
+  return { success: true };
+}
+
+export async function deleteOrder(orderId: string): Promise<{ success: boolean }> {
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = localStorage.getItem('zehra_orders');
+      if (existing) {
+        const ordersList: Order[] = JSON.parse(existing);
+        const filtered = ordersList.filter(o => o.id !== orderId);
+        localStorage.setItem('zehra_orders', JSON.stringify(filtered));
+      }
+    } catch (err) {
+      console.error('Delete order error:', err);
+    }
+  }
+
+  inMemoryOrders = inMemoryOrders.filter(o => o.id !== orderId);
+  return { success: true };
 }
