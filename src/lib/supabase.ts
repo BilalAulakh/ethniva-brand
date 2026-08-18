@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import reetwearJson from './reetwear_data.json';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xmqnkpzhqegqazefnrwn.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://satlkkoaqocikfwkmmdu.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhdGxra29hcW9jaWtmd2ttbWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzM1MjcsImV4cCI6MjEwMjU0OTUyN30.zSWUegpFlzISksyRN-vkTbjiUN72fjywTfDJWMl6-gc';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey || 'dummy_key_for_client_init');
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface Product {
   id: string;
@@ -21,6 +21,7 @@ export interface Product {
   is_new?: boolean;
   rating?: number;
   reviews_count?: number;
+  created_at?: string;
 }
 
 export interface Category {
@@ -53,9 +54,10 @@ export interface Order {
   items: OrderItem[];
   created_at?: string;
   status?: string;
+  notes?: string;
 }
 
-// Full Real Product Catalog from https://reetwear.pk/ (191+ Real Articles)
+// Full Base Product Catalog from reetwear_data.json (191+ Real Articles)
 export const MOCK_PRODUCTS: Product[] = (reetwearJson as Product[]);
 
 export const MOCK_CATEGORIES: Category[] = [
@@ -96,7 +98,11 @@ export const MOCK_CATEGORIES: Category[] = [
   }
 ];
 
-// Helper to get custom and base products combined
+// In-memory runtime cache for high performance
+let memoryProductsCache: Product[] | null = null;
+let inMemoryOrders: Order[] = [];
+
+// Helper to get fallback/local stored products
 export function getStoredProducts(): Product[] {
   if (typeof window === 'undefined') {
     return MOCK_PRODUCTS;
@@ -107,19 +113,40 @@ export function getStoredProducts(): Product[] {
     const deletedIds: string[] = deleted ? JSON.parse(deleted) : [];
     const customList: Product[] = custom ? JSON.parse(custom) : [];
     
-    // Filter out deleted base products and prepend custom products
     const filteredBase = MOCK_PRODUCTS.filter(p => !deletedIds.includes(p.id) && !deletedIds.includes(p.slug));
-    
-    // Combine custom (at the top) + filtered base products
     return [...customList, ...filteredBase];
   } catch {
     return MOCK_PRODUCTS;
   }
 }
 
+// -----------------------------------------------------------------------------
+// PRODUCTS API (SUPABASE FIRST + JSON FALLBACK)
+// -----------------------------------------------------------------------------
+
 export async function getProducts(categorySlug?: string): Promise<Product[]> {
+  try {
+    let query = supabase.from('products').select('*').order('created_at', { ascending: false });
+    
+    if (categorySlug && categorySlug !== 'all') {
+      const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+      // Search category case-insensitively
+      query = query.ilike('category', `%${term}%`);
+    }
+
+    const { data, error } = await query;
+
+    if (!error && data && data.length > 0) {
+      memoryProductsCache = data as Product[];
+      return data as Product[];
+    }
+  } catch (err) {
+    console.warn('Supabase getProducts fallback notice:', err);
+  }
+
+  // Graceful Fallback to Local/JSON Catalog
   const allProds = getStoredProducts();
-  if (categorySlug) {
+  if (categorySlug && categorySlug !== 'all') {
     const term = categorySlug.toLowerCase().replace(/-/g, ' ');
     return allProds.filter(p => 
       p.category.toLowerCase().includes(term) || 
@@ -130,21 +157,53 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .or(`slug.eq.${slug},id.eq.${slug}`)
+      .limit(1)
+      .maybeSingle();
+
+    if (!error && data) {
+      return data as Product;
+    }
+  } catch (err) {
+    console.warn('Supabase getProductBySlug fallback notice:', err);
+  }
+
+  // Fallback to local catalog
   const allProds = getStoredProducts();
   const found = allProds.find(p => p.slug === slug || p.id === slug);
   return found || allProds[0] || null;
 }
 
-export async function addProduct(product: Product): Promise<{ success: boolean; product: Product }> {
+export async function addProduct(product: Product): Promise<{ success: boolean; product: Product; error?: string }> {
   const newProduct: Product = {
     ...product,
     id: product.id || 'prod-' + Date.now(),
     slug: product.slug || product.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
     rating: product.rating || 5.0,
     reviews_count: product.reviews_count || 1,
-    is_new: true
+    is_new: product.is_new ?? true,
+    created_at: product.created_at || new Date().toISOString()
   };
 
+  // 1. Save to Supabase
+  try {
+    const { data, error } = await supabase.from('products').insert([newProduct]).select().single();
+    if (error) {
+      console.warn('Supabase product insert notice:', error.message);
+    } else if (data) {
+      // Invalidate memory cache
+      memoryProductsCache = null;
+      return { success: true, product: data as Product };
+    }
+  } catch (err: any) {
+    console.warn('Supabase addProduct exception:', err);
+  }
+
+  // 2. LocalStorage sync fallback
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_custom_products');
@@ -156,18 +215,27 @@ export async function addProduct(product: Product): Promise<{ success: boolean; 
     }
   }
 
-  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
-    try {
-      await supabase.from('products').insert([newProduct]);
-    } catch (err) {
-      console.warn('Supabase product insert notice:', err);
-    }
-  }
-
   return { success: true, product: newProduct };
 }
 
 export async function updateProduct(product: Product): Promise<{ success: boolean; product: Product }> {
+  // 1. Update in Supabase
+  try {
+    const { error } = await supabase
+      .from('products')
+      .update(product)
+      .eq('id', product.id);
+    
+    if (error) {
+      console.warn('Supabase product update notice:', error.message);
+    } else {
+      memoryProductsCache = null;
+    }
+  } catch (err) {
+    console.warn('Supabase updateProduct error:', err);
+  }
+
+  // 2. Update in LocalStorage
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_custom_products');
@@ -188,9 +256,25 @@ export async function updateProduct(product: Product): Promise<{ success: boolea
 }
 
 export async function deleteProduct(idOrSlug: string): Promise<{ success: boolean }> {
+  // 1. Delete from Supabase
+  try {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .or(`id.eq.${idOrSlug},slug.eq.${idOrSlug}`);
+    
+    if (error) {
+      console.warn('Supabase product delete notice:', error.message);
+    } else {
+      memoryProductsCache = null;
+    }
+  } catch (err) {
+    console.warn('Supabase deleteProduct error:', err);
+  }
+
+  // 2. Delete from LocalStorage
   if (typeof window !== 'undefined') {
     try {
-      // Remove from custom products
       const custom = localStorage.getItem('zehra_custom_products');
       if (custom) {
         let list: Product[] = JSON.parse(custom);
@@ -198,7 +282,6 @@ export async function deleteProduct(idOrSlug: string): Promise<{ success: boolea
         localStorage.setItem('zehra_custom_products', JSON.stringify(list));
       }
 
-      // Mark in deleted products list to hide from base products
       const deleted = localStorage.getItem('zehra_deleted_products');
       const deletedList: string[] = deleted ? JSON.parse(deleted) : [];
       if (!deletedList.includes(idOrSlug)) {
@@ -213,35 +296,34 @@ export async function deleteProduct(idOrSlug: string): Promise<{ success: boolea
   return { success: true };
 }
 
-export async function getCategories(): Promise<Category[]> {
-  return MOCK_CATEGORIES;
-}
+// -----------------------------------------------------------------------------
+// ORDERS API (SUPABASE REAL-TIME DATABASE)
+// -----------------------------------------------------------------------------
 
-let inMemoryOrders: Order[] = [];
-
-export async function createOrder(order: Order): Promise<{ success: boolean; orderId: string }> {
+export async function createOrder(order: Order): Promise<{ success: boolean; orderId: string; error?: string }> {
   const generatedId = 'ZS-' + Math.floor(100000 + Math.random() * 900000);
   const newOrder: Order = {
     ...order,
     id: generatedId,
-    status: 'pending',
+    status: order.status || 'pending',
     created_at: new Date().toISOString()
   };
 
-  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
-    try {
-      const { error } = await supabase.from('orders').insert([newOrder]);
-      if (error) {
-        console.warn('Supabase DB Notice:', error.message);
-      }
-    } catch (err) {
-      console.warn('Supabase fallback:', err);
+  // 1. Primary: Save directly to Supabase orders table
+  let supabaseSuccess = false;
+  try {
+    const { error } = await supabase.from('orders').insert([newOrder]);
+    if (error) {
+      console.warn('Supabase orders insert notice:', error.message);
+    } else {
+      supabaseSuccess = true;
     }
+  } catch (err) {
+    console.warn('Supabase createOrder fallback:', err);
   }
 
+  // 2. Memory & LocalStorage sync
   inMemoryOrders.unshift(newOrder);
-
-  // Sync with LocalStorage for 100% guaranteed persistence across refreshes
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_orders');
@@ -257,33 +339,55 @@ export async function createOrder(order: Order): Promise<{ success: boolean; ord
 }
 
 export async function getOrders(): Promise<Order[]> {
-  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
-    try {
-      const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-      if (!error && data && data.length > 0) {
-        return data as Order[];
+  // 1. Try Supabase live fetch
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('zehra_orders', JSON.stringify(data));
       }
-    } catch (err) {
-      console.warn('Supabase fetch notice:', err);
+      inMemoryOrders = data as Order[];
+      return data as Order[];
     }
+  } catch (err) {
+    console.warn('Supabase getOrders fetch notice:', err);
   }
 
+  // 2. Fallback to LocalStorage / Memory
+  let localOrders: Order[] = inMemoryOrders;
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_orders');
       if (existing) {
-        const localOrders: Order[] = JSON.parse(existing);
-        return localOrders;
+        localOrders = JSON.parse(existing);
       }
     } catch (err) {
       console.error('LocalStorage order read error:', err);
     }
   }
-
-  return inMemoryOrders;
+  return localOrders;
 }
 
 export async function updateOrderStatus(orderId: string, status: string): Promise<{ success: boolean }> {
+  // 1. Update in Supabase
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', orderId);
+    
+    if (error) {
+      console.warn('Supabase update order status error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase update order error:', err);
+  }
+
+  // 2. Update local state
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_orders');
@@ -298,19 +402,25 @@ export async function updateOrderStatus(orderId: string, status: string): Promis
   }
 
   inMemoryOrders = inMemoryOrders.map(o => o.id === orderId ? { ...o, status } : o);
-
-  if (supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
-    try {
-      await supabase.from('orders').update({ status }).eq('id', orderId);
-    } catch (err) {
-      console.warn('Supabase update order status:', err);
-    }
-  }
-
   return { success: true };
 }
 
 export async function deleteOrder(orderId: string): Promise<{ success: boolean }> {
+  // 1. Delete from Supabase
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', orderId);
+    
+    if (error) {
+      console.warn('Supabase delete order error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase delete order error:', err);
+  }
+
+  // 2. Delete from local state
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_orders');
@@ -326,4 +436,94 @@ export async function deleteOrder(orderId: string): Promise<{ success: boolean }
 
   inMemoryOrders = inMemoryOrders.filter(o => o.id !== orderId);
   return { success: true };
+}
+
+// -----------------------------------------------------------------------------
+// SUPABASE HEALTH CHECK & SEEDING UTILITIES
+// -----------------------------------------------------------------------------
+
+export async function checkSupabaseHealth(): Promise<{
+  connected: boolean;
+  productsTableExists: boolean;
+  ordersTableExists: boolean;
+  productsCount: number;
+  ordersCount: number;
+  message: string;
+}> {
+  let productsTableExists = false;
+  let ordersTableExists = false;
+  let productsCount = 0;
+  let ordersCount = 0;
+
+  try {
+    const pCheck = await supabase.from('products').select('*', { count: 'exact', head: true });
+    if (!pCheck.error) {
+      productsTableExists = true;
+      productsCount = pCheck.count || 0;
+    }
+  } catch (e) {
+    console.warn('Products check error:', e);
+  }
+
+  try {
+    const oCheck = await supabase.from('orders').select('*', { count: 'exact', head: true });
+    if (!oCheck.error) {
+      ordersTableExists = true;
+      ordersCount = oCheck.count || 0;
+    }
+  } catch (e) {
+    console.warn('Orders check error:', e);
+  }
+
+  const connected = productsTableExists || ordersTableExists;
+  let message = 'Connected to Supabase';
+  if (!productsTableExists || !ordersTableExists) {
+    message = 'Tables not found. Please run supabase_schema.sql in Supabase SQL Editor.';
+  } else {
+    message = `Live connected! Database has ${productsCount} products and ${ordersCount} orders.`;
+  }
+
+  return {
+    connected,
+    productsTableExists,
+    ordersTableExists,
+    productsCount,
+    ordersCount,
+    message
+  };
+}
+
+export async function seedProductsToSupabase(
+  onProgress?: (progress: number, total: number, message: string) => void
+): Promise<{ success: boolean; inserted: number; error?: string }> {
+  try {
+    const total = MOCK_PRODUCTS.length;
+    const chunkSize = 40;
+    let inserted = 0;
+
+    for (let i = 0; i < total; i += chunkSize) {
+      const chunk = MOCK_PRODUCTS.slice(i, i + chunkSize);
+      
+      const { error } = await supabase.from('products').upsert(chunk, { onConflict: 'id' });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      inserted += chunk.length;
+      if (onProgress) {
+        onProgress(Math.min(inserted, total), total, `Synced ${Math.min(inserted, total)} of ${total} products...`);
+      }
+    }
+
+    memoryProductsCache = null;
+    return { success: true, inserted };
+  } catch (err: any) {
+    console.error('Seed products error:', err);
+    return { success: false, inserted: 0, error: err.message || 'Seeding failed' };
+  }
+}
+
+export async function getCategories(): Promise<Category[]> {
+  return MOCK_CATEGORIES;
 }

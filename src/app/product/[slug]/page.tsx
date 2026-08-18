@@ -4,7 +4,7 @@ import React, { useState, useEffect, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Star, Truck, ShieldCheck, RefreshCw, ShoppingBag, Check, Scissors, Zap } from 'lucide-react';
+import { Star, Truck, ShieldCheck, RefreshCw, ShoppingBag, Check, Scissors, Zap, Loader2 } from 'lucide-react';
 import { getProductBySlug, Product } from '@/lib/supabase';
 import { useCart } from '@/context/CartContext';
 import { ProductDetailSkeleton } from '@/components/Shimmer';
@@ -22,6 +22,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [customMeasurements, setCustomMeasurements] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [showToast, setShowToast] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const { addToCart } = useCart();
 
@@ -41,15 +43,22 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   }
 
   // Handle Add to Shopping Bag
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (isAddingToCart || isBuyingNow) return;
+    setIsAddingToCart(true);
     addToCart(product, quantity, selectedSize, customMeasurements);
+    await new Promise(r => setTimeout(r, 400));
+    setIsAddingToCart(false);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
 
   // Handle 1-Click BUY NOW & Instant Checkout
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
+    if (isBuyingNow || isAddingToCart) return;
+    setIsBuyingNow(true);
     addToCart(product, quantity, selectedSize, customMeasurements);
+    await new Promise(r => setTimeout(r, 450));
     router.push('/checkout');
   };
 
@@ -211,19 +220,39 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               {/* 1. Direct Instant Order Button */}
               <button
                 onClick={handleBuyNow}
-                className="w-full btn-luxury-gold py-4.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl transition-all duration-300"
+                disabled={isBuyingNow || isAddingToCart}
+                className="w-full btn-luxury-gold py-4.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl transition-all duration-300 disabled:opacity-75"
               >
-                <Zap className="w-4 h-4 fill-current" />
-                <span>BUY NOW &bull; PLACE ORDER IMMEDIATELY</span>
+                {isBuyingNow ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>PROCEEDING TO CHECKOUT...</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-4 h-4 fill-current" />
+                    <span>BUY NOW &bull; PLACE ORDER IMMEDIATELY</span>
+                  </>
+                )}
               </button>
 
               {/* 2. Add to Cart Bag Button */}
               <button
                 onClick={handleAddToCart}
-                className="w-full brand-btn-primary text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-md transition-all duration-300"
+                disabled={isAddingToCart || isBuyingNow}
+                className="w-full brand-btn-primary text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-md transition-all duration-300 disabled:opacity-75"
               >
-                <ShoppingBag className="w-4 h-4 text-[#fef08a]" />
-                <span>ADD TO SHOPPING BAG</span>
+                {isAddingToCart ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#fef08a]" />
+                    <span>ADDING TO SHOPPING BAG...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-4 h-4 text-[#fef08a]" />
+                    <span>ADD TO SHOPPING BAG</span>
+                  </>
+                )}
               </button>
             </div>
 

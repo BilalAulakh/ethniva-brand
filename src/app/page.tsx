@@ -149,12 +149,12 @@ export default function HomePage() {
   const currentSlide = HERO_SLIDES[activeHeroSlide];
 
   return (
-    <div className="space-y-28 sm:space-y-32 pb-16 bg-[#FAF9F6] text-[#18181B] font-sans selection:bg-[#C7A76C] selection:text-white">
+    <div className="space-y-16 sm:space-y-24 md:space-y-32 pb-16 bg-[#FAF9F6] text-[#18181B] font-sans selection:bg-[#C7A76C] selection:text-white">
       
-      {/* 1. HERO SLIDER SECTION (Crystal Clear Luxury Showcase with Floating Editorial Card) */}
-      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-start overflow-hidden bg-[#FAF9F6]">
+      {/* 1. HERO SLIDER SECTION (Crystal Clear Luxury Showcase with Responsive Contrast Backdrop) */}
+      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end sm:items-center justify-start overflow-hidden bg-[#FAF9F6]">
         
-        {/* Crystal Clear Full-Bleed Photography - No White Fog / Heavy Washout */}
+        {/* Crystal Clear Photography */}
         <div className="absolute inset-0 z-0">
           <Image
             key={activeHeroSlide}
@@ -164,9 +164,8 @@ export default function HomePage() {
             priority
             className="object-cover object-center sm:object-[75%_center] lg:object-[82%_25%] transition-all duration-700 animate-fade-in"
           />
-          {/* Very Subtle Gentle Gradient for Left Text Contrast while Keeping 100% Image Visibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/80 via-[#FAF9F6]/30 to-transparent z-10 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6]/40 via-transparent to-transparent z-10 pointer-events-none" />
+          {/* Responsive Gradient Overlay (Stronger on Mobile for Maximum Text Legibility) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/85 to-transparent sm:bg-gradient-to-r sm:from-[#FAF9F6]/95 sm:via-[#FAF9F6]/40 sm:to-transparent z-10 pointer-events-none" />
         </div>
 
         {/* Hero Slider Control Arrows (< & >) */}
@@ -185,55 +184,55 @@ export default function HomePage() {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Hero Left Content - Completely Transparent, No Card Box */}
-        <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 w-full py-16 sm:py-24">
-          <div className="max-w-xl space-y-6 text-left animate-fade-in">
+        {/* Hero Content */}
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-12 lg:px-20 w-full pt-16 pb-10 sm:py-24">
+          <div className="max-w-xl space-y-4 sm:space-y-6 text-left animate-fade-in">
             
             {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C7A76C]/60 bg-white/80 backdrop-blur-sm text-[10px] font-black text-[#881337] uppercase tracking-[0.3em] shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
+            <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-[#C7A76C]/60 bg-white/90 backdrop-blur-sm text-[9px] sm:text-[10px] font-black text-[#881337] uppercase tracking-[0.25em] sm:tracking-[0.3em] shadow-xs">
+              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#C7A76C]" />
               <span>{currentSlide.tag}</span>
             </div>
 
             {/* Main Headline */}
-            <div className="space-y-1">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-normal text-[#18181B] tracking-tight leading-[1.05] drop-shadow-xs">
+            <div className="space-y-0.5 sm:space-y-1">
+              <h1 className="text-3xl sm:text-6xl lg:text-7xl font-serif font-normal text-[#18181B] tracking-tight leading-[1.1] drop-shadow-xs">
                 {currentSlide.line1}
               </h1>
-              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-serif italic font-extrabold text-[#881337] tracking-tight drop-shadow-xs">
+              <h2 className="text-3xl sm:text-6xl lg:text-7xl font-serif italic font-extrabold text-[#881337] tracking-tight drop-shadow-xs">
                 {currentSlide.line2}
               </h2>
             </div>
 
             {/* Description */}
-            <p className="text-sm sm:text-base text-stone-700 font-medium max-w-md leading-relaxed tracking-wide">
+            <p className="text-xs sm:text-base text-stone-800 font-semibold sm:font-medium max-w-md leading-relaxed tracking-wide">
               {currentSlide.desc}
             </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            {/* Action Buttons (Full width on mobile, inline on desktop) */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
               <Link
                 href={currentSlide.linkPrimary}
-                className="btn-luxury-gold px-8 py-4 rounded-full text-xs shadow-xl tracking-widest uppercase font-black"
+                className="btn-luxury-gold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs shadow-lg tracking-widest uppercase font-black text-center"
               >
                 {currentSlide.btnPrimary}
               </Link>
               <Link
                 href={currentSlide.linkSecondary}
-                className="btn-luxury-outline px-8 py-4 rounded-full text-xs tracking-widest shadow-sm uppercase font-black bg-white/90 hover:bg-[#881337] hover:text-white"
+                className="btn-luxury-outline px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs tracking-widest shadow-xs uppercase font-black bg-white/90 hover:bg-[#881337] hover:text-white text-center"
               >
                 {currentSlide.btnSecondary}
               </Link>
             </div>
 
             {/* Slider Dots */}
-            <div className="flex items-center gap-2.5 pt-3">
+            <div className="flex items-center gap-2 pt-2 sm:pt-3">
               {HERO_SLIDES.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveHeroSlide(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-500 ${
-                    activeHeroSlide === idx ? 'w-10 bg-[#881337]' : 'w-2.5 bg-stone-400/60 hover:bg-[#881337]'
+                  className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 ${
+                    activeHeroSlide === idx ? 'w-8 sm:w-10 bg-[#881337]' : 'w-2 sm:w-2.5 bg-stone-400/60 hover:bg-[#881337]'
                   }`}
                   title={`Slide ${idx + 1}`}
                 />
@@ -243,7 +242,7 @@ export default function HomePage() {
         </div>
 
         {/* Floating Social Proof Badge (Bottom Right) */}
-        <div className="absolute bottom-8 right-6 lg:right-12 z-20 hidden sm:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/80 shadow-lg text-xs text-stone-900">
+        <div className="absolute bottom-8 right-6 lg:right-12 z-20 hidden md:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/80 shadow-lg text-xs text-stone-900">
           <div className="flex -space-x-2">
             <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="User 1" />
             <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="User 2" />
@@ -260,42 +259,42 @@ export default function HomePage() {
       </section>
 
       {/* 2. SECTION 1: LUXURY BENEFITS STRIP */}
-      <section className="bg-white border-y border-stone-200 py-8 shadow-xs">
+      <section className="bg-white border-y border-stone-200 py-6 sm:py-8 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center md:text-left divide-y md:divide-y-0 md:divide-x divide-stone-200">
-            <div className="flex items-center gap-3.5 justify-center md:justify-start pt-3 md:pt-0 md:px-4">
-              <Gem className="w-7 h-7 text-[#C7A76C] flex-shrink-0" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6 text-left">
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0">
+              <Gem className="w-6 h-6 sm:w-7 sm:h-7 text-[#C7A76C] flex-shrink-0" />
               <div>
-                <div className="text-xs font-black text-[#18181B] uppercase tracking-wider">PREMIUM QUALITY</div>
-                <div className="text-[11px] text-stone-500 font-medium">Finest Fabric &amp; Stitching</div>
+                <div className="text-[11px] sm:text-xs font-black text-[#18181B] uppercase tracking-wider">PREMIUM QUALITY</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500 font-medium">Finest Fabric &amp; Stitching</div>
               </div>
             </div>
-            <div className="flex items-center gap-3.5 justify-center md:justify-start pt-3 md:pt-0 md:px-4">
-              <Truck className="w-7 h-7 text-[#C7A76C] flex-shrink-0" />
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0">
+              <Truck className="w-6 h-6 sm:w-7 sm:h-7 text-[#C7A76C] flex-shrink-0" />
               <div>
-                <div className="text-xs font-black text-[#18181B] uppercase tracking-wider">FREE SHIPPING</div>
-                <div className="text-[11px] text-stone-500 font-medium">Across Pakistan</div>
+                <div className="text-[11px] sm:text-xs font-black text-[#18181B] uppercase tracking-wider">FREE SHIPPING</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500 font-medium">Across Pakistan</div>
               </div>
             </div>
-            <div className="flex items-center gap-3.5 justify-center md:justify-start pt-3 md:pt-0 md:px-4">
-              <ShieldCheck className="w-7 h-7 text-[#C7A76C] flex-shrink-0" />
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0">
+              <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-[#C7A76C] flex-shrink-0" />
               <div>
-                <div className="text-xs font-black text-[#18181B] uppercase tracking-wider">SECURE PAYMENTS</div>
-                <div className="text-[11px] text-stone-500 font-medium">100% Safe &amp; Protected</div>
+                <div className="text-[11px] sm:text-xs font-black text-[#18181B] uppercase tracking-wider">SECURE PAYMENTS</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500 font-medium">100% Safe &amp; Protected</div>
               </div>
             </div>
-            <div className="flex items-center gap-3.5 justify-center md:justify-start pt-3 md:pt-0 md:px-4">
-              <RotateCcw className="w-7 h-7 text-[#C7A76C] flex-shrink-0" />
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0">
+              <RotateCcw className="w-6 h-6 sm:w-7 sm:h-7 text-[#C7A76C] flex-shrink-0" />
               <div>
-                <div className="text-xs font-black text-[#18181B] uppercase tracking-wider">EASY RETURNS</div>
-                <div className="text-[11px] text-stone-500 font-medium">Within 7 Days</div>
+                <div className="text-[11px] sm:text-xs font-black text-[#18181B] uppercase tracking-wider">EASY RETURNS</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500 font-medium">Within 7 Days</div>
               </div>
             </div>
-            <div className="flex items-center gap-3.5 justify-center md:justify-start pt-3 md:pt-0 md:px-4">
-              <Headphones className="w-7 h-7 text-[#C7A76C] flex-shrink-0" />
+            <div className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0 col-span-2 sm:col-span-1">
+              <Headphones className="w-6 h-6 sm:w-7 sm:h-7 text-[#C7A76C] flex-shrink-0" />
               <div>
-                <div className="text-xs font-black text-[#18181B] uppercase tracking-wider">24/7 SUPPORT</div>
-                <div className="text-[11px] text-stone-500 font-medium">Personal Styling Advice</div>
+                <div className="text-[11px] sm:text-xs font-black text-[#18181B] uppercase tracking-wider">24/7 SUPPORT</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500 font-medium">Personal Styling Advice</div>
               </div>
             </div>
           </div>

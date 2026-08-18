@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Heart, ShoppingBag, Eye, Star, Zap } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Star, Zap, Loader2 } from 'lucide-react';
 import { Product } from '@/lib/supabase';
 import { useCart } from '@/context/CartContext';
 
@@ -18,6 +18,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [isHovered, setIsHovered] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const inWishlist = isInWishlist(product.id);
   const discountPercent = product.compare_at_price 
@@ -25,10 +26,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : 0;
 
   // 1-Click Instant Checkout when clicking BUY NOW / QUICK ADD
-  const handleQuickBuy = (e: React.MouseEvent) => {
+  const handleQuickBuy = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isAddingToCart) return;
+    setIsAddingToCart(true);
     addToCart(product, 1, selectedSize);
+    await new Promise(r => setTimeout(r, 450));
     router.push('/checkout');
   };
 
@@ -104,10 +108,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </button>
             <button
               onClick={handleQuickBuy}
-              className="flex-1 bg-[#C7A76C] hover:bg-[#881337] text-white font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl shadow-md flex items-center justify-center gap-1 transition-all"
+              disabled={isAddingToCart}
+              className="flex-1 bg-[#C7A76C] hover:bg-[#881337] text-white font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl shadow-md flex items-center justify-center gap-1 transition-all disabled:opacity-75"
             >
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              <span>BUY NOW</span>
+              {isAddingToCart ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>ADDING...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <span>BUY NOW</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -162,10 +176,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
             <button
               onClick={handleQuickBuy}
-              className="bg-[#FAF6F0] text-[#881337] border border-[#C7A76C]/50 hover:bg-[#881337] hover:text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all shadow-xs"
+              disabled={isAddingToCart}
+              className="bg-[#FAF6F0] text-[#881337] border border-[#C7A76C]/50 hover:bg-[#881337] hover:text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all shadow-xs disabled:opacity-75"
               title="Buy Now - Instant Checkout"
             >
-              <Zap className="w-3 h-3 text-[#C7A76C]" /> BUY NOW
+              {isAddingToCart ? (
+                <>
+                  <Loader2 className="w-3 h-3 text-[#881337] animate-spin" />
+                  <span>ADDING...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3 h-3 text-[#C7A76C]" />
+                  <span>BUY NOW</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -209,10 +234,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
                 
                 <button
-                  onClick={(e) => { handleQuickBuy(e); setQuickViewOpen(false); }}
-                  className="w-full btn-luxury-gold py-3.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-lg"
+                  onClick={async (e) => {
+                    await handleQuickBuy(e);
+                    setQuickViewOpen(false);
+                  }}
+                  disabled={isAddingToCart}
+                  className="w-full btn-luxury-gold py-3.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-lg disabled:opacity-75"
                 >
-                  <Zap className="w-4 h-4 fill-current" /> BUY NOW &bull; INSTANT CHECKOUT
+                  {isAddingToCart ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>PROCEEDING TO CHECKOUT...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-4 h-4 fill-current" />
+                      <span>BUY NOW &bull; INSTANT CHECKOUT</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

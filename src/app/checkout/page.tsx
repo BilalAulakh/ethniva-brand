@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, ArrowLeft, CheckCircle2, ShieldCheck, Truck, CreditCard, Check } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, CheckCircle2, ShieldCheck, Truck, CreditCard, Check, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { createOrder } from '@/lib/supabase';
 
@@ -258,10 +258,19 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full btn-luxury-gold py-4.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all duration-300"
+              className="w-full btn-luxury-gold py-4.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              <ShieldCheck className="w-4 h-4 fill-current" />
-              <span>{isSubmitting ? 'Placing Order...' : `COMPLETE ORDER NOW • RS. ${finalGrandTotal.toLocaleString()}`}</span>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                  <span>RECORDING ORDER &amp; DISPATCHING...</span>
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-4 h-4 fill-current" />
+                  <span>COMPLETE ORDER NOW &bull; RS. {finalGrandTotal.toLocaleString()}</span>
+                </>
+              )}
             </button>
           </form>
 

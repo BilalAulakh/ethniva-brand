@@ -7,19 +7,22 @@ import {
   ShieldCheck, Package, Clock, Phone, MapPin, Search, RefreshCw, 
   Plus, Edit, Trash2, Image as ImageIcon, Lock, LogOut, CheckCircle, 
   AlertCircle, ChevronRight, Eye, Tag, DollarSign, Layers, Check, 
-  UploadCloud, X, ArrowUpRight, BarChart3, Filter, Copy, KeyRound, Sparkles
+  UploadCloud, X, ArrowUpRight, ArrowRight, BarChart3, Filter, Copy, KeyRound, Sparkles,
+  Loader2, AlertTriangle, Printer, MessageCircle, ExternalLink, Database, Server, Download
 } from 'lucide-react';
 import { 
   getProducts, getOrders, addProduct, updateProduct, deleteProduct, 
-  updateOrderStatus, deleteOrder, Product, Order 
+  updateOrderStatus, deleteOrder, getStoredProducts, checkSupabaseHealth,
+  seedProductsToSupabase, Product, Order 
 } from '@/lib/supabase';
 import { TableSkeleton, OrderSkeleton, ShimmerBox } from '@/components/Shimmer';
 
-// Admin Credentials
+// Admin Official Credentials
 const ADMIN_CREDENTIALS = {
   email: 'admin@zehrastudio.pk',
   altEmail: 'admin@reetwear.pk',
-  password: 'admin12345',
+  password: 'zehra2026',
+  altPassword: 'admin12345',
   pin: '7860'
 };
 
@@ -27,6 +30,7 @@ export default function AdminDashboardPage() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -35,17 +39,42 @@ export default function AdminDashboardPage() {
   // Tab State: 'orders' | 'products' | 'analytics'
   const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'analytics'>('products');
 
-  // Data States
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Data States (Instant zero-delay initial load)
+  const [orders, setOrders] = useState<Order[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('zehra_orders');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [];
+  });
+  const [products, setProducts] = useState<Product[]>(() => getStoredProducts());
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  // Custom Luxury Delete Confirmation Modal State
+  const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<{
+    type: 'product' | 'order';
+    id: string;
+    title: string;
+    subtitle?: string;
+    image?: string;
+  } | null>(null);
+  const [isDeletingTarget, setIsDeletingTarget] = useState(false);
+
   // Product Modal State
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [productForm, setProductForm] = useState({
     title: '',
@@ -60,11 +89,25 @@ export default function AdminDashboardPage() {
     is_featured: false,
     is_new: true
   });
-  const [newImageUrl, setNewImageUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Selected Order for Modal
+  // Selected Order & Product Preview States
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<Order | null>(null);
+  const [selectedProductPreview, setSelectedProductPreview] = useState<Product | null>(null);
+  const [previewActiveImageIdx, setPreviewActiveImageIdx] = useState(0);
+
+  // Supabase Database Connection & Seeding States
+  const [dbHealth, setDbHealth] = useState<{
+    connected: boolean;
+    productsTableExists: boolean;
+    ordersTableExists: boolean;
+    productsCount: number;
+    ordersCount: number;
+    message: string;
+  } | null>(null);
+  const [isSeedingDb, setIsSeedingDb] = useState(false);
+  const [seedProgressText, setSeedProgressText] = useState('');
+  const [showSqlModal, setShowSqlModal] = useState(false);
 
   // Check Local Authentication Session
   useEffect(() => {
@@ -81,15 +124,17 @@ export default function AdminDashboardPage() {
   }, []);
 
   // Load Data
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (isBackground = false) => {
+    if (!isBackground && products.length === 0) setLoading(true);
     try {
-      const [orderList, prodList] = await Promise.all([
+      const [orderList, prodList, health] = await Promise.all([
         getOrders(),
-        getProducts()
+        getProducts(),
+        checkSupabaseHealth()
       ]);
       setOrders(orderList);
       setProducts(prodList);
+      setDbHealth(health);
     } catch (e) {
       console.error(e);
     } finally {
@@ -103,6 +148,52 @@ export default function AdminDashboardPage() {
     }
   }, [isAuthenticated]);
 
+  // Handle 1-Click Sync/Seed 191+ Catalog to Supabase
+  const handleSeedProducts = async () => {
+    setIsSeedingDb(true);
+    setSeedProgressText('Connecting to Supabase...');
+    try {
+      const res = await seedProductsToSupabase((prog, total, msg) => {
+        setSeedProgressText(msg);
+      });
+      if (res.success) {
+        showFlash(`Successfully synced ${res.inserted} products to Supabase live DB!`);
+        await loadData(true);
+      } else {
+        showFlash(`Seeding notice: ${res.error}`, 'error');
+      }
+    } catch (err: any) {
+      showFlash(`Seeding failed: ${err.message}`, 'error');
+    } finally {
+      setIsSeedingDb(false);
+      setSeedProgressText('');
+    }
+  };
+
+  // Handle Export Full Database Backup as JSON
+  const handleExportBackup = () => {
+    try {
+      const backupPayload = {
+        backup_date: new Date().toISOString(),
+        products_count: products.length,
+        orders_count: orders.length,
+        products,
+        orders
+      };
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupPayload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', `zehra_store_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showFlash('Database backup JSON exported and downloaded successfully!');
+    } catch (err) {
+      console.error('Export backup error:', err);
+      showFlash('Failed to export backup', 'error');
+    }
+  };
+
   // Flash Notification Helper
   const showFlash = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
@@ -111,17 +202,21 @@ export default function AdminDashboardPage() {
     }, 4000);
   };
 
-  // Handle Login
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle Login with Realistic Loading State
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setIsLoggingIn(true);
+
+    // Authentication delay for UX feedback
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     const cleanEmail = loginEmail.trim().toLowerCase();
     const cleanPass = loginPassword.trim();
 
     if (
-      (cleanEmail === ADMIN_CREDENTIALS.email || cleanEmail === ADMIN_CREDENTIALS.altEmail || cleanEmail === 'admin') &&
-      (cleanPass === ADMIN_CREDENTIALS.password || cleanPass === ADMIN_CREDENTIALS.pin)
+      (cleanEmail === ADMIN_CREDENTIALS.email || cleanEmail === ADMIN_CREDENTIALS.altEmail || cleanEmail === 'admin' || cleanEmail === 'zehra' || cleanEmail === 'admin@zehra.com') &&
+      (cleanPass === ADMIN_CREDENTIALS.password || cleanPass === ADMIN_CREDENTIALS.altPassword || cleanPass === ADMIN_CREDENTIALS.pin)
     ) {
       setIsAuthenticated(true);
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
@@ -129,6 +224,7 @@ export default function AdminDashboardPage() {
     } else {
       setLoginError('Invalid credentials. Please use the demo credentials provided below.');
     }
+    setIsLoggingIn(false);
   };
 
   // Quick 1-Click Login Helper
@@ -165,16 +261,6 @@ export default function AdminDashboardPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  // Handle Add Image URL
-  const handleAddImageUrl = () => {
-    if (!newImageUrl.trim()) return;
-    setProductForm(prev => ({
-      ...prev,
-      images: [...prev.images, newImageUrl.trim()]
-    }));
-    setNewImageUrl('');
   };
 
   // Remove Image from Form
@@ -237,45 +323,91 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    const finalSlug = productForm.slug.trim() 
-      ? productForm.slug.trim() 
-      : productForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    setIsSavingProduct(true);
+    try {
+      const finalSlug = editingProduct?.slug || productForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-    const productPayload: Product = {
-      id: editingProduct ? editingProduct.id : 'prod-' + Date.now(),
-      title: productForm.title.trim(),
-      slug: finalSlug,
-      price: parseFloat(productForm.price),
-      compare_at_price: productForm.compare_at_price ? parseFloat(productForm.compare_at_price) : undefined,
-      category: productForm.category,
-      fabric: productForm.fabric,
-      description: productForm.description,
-      sizes: productForm.sizes,
-      images: productForm.images,
-      is_featured: productForm.is_featured,
-      is_new: productForm.is_new,
-      rating: editingProduct?.rating || 4.9,
-      reviews_count: editingProduct?.reviews_count || 12
-    };
+      const productPayload: Product = {
+        id: editingProduct ? editingProduct.id : 'prod-' + Date.now(),
+        title: productForm.title.trim(),
+        slug: finalSlug,
+        price: parseFloat(productForm.price),
+        compare_at_price: productForm.compare_at_price ? parseFloat(productForm.compare_at_price) : undefined,
+        category: productForm.category,
+        fabric: productForm.fabric,
+        description: productForm.description,
+        sizes: productForm.sizes,
+        images: productForm.images,
+        is_featured: productForm.is_featured,
+        is_new: productForm.is_new,
+        rating: editingProduct?.rating || 4.9,
+        reviews_count: editingProduct?.reviews_count || 12
+      };
 
-    if (editingProduct) {
-      await updateProduct(productPayload);
-      showFlash(`Product "${productPayload.title}" updated successfully!`);
-    } else {
-      await addProduct(productPayload);
-      showFlash(`New product "${productPayload.title}" added to store catalog!`);
+      if (editingProduct) {
+        await updateProduct(productPayload);
+        showFlash(`Product "${productPayload.title}" updated successfully!`);
+      } else {
+        await addProduct(productPayload);
+        showFlash(`New product "${productPayload.title}" added to store catalog!`);
+      }
+
+      setIsProductModalOpen(false);
+      await loadData();
+    } catch (err) {
+      console.error('Error saving product:', err);
+      showFlash('Failed to save product. Please try again.', 'error');
+    } finally {
+      setIsSavingProduct(false);
     }
-
-    setIsProductModalOpen(false);
-    loadData();
   };
 
-  // Handle Delete Product
-  const handleDeleteProduct = async (id: string, title: string) => {
-    if (window.confirm(`Are you sure you want to remove "${title}" from the store?`)) {
-      await deleteProduct(id);
-      showFlash(`Product "${title}" removed.`);
-      loadData();
+  // Trigger Delete Confirmation Modal for Product
+  const promptDeleteProduct = (product: Product) => {
+    setDeleteConfirmTarget({
+      type: 'product',
+      id: product.id,
+      title: product.title,
+      subtitle: `${product.category} • RS. ${product.price.toLocaleString()}`,
+      image: product.images && product.images[0] ? product.images[0] : undefined
+    });
+  };
+
+  // Trigger Delete Confirmation Modal for Order
+  const promptDeleteOrder = (order: Order) => {
+    if (!order.id) return;
+    setDeleteConfirmTarget({
+      type: 'order',
+      id: order.id,
+      title: `Order #${order.id}`,
+      subtitle: `${order.customer_name} • ${order.city} • RS. ${(order.total_amount || 0).toLocaleString()}`,
+      image: order.items && order.items[0] && order.items[0].image ? order.items[0].image : undefined
+    });
+  };
+
+  // Handle Execute Delete from Modal
+  const handleExecuteDelete = async () => {
+    if (!deleteConfirmTarget) return;
+    setIsDeletingTarget(true);
+    try {
+      if (deleteConfirmTarget.type === 'product') {
+        setDeletingProductId(deleteConfirmTarget.id);
+        await deleteProduct(deleteConfirmTarget.id);
+        showFlash(`Product "${deleteConfirmTarget.title}" was permanently removed.`);
+      } else {
+        setDeletingOrderId(deleteConfirmTarget.id);
+        await deleteOrder(deleteConfirmTarget.id);
+        showFlash(`Order #${deleteConfirmTarget.id} was permanently removed.`);
+      }
+      await loadData();
+      setDeleteConfirmTarget(null);
+    } catch (err) {
+      console.error(err);
+      showFlash(`Failed to delete ${deleteConfirmTarget.type}. Please try again.`, 'error');
+    } finally {
+      setIsDeletingTarget(false);
+      setDeletingProductId(null);
+      setDeletingOrderId(null);
     }
   };
 
@@ -284,15 +416,6 @@ export default function AdminDashboardPage() {
     await updateOrderStatus(orderId, newStatus);
     showFlash(`Order #${orderId} status updated to ${newStatus.toUpperCase()}`);
     loadData();
-  };
-
-  // Handle Delete Order
-  const handleDeleteOrder = async (orderId: string) => {
-    if (window.confirm(`Delete order #${orderId}?`)) {
-      await deleteOrder(orderId);
-      showFlash(`Order #${orderId} deleted.`);
-      loadData();
-    }
   };
 
   // Size toggle in Form
@@ -316,6 +439,9 @@ export default function AdminDashboardPage() {
                             p.category.toLowerCase().includes(selectedCategoryFilter.toLowerCase());
     return matchesSearch && matchesCategory;
   });
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
+  const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Filtered Orders
   const filteredOrders = orders.filter(order => {
@@ -427,9 +553,22 @@ export default function AdminDashboardPage() {
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#881337]/30 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+              disabled={isLoggingIn}
+              className={`w-full py-3.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#881337]/30 flex items-center justify-center gap-2 ${
+                isLoggingIn ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.01] active:scale-[0.99]'
+              }`}
             >
-              <KeyRound className="w-4 h-4" /> Sign In To Dashboard
+              {isLoggingIn ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#C7A76C]" />
+                  <span>Authenticating Master Access...</span>
+                </>
+              ) : (
+                <>
+                  <KeyRound className="w-4 h-4" />
+                  <span>Sign In To Dashboard</span>
+                </>
+              )}
             </button>
           </form>
 
@@ -516,11 +655,10 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              target="_blank"
               className="px-3.5 py-1.5 rounded-xl border border-stone-200 hover:border-[#881337] text-xs font-bold text-stone-700 hover:text-[#881337] flex items-center gap-1.5 transition-all bg-white"
             >
               <span>View Storefront</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <button
@@ -551,11 +689,14 @@ export default function AdminDashboardPage() {
 
           <div className="flex items-center gap-3 flex-wrap">
             <button
-              onClick={loadData}
-              className="px-4 py-2 bg-white border border-stone-300 hover:border-[#C7A76C] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-xs"
+              onClick={() => loadData()}
+              disabled={loading}
+              className={`px-4 py-2 bg-white border border-stone-300 hover:border-[#C7A76C] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-xs ${
+                loading ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
               <RefreshCw className={`w-3.5 h-3.5 text-[#881337] ${loading ? 'animate-spin' : ''}`} /> 
-              <span>Refresh Data</span>
+              <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
             </button>
 
             <button
@@ -567,8 +708,96 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
+        {/* Supabase Cloud Database Sync Status Widget */}
+        <div className={`p-5 sm:p-6 rounded-3xl border transition-all ${
+          dbHealth?.productsTableExists && dbHealth?.ordersTableExists
+            ? 'bg-gradient-to-r from-[#18181B] via-[#27272A] to-[#18181B] text-white border-[#C7A76C]/40 shadow-xl'
+            : 'bg-amber-50/80 border-amber-300 text-amber-950 shadow-sm'
+        }`}>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                dbHealth?.productsTableExists && dbHealth?.ordersTableExists
+                  ? 'bg-[#C7A76C]/20 border border-[#C7A76C] text-[#C7A76C]'
+                  : 'bg-amber-200/80 text-amber-800 border border-amber-400'
+              }`}>
+                <Database className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-md font-mono bg-white/10 border border-current">
+                    SUPABASE POSTGRESQL CLOUD
+                  </span>
+                  {dbHealth?.productsTableExists && dbHealth?.ordersTableExists ? (
+                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> LIVE CONNECTED
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-black text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> SCHEMA SETUP NEEDED
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs font-medium opacity-90">
+                  {dbHealth?.productsTableExists && dbHealth?.ordersTableExists
+                    ? `Live Supabase Database active. Total ${dbHealth.productsCount} products & ${dbHealth.ordersCount} orders synced in PostgreSQL.`
+                    : 'Supabase URL connected. Tables `products` and `orders` need to be created in Supabase SQL Editor.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+              {(!dbHealth?.productsTableExists || !dbHealth?.ordersTableExists) && (
+                <button
+                  type="button"
+                  onClick={() => setShowSqlModal(true)}
+                  className="px-4 py-2 bg-amber-200 hover:bg-amber-300 text-amber-950 text-xs font-black rounded-xl border border-amber-400 flex items-center gap-1.5 transition-all shadow-xs"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>View SQL Script</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleExportBackup}
+                className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 flex items-center gap-1.5 transition-all shadow-xs"
+                title="Download JSON backup of all products and orders"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export Backup</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSeedProducts}
+                disabled={isSeedingDb}
+                className={`px-5 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all shadow-md ${
+                  isSeedingDb
+                    ? 'bg-stone-700 text-stone-300 cursor-not-allowed'
+                    : dbHealth?.productsTableExists
+                    ? 'bg-[#C7A76C] hover:bg-[#b5955b] text-[#18181B]'
+                    : 'bg-[#881337] hover:bg-[#6b0f2b] text-white'
+                }`}
+              >
+                {isSeedingDb ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#C7A76C]" />
+                    <span>{seedProgressText || 'Syncing to Supabase...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>⚡ Sync 191+ Catalog to Supabase</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
             <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>TOTAL PRODUCTS</span>
@@ -596,15 +825,6 @@ export default function AdminDashboardPage() {
               RS. {totalRevenue.toLocaleString()}
             </div>
             <div className="text-[11px] text-stone-500 font-medium">From received orders</div>
-          </div>
-
-          <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
-            <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
-              <span>SYSTEM STATUS</span>
-              <CheckCircle className="w-4 h-4 text-emerald-500" />
-            </div>
-            <div className="text-sm font-bold text-[#18181B] pt-1">Online &amp; Synced</div>
-            <div className="text-[11px] text-stone-500 font-medium">LocalStorage + Supabase</div>
           </div>
         </div>
 
@@ -650,11 +870,14 @@ export default function AdminDashboardPage() {
               type="text"
               placeholder={activeTab === 'products' ? "Search products by title, category, fabric, or slug..." : "Search orders by ID, customer name, phone, city..."}
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
               className="bg-transparent border-none text-xs text-[#18181B] focus:outline-none w-full font-medium"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="text-stone-400 hover:text-stone-600">
+              <button onClick={() => { setSearchTerm(''); setCurrentPage(1); }} className="text-stone-400 hover:text-stone-600">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -663,7 +886,10 @@ export default function AdminDashboardPage() {
           {activeTab === 'products' && (
             <select
               value={selectedCategoryFilter}
-              onChange={e => setSelectedCategoryFilter(e.target.value)}
+              onChange={e => {
+                setSelectedCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
               className="bg-white border border-stone-200 rounded-2xl px-4 py-3 text-xs font-bold text-[#18181B] focus:outline-none focus:border-[#881337] shadow-xs"
             >
               <option value="all">All Categories ({products.length})</option>
@@ -722,12 +948,15 @@ export default function AdminDashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100">
-                      {filteredProducts.map(product => (
+                      {paginatedProducts.map(product => (
                         <tr key={product.id} className="hover:bg-stone-50/70 transition-colors group">
                           {/* Image & Title */}
-                          <td className="py-3.5 px-4 sm:px-6">
+                          <td 
+                            className="py-3.5 px-4 sm:px-6 cursor-pointer"
+                            onClick={() => { setSelectedProductPreview(product); setPreviewActiveImageIdx(0); }}
+                          >
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-16 rounded-xl bg-stone-100 overflow-hidden relative border border-stone-200 flex-shrink-0">
+                              <div className="w-12 h-16 rounded-xl bg-stone-100 overflow-hidden relative border border-stone-200 flex-shrink-0 group-hover:border-[#881337] transition-colors">
                                 {product.images && product.images[0] ? (
                                   <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                                 ) : (
@@ -748,7 +977,10 @@ export default function AdminDashboardPage() {
                           </td>
 
                           {/* Category & Fabric */}
-                          <td className="py-3.5 px-4">
+                          <td 
+                            className="py-3.5 px-4 cursor-pointer"
+                            onClick={() => { setSelectedProductPreview(product); setPreviewActiveImageIdx(0); }}
+                          >
                             <div className="font-bold text-[#18181B]">{product.category}</div>
                             <div className="text-[11px] text-stone-500 line-clamp-1 max-w-[200px]">
                               {product.fabric || 'Pure Fabric'}
@@ -756,7 +988,10 @@ export default function AdminDashboardPage() {
                           </td>
 
                           {/* Price */}
-                          <td className="py-3.5 px-4 font-mono font-extrabold text-[#881337]">
+                          <td 
+                            className="py-3.5 px-4 font-mono font-extrabold text-[#881337] cursor-pointer"
+                            onClick={() => { setSelectedProductPreview(product); setPreviewActiveImageIdx(0); }}
+                          >
                             <div>RS. {product.price.toLocaleString()}</div>
                             {product.compare_at_price && (
                               <div className="text-[10px] text-stone-400 line-through">
@@ -766,7 +1001,10 @@ export default function AdminDashboardPage() {
                           </td>
 
                           {/* Gallery count */}
-                          <td className="py-3.5 px-4">
+                          <td 
+                            className="py-3.5 px-4 cursor-pointer"
+                            onClick={() => { setSelectedProductPreview(product); setPreviewActiveImageIdx(0); }}
+                          >
                             <div className="flex items-center gap-1">
                               <span className="px-2 py-0.5 rounded-md bg-[#FAF7F2] border border-[#E8DFC8] text-[10px] font-bold text-[#785E2F] flex items-center gap-1">
                                 <ImageIcon className="w-3 h-3" />
@@ -793,15 +1031,14 @@ export default function AdminDashboardPage() {
 
                           {/* Action Buttons */}
                           <td className="py-3.5 px-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Link
-                                href={`/product/${product.slug}`}
-                                target="_blank"
+                            <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>
+                              <button
+                                onClick={() => { setSelectedProductPreview(product); setPreviewActiveImageIdx(0); }}
                                 className="p-1.5 text-stone-400 hover:text-stone-800 rounded-lg hover:bg-stone-100 transition-colors"
-                                title="View on Live Store"
+                                title="Quick View Product Details"
                               >
                                 <Eye className="w-4 h-4" />
-                              </Link>
+                              </button>
                               
                               <button
                                 onClick={() => openProductModal(product)}
@@ -812,11 +1049,16 @@ export default function AdminDashboardPage() {
                               </button>
 
                               <button
-                                onClick={() => handleDeleteProduct(product.id, product.title)}
-                                className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                                onClick={() => promptDeleteProduct(product)}
+                                disabled={deletingProductId === product.id || isDeletingTarget}
+                                className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors disabled:opacity-50"
                                 title="Delete Product"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                {deletingProductId === product.id ? (
+                                  <Loader2 className="w-4 h-4 text-rose-600 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-4 h-4" />
+                                )}
                               </button>
                             </div>
                           </td>
@@ -825,6 +1067,56 @@ export default function AdminDashboardPage() {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="bg-[#FAF7F2] px-6 py-4 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold text-stone-600">
+                    <div>
+                      Showing <span className="text-[#18181B] font-extrabold">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="text-[#18181B] font-extrabold">{Math.min(currentPage * itemsPerPage, filteredProducts.length)}</span> of <span className="text-[#881337] font-extrabold">{filteredProducts.length}</span> articles
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed text-stone-700 transition-all font-bold"
+                      >
+                        &larr; Prev
+                      </button>
+
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                          let pageNum = i + 1;
+                          if (totalPages > 5 && currentPage > 3) {
+                            pageNum = currentPage - 2 + i;
+                            if (pageNum > totalPages) pageNum = totalPages - 4 + i;
+                          }
+                          return (
+                            <button
+                              key={pageNum}
+                              onClick={() => setCurrentPage(pageNum)}
+                              className={`w-8 h-8 rounded-xl font-black text-xs transition-all ${
+                                currentPage === pageNum
+                                  ? 'bg-[#881337] text-white shadow-xs'
+                                  : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-50'
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed text-stone-700 transition-all font-bold"
+                      >
+                        Next &rarr;
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -863,6 +1155,16 @@ export default function AdminDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
+                        {/* View Order Full Details Button */}
+                        <button
+                          onClick={() => setSelectedOrderDetails(order)}
+                          className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-white hover:bg-[#881337] text-[#881337] hover:text-white border border-[#C7A76C]/60 transition-all flex items-center gap-1 shadow-2xs"
+                          title="Open Full Order Dossier"
+                        >
+                          <span>Full Details</span>
+                          <Eye className="w-3 h-3" />
+                        </button>
+
                         {/* Status update select */}
                         <select
                           value={order.status || 'pending'}
@@ -881,11 +1183,16 @@ export default function AdminDashboardPage() {
                         </span>
 
                         <button
-                          onClick={() => order.id && handleDeleteOrder(order.id)}
-                          className="p-1 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                          onClick={() => promptDeleteOrder(order)}
+                          disabled={deletingOrderId === order.id || isDeletingTarget}
+                          className="p-1 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 disabled:opacity-50"
                           title="Delete Order"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          {deletingOrderId === order.id ? (
+                            <Loader2 className="w-3.5 h-3.5 text-rose-600 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-3.5 h-3.5" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -919,20 +1226,30 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
 
-                    {/* Order Items Breakdown */}
+                    {/* Order Items Breakdown (Clickable to open Full Details) */}
                     <div className="pt-3 border-t border-stone-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                       {order.items.map((item, i) => (
-                        <div key={i} className="p-3 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 text-xs flex gap-3 items-center">
-                          <div className="w-10 h-12 bg-white rounded-xl overflow-hidden flex-shrink-0 relative border border-stone-200">
+                        <div 
+                          key={i} 
+                          onClick={() => setSelectedOrderDetails(order)}
+                          className="p-3 bg-[#FAF7F2] hover:bg-rose-50/50 rounded-2xl border border-stone-200/80 hover:border-[#881337] text-xs flex gap-3 items-center cursor-pointer transition-all shadow-2xs group/item"
+                          title="Click to view full order item details"
+                        >
+                          <div className="w-11 h-14 bg-white rounded-xl overflow-hidden flex-shrink-0 relative border border-stone-200 group-hover/item:border-[#881337] transition-colors">
                             <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                           </div>
-                          <div>
-                            <div className="font-extrabold text-[#18181B] line-clamp-1">{item.title}</div>
-                            <div className="text-[10px] text-stone-600">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-extrabold text-[#18181B] line-clamp-1 group-hover/item:text-[#881337] transition-colors">{item.title}</div>
+                            <div className="text-[10px] text-stone-600 mt-0.5">
                               Size: <strong className="text-[#881337]">{item.selected_size}</strong> &bull; Qty: {item.quantity}
                             </div>
+                            {item.price && (
+                              <div className="text-[10px] font-mono font-bold text-[#881337]">
+                                RS. {item.price.toLocaleString()}
+                              </div>
+                            )}
                             {item.custom_measurements && (
-                              <div className="text-[9px] text-stone-500 italic">Custom: {item.custom_measurements}</div>
+                              <div className="text-[9px] text-stone-500 italic truncate">Custom: {item.custom_measurements}</div>
                             )}
                           </div>
                         </div>
@@ -972,41 +1289,19 @@ export default function AdminDashboardPage() {
             </div>
 
             <form onSubmit={handleSaveProduct} className="space-y-5">
-              {/* Title & Slug */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                    Article Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. SHAHEE BLUE"
-                    value={productForm.title}
-                    onChange={e => {
-                      const val = e.target.value;
-                      setProductForm(prev => ({
-                        ...prev,
-                        title: val,
-                        slug: prev.slug || val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-                      }));
-                    }}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#881337] focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                    URL Slug
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. shahee-blue"
-                    value={productForm.slug}
-                    onChange={e => setProductForm(prev => ({ ...prev, slug: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-[#18181B] focus:border-[#881337] focus:outline-none"
-                  />
-                </div>
+              {/* Title */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                  Article Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. SHAHEE BLUE"
+                  value={productForm.title}
+                  onChange={e => setProductForm(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-xs font-semibold text-[#18181B] focus:border-[#881337] focus:outline-none transition-all"
+                />
               </div>
 
               {/* Price & Compare at Price */}
@@ -1121,54 +1416,30 @@ export default function AdminDashboardPage() {
                   </span>
                 </label>
 
-                {/* Upload Options Box */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* 1. Local File Upload */}
-                  <div className="p-4 border-2 border-dashed border-stone-300 hover:border-[#881337] rounded-2xl text-center space-y-2 bg-[#FAF7F2]/60 transition-colors">
-                    <UploadCloud className="w-6 h-6 text-[#881337] mx-auto" />
-                    <div className="text-xs font-bold text-[#18181B]">Upload from Device</div>
-                    <p className="text-[10px] text-stone-500">Supports JPG, PNG, WEBP</p>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      id="device-image-upload"
-                    />
-                    <label
-                      htmlFor="device-image-upload"
-                      className="inline-block px-3 py-1.5 bg-white border border-stone-300 hover:border-[#881337] text-[#881337] text-xs font-bold rounded-lg cursor-pointer shadow-2xs transition-all"
-                    >
-                      Browse Files
-                    </label>
+                {/* Full-width Local File Upload */}
+                <div className="p-6 border-2 border-dashed border-stone-300 hover:border-[#881337] rounded-2xl text-center space-y-3 bg-[#FAF7F2]/60 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-[#881337]/10 text-[#881337] flex items-center justify-center mx-auto shadow-xs">
+                    <UploadCloud className="w-6 h-6" />
                   </div>
-
-                  {/* 2. Direct Web URL Paste */}
-                  <div className="p-4 border border-stone-200 rounded-2xl space-y-2 bg-stone-50/70">
-                    <div className="text-xs font-bold text-[#18181B] flex items-center gap-1">
-                      <ImageIcon className="w-3.5 h-3.5 text-[#C7A76C]" />
-                      <span>Paste Image URL</span>
-                    </div>
-                    <p className="text-[10px] text-stone-500">Shopify CDN, Unsplash, or Web URL</p>
-                    <div className="flex gap-1.5">
-                      <input
-                        type="url"
-                        placeholder="https://cdn.shopify.com/..."
-                        value={newImageUrl}
-                        onChange={e => setNewImageUrl(e.target.value)}
-                        className="flex-1 px-2.5 py-1.5 bg-white border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-[#881337]"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddImageUrl}
-                        className="px-3 py-1.5 bg-[#881337] text-white text-xs font-bold rounded-lg hover:bg-[#6b0f2b] transition-all flex-shrink-0"
-                      >
-                        Add
-                      </button>
-                    </div>
+                  <div>
+                    <div className="text-xs font-extrabold text-[#18181B]">Upload High-Quality Article Photos</div>
+                    <p className="text-[10px] text-stone-500 mt-0.5">Select one or multiple images from your device (JPG, PNG, WEBP)</p>
                   </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="device-image-upload"
+                  />
+                  <label
+                    htmlFor="device-image-upload"
+                    className="inline-block px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Select Photos From Device
+                  </label>
                 </div>
 
                 {/* Thumbnails Gallery Preview */}
@@ -1195,7 +1466,7 @@ export default function AdminDashboardPage() {
                   </div>
                 ) : (
                   <div className="text-center py-4 text-stone-400 text-xs italic bg-stone-50 rounded-xl border border-stone-200">
-                    No images added yet. Upload from device or paste a URL above.
+                    No images added yet. Click &quot;Select Photos From Device&quot; above.
                   </div>
                 )}
               </div>
@@ -1227,19 +1498,615 @@ export default function AdminDashboardPage() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-stone-100">
                 <button
                   type="button"
+                  disabled={isSavingProduct}
                   onClick={() => setIsProductModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-bold hover:bg-stone-50"
+                  className="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-bold hover:bg-stone-50 disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md"
+                  disabled={isSavingProduct}
+                  className={`px-6 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 ${
+                    isSavingProduct ? 'opacity-80 cursor-not-allowed' : 'hover:scale-[1.01]'
+                  }`}
                 >
-                  {editingProduct ? 'Save Changes' : 'Publish Article'}
+                  {isSavingProduct ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-[#C7A76C]" />
+                      <span>{editingProduct ? 'Saving Changes...' : 'Publishing Article...'}</span>
+                    </>
+                  ) : (
+                    <span>{editingProduct ? 'Save Changes' : 'Publish Article'}</span>
+                  )}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 4. LUXURY DELETE CONFIRMATION POPUP MODAL                      */}
+      {/* ------------------------------------------------------------- */}
+      {deleteConfirmTarget && (
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl border border-rose-100 shadow-2xl max-w-md w-full p-6 sm:p-7 space-y-6 relative overflow-hidden animate-scale-in">
+            
+            {/* Top Alert Accent Gradient */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-[#881337] to-amber-500" />
+            
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => !isDeletingTarget && setDeleteConfirmTarget(null)}
+              disabled={isDeletingTarget}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center transition-colors disabled:opacity-40"
+              title="Close modal"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header with Luxury Icon */}
+            <div className="text-center space-y-3 pt-2">
+              <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-inner">
+                <Trash2 className="w-7 h-7" />
+              </div>
+              <div>
+                <span className="text-[10px] font-black tracking-[0.25em] text-rose-700 uppercase block">
+                  CONFIRM PERMANENT REMOVAL
+                </span>
+                <h3 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B] mt-0.5">
+                  {deleteConfirmTarget.type === 'product' ? 'Remove Article?' : 'Delete Order Record?'}
+                </h3>
+              </div>
+              <p className="text-xs text-stone-500 max-w-xs mx-auto">
+                {deleteConfirmTarget.type === 'product'
+                  ? 'Are you sure you want to remove this article from the store? This action cannot be reversed.'
+                  : 'Are you sure you want to permanently delete this customer order record from database?'}
+              </p>
+            </div>
+
+            {/* Target Item Card Preview */}
+            <div className="bg-[#FAF7F2] border border-[#E8DFC8] rounded-2xl p-3.5 flex items-center gap-3.5">
+              {deleteConfirmTarget.image ? (
+                <div className="w-12 h-16 rounded-xl bg-white border border-stone-200 overflow-hidden flex-shrink-0 shadow-xs">
+                  <img 
+                    src={deleteConfirmTarget.image} 
+                    alt={deleteConfirmTarget.title} 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-xl bg-rose-100/60 border border-rose-200 text-rose-700 flex items-center justify-center flex-shrink-0">
+                  <Package className="w-6 h-6" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-black uppercase text-rose-700 tracking-wider">
+                  {deleteConfirmTarget.type === 'product' ? 'CATALOG ARTICLE' : 'STORE ORDER'}
+                </div>
+                <div className="font-extrabold text-[#18181B] text-sm truncate">
+                  {deleteConfirmTarget.title}
+                </div>
+                {deleteConfirmTarget.subtitle && (
+                  <div className="text-[11px] text-stone-600 font-medium truncate mt-0.5">
+                    {deleteConfirmTarget.subtitle}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Warning Notice */}
+            <div className="p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl flex items-start gap-2 text-[11px] text-amber-900 leading-snug">
+              <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <span>
+                {deleteConfirmTarget.type === 'product'
+                  ? 'This item will be instantly removed from your active online store & collections.'
+                  : 'All order information, customer delivery address, and payment records will be erased.'}
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <button
+                type="button"
+                disabled={isDeletingTarget}
+                onClick={() => setDeleteConfirmTarget(null)}
+                className="w-full py-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 text-xs font-bold transition-all disabled:opacity-50"
+              >
+                Cancel / Keep
+              </button>
+
+              <button
+                type="button"
+                disabled={isDeletingTarget}
+                onClick={handleExecuteDelete}
+                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-rose-600/25 flex items-center justify-center gap-2 disabled:opacity-75 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {isDeletingTarget ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>Yes, Delete</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 5. FULL ORDER DETAILS & INVOICE DOSSIER MODAL                 */}
+      {/* ------------------------------------------------------------- */}
+      {selectedOrderDetails && (
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 animate-scale-in">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-stone-100 pb-4">
+              <div>
+                <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest block">
+                  ORDER DOSSIER &bull; {selectedOrderDetails.payment_method === 'cod' ? 'CASH ON DELIVERY' : 'BANK TRANSFER'}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B] flex items-center gap-2">
+                  <span>ORDER #{selectedOrderDetails.id}</span>
+                </h2>
+                <div className="text-xs text-stone-400 mt-0.5">
+                  Placed on: {selectedOrderDetails.created_at ? new Date(selectedOrderDetails.created_at).toLocaleString() : 'Just now'}
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedOrderDetails(null)}
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Customer & Destination Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Customer Card */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFC8] space-y-2">
+                <div className="text-[10px] font-black text-[#881337] uppercase tracking-wider">Customer Details</div>
+                <div className="font-extrabold text-[#18181B] text-base">{selectedOrderDetails.customer_name}</div>
+                
+                <div className="space-y-1.5 pt-1 text-xs">
+                  <div className="flex items-center gap-2 text-stone-700">
+                    <Phone className="w-3.5 h-3.5 text-[#881337] flex-shrink-0" />
+                    <a href={`tel:${selectedOrderDetails.customer_phone}`} className="font-bold hover:underline">
+                      {selectedOrderDetails.customer_phone}
+                    </a>
+                    <a
+                      href={`https://wa.me/${selectedOrderDetails.customer_phone.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-2 py-0.5 rounded-md bg-[#25D366] text-white text-[9px] font-black uppercase tracking-wider flex items-center gap-1 hover:bg-[#20ba5a] transition-colors"
+                      title="Chat with customer on WhatsApp"
+                    >
+                      <MessageCircle className="w-2.5 h-2.5 fill-current" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+
+                  {selectedOrderDetails.customer_email && (
+                    <div className="text-stone-500 text-[11px] truncate">
+                      {selectedOrderDetails.customer_email}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Delivery Address Card */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFC8] space-y-2">
+                <div className="text-[10px] font-black text-[#881337] uppercase tracking-wider">Shipping Destination</div>
+                <div className="font-extrabold text-[#18181B] flex items-center gap-1 text-sm">
+                  <MapPin className="w-4 h-4 text-[#881337] flex-shrink-0" />
+                  <span>{selectedOrderDetails.city}, Pakistan</span>
+                </div>
+                <p className="text-xs text-stone-600 font-light leading-relaxed">
+                  {selectedOrderDetails.address}
+                </p>
+                <div className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md inline-block">
+                  ✓ Free Express Delivery
+                </div>
+              </div>
+            </div>
+
+            {/* Ordered Items Full Breakdown */}
+            <div className="space-y-3 pt-2">
+              <div className="text-[11px] font-black text-[#18181B] uppercase tracking-wider flex items-center justify-between">
+                <span>Ordered Articles ({selectedOrderDetails.items.length})</span>
+                <span className="text-[10px] text-stone-400 font-normal">Review item specs &amp; sizes</span>
+              </div>
+
+              <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                {selectedOrderDetails.items.map((item, idx) => (
+                  <div key={idx} className="p-3.5 bg-white rounded-2xl border border-stone-200 shadow-2xs flex items-center gap-4">
+                    <div className="w-14 h-16 rounded-xl bg-stone-100 border border-stone-200 overflow-hidden flex-shrink-0">
+                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="font-extrabold text-[#18181B] text-xs leading-snug truncate">
+                        {item.title}
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-stone-600 mt-1">
+                        <span>Size: <strong className="text-[#881337] bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">{item.selected_size}</strong></span>
+                        <span>&bull;</span>
+                        <span>Qty: <strong className="text-[#18181B]">{item.quantity}</strong></span>
+                      </div>
+                      {item.custom_measurements && (
+                        <div className="text-[10px] text-stone-500 bg-stone-50 px-2 py-1 rounded-md border border-stone-200 mt-1.5 leading-tight">
+                          <strong>Custom Stitching:</strong> {item.custom_measurements}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-right flex-shrink-0">
+                      <div className="font-mono font-black text-sm text-[#881337]">
+                        RS. {((item.price || 0) * item.quantity).toLocaleString()}
+                      </div>
+                      {item.quantity > 1 && (
+                        <div className="text-[10px] text-stone-400 font-mono">
+                          (RS. {(item.price || 0).toLocaleString()} each)
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Status Changer & Order Total */}
+            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFC8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-stone-500 uppercase tracking-wider block">Update Order Status</label>
+                <select
+                  value={selectedOrderDetails.status || 'pending'}
+                  onChange={e => {
+                    if (selectedOrderDetails.id) {
+                      handleStatusChange(selectedOrderDetails.id, e.target.value);
+                      setSelectedOrderDetails(prev => prev ? { ...prev, status: e.target.value } : null);
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider bg-white text-[#881337] border border-[#C7A76C]/60 focus:outline-none cursor-pointer shadow-xs"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div className="text-right">
+                <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Grand Total Payable</span>
+                <span className="text-2xl sm:text-3xl font-serif font-black text-[#881337]">
+                  RS. {selectedOrderDetails.total_amount.toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-between pt-2 border-t border-stone-100">
+              <button
+                type="button"
+                onClick={() => {
+                  window.print();
+                }}
+                className="px-4 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print Invoice</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedOrderDetails(null)}
+                  className="px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 6. FULL PRODUCT SPECIFICATIONS & GALLERY PREVIEW MODAL        */}
+      {/* ------------------------------------------------------------- */}
+      {selectedProductPreview && (
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 animate-scale-in">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-stone-100 pb-4">
+              <div>
+                <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest block">
+                  {selectedProductPreview.category} &bull; ARTICLE PREVIEW
+                </span>
+                <h2 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B]">
+                  {selectedProductPreview.title}
+                </h2>
+              </div>
+              <button
+                onClick={() => setSelectedProductPreview(null)}
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Product Image Gallery Preview */}
+            <div className="space-y-3">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] border border-stone-200 shadow-xs">
+                {selectedProductPreview.images && selectedProductPreview.images[previewActiveImageIdx] ? (
+                  <img
+                    src={selectedProductPreview.images[previewActiveImageIdx]}
+                    alt={selectedProductPreview.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-stone-400">
+                    <ImageIcon className="w-8 h-8" />
+                  </div>
+                )}
+                {selectedProductPreview.is_featured && (
+                  <span className="absolute top-3 left-3 bg-[#881337] text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-md shadow">
+                    FEATURED COUTURE
+                  </span>
+                )}
+              </div>
+
+              {/* Thumbnails */}
+              {selectedProductPreview.images && selectedProductPreview.images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {selectedProductPreview.images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setPreviewActiveImageIdx(idx)}
+                      className={`w-14 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                        previewActiveImageIdx === idx ? 'border-[#881337] shadow-sm' : 'border-stone-200 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Price & Specs */}
+            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFC8] grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Selling Price</span>
+                <div className="text-2xl font-serif font-black text-[#881337]">
+                  PKR {selectedProductPreview.price.toLocaleString()}
+                </div>
+                {selectedProductPreview.compare_at_price && (
+                  <div className="text-xs text-stone-400 line-through">
+                    PKR {selectedProductPreview.compare_at_price.toLocaleString()}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Fabric &amp; Craft</span>
+                <div className="text-xs font-bold text-[#18181B] mt-0.5">
+                  {selectedProductPreview.fabric || 'Pure Fabric'}
+                </div>
+                <div className="text-[10px] text-stone-500 mt-1">
+                  Category: {selectedProductPreview.category}
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider block">
+                Description &amp; Package Inclusions
+              </label>
+              <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3.5 rounded-xl border border-stone-200 font-light">
+                {selectedProductPreview.description || 'Pure handcrafted couture ensemble designed with signature craftsmanship.'}
+              </p>
+            </div>
+
+            {/* Sizes */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider block">
+                Available Sizes
+              </label>
+              <div className="flex gap-2 flex-wrap">
+                {(selectedProductPreview.sizes || ['XS', 'Small', 'Medium', 'Large', 'XL']).map(sz => (
+                  <span key={sz} className="px-3 py-1 bg-white border border-stone-300 text-stone-800 text-xs font-bold rounded-lg shadow-2xs">
+                    {sz}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-stone-100">
+              <Link
+                href={`/product/${selectedProductPreview.slug}`}
+                className="px-4 py-2.5 rounded-xl border border-stone-300 hover:border-[#881337] text-stone-700 hover:text-[#881337] text-xs font-bold flex items-center gap-1.5 transition-all"
+              >
+                <span>View on Storefront</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const prod = selectedProductPreview;
+                  setSelectedProductPreview(null);
+                  openProductModal(prod);
+                }}
+                className="px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-1.5"
+              >
+                <Edit className="w-3.5 h-3.5" />
+                <span>Edit Article</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SQL Setup Helper Modal */}
+      {showSqlModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-stone-200 animate-scale-up max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-stone-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center">
+                  <Database className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-serif font-black text-[#18181B]">
+                    Supabase PostgreSQL Setup
+                  </h3>
+                  <p className="text-[11px] text-stone-500">
+                    Run this SQL script in your Supabase SQL Editor to create tables.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSqlModal(false)}
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-stone-700">
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-1">
+                <p className="font-bold text-amber-950">📋 Instructions:</p>
+                <ol className="list-decimal list-inside space-y-1 text-stone-600 font-medium">
+                  <li>Open your Supabase Project Dashboard (<span className="font-mono text-[10px]">https://supabase.com/dashboard</span>).</li>
+                  <li>Click on <strong>SQL Editor</strong> in the left sidebar.</li>
+                  <li>Click <strong>New query</strong>, paste the SQL below, and click <strong>RUN</strong>.</li>
+                  <li>Once run, click &ldquo;⚡ Sync 191+ Catalog to Supabase&rdquo; on this dashboard.</li>
+                </ol>
+              </div>
+
+              <div className="relative">
+                <pre className="bg-[#18181B] text-[#E4D5B7] p-4 rounded-2xl text-[11px] font-mono overflow-x-auto max-h-64 border border-stone-800">
+{`-- 1. Create Products Table
+CREATE TABLE IF NOT EXISTS public.products (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  price NUMERIC NOT NULL DEFAULT 0,
+  compare_at_price NUMERIC,
+  category TEXT NOT NULL DEFAULT 'Luxury Pret',
+  fabric TEXT DEFAULT '',
+  images TEXT[] DEFAULT '{}',
+  description TEXT DEFAULT '',
+  sizes TEXT[] DEFAULT '{"XS", "S", "M", "L", "XL", "Custom"}',
+  is_featured BOOLEAN DEFAULT false,
+  is_new BOOLEAN DEFAULT false,
+  rating NUMERIC DEFAULT 5.0,
+  reviews_count INTEGER DEFAULT 1,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 2. Create Orders Table
+CREATE TABLE IF NOT EXISTS public.orders (
+  id TEXT PRIMARY KEY,
+  customer_name TEXT NOT NULL,
+  customer_phone TEXT NOT NULL,
+  customer_email TEXT DEFAULT '',
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  payment_method TEXT NOT NULL CHECK (payment_method IN ('cod', 'bank_transfer')),
+  total_amount NUMERIC NOT NULL DEFAULT 0,
+  items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  status TEXT NOT NULL DEFAULT 'pending',
+  notes TEXT DEFAULT '',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 3. Enable RLS and Policies
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access on products" ON public.products FOR SELECT USING (true);
+CREATE POLICY "Allow all operations for anon on products" ON public.products FOR ALL USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow public to insert orders" ON public.orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow select on orders" ON public.orders FOR SELECT USING (true);
+CREATE POLICY "Allow update on orders" ON public.orders FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow delete on orders" ON public.orders FOR DELETE USING (true);`}
+                </pre>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(`CREATE TABLE IF NOT EXISTS public.products (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  price NUMERIC NOT NULL DEFAULT 0,
+  compare_at_price NUMERIC,
+  category TEXT NOT NULL DEFAULT 'Luxury Pret',
+  fabric TEXT DEFAULT '',
+  images TEXT[] DEFAULT '{}',
+  description TEXT DEFAULT '',
+  sizes TEXT[] DEFAULT '{"XS", "S", "M", "L", "XL", "Custom"}',
+  is_featured BOOLEAN DEFAULT false,
+  is_new BOOLEAN DEFAULT false,
+  rating NUMERIC DEFAULT 5.0,
+  reviews_count INTEGER DEFAULT 1,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.orders (
+  id TEXT PRIMARY KEY,
+  customer_name TEXT NOT NULL,
+  customer_phone TEXT NOT NULL,
+  customer_email TEXT DEFAULT '',
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  payment_method TEXT NOT NULL CHECK (payment_method IN ('cod', 'bank_transfer')),
+  total_amount NUMERIC NOT NULL DEFAULT 0,
+  items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  status TEXT NOT NULL DEFAULT 'pending',
+  notes TEXT DEFAULT '',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access on products" ON public.products FOR SELECT USING (true);
+CREATE POLICY "Allow all operations for anon on products" ON public.products FOR ALL USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow public to insert orders" ON public.orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow select on orders" ON public.orders FOR SELECT USING (true);
+CREATE POLICY "Allow update on orders" ON public.orders FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow delete on orders" ON public.orders FOR DELETE USING (true);`);
+                  showFlash('SQL Script copied to clipboard!');
+                }}
+                className="px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Copy SQL Query</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

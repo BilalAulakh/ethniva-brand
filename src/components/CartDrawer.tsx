@@ -1,13 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, Trash2, Plus, Minus, Truck, ArrowRight, ShoppingCart } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { X, Trash2, Plus, Minus, Truck, ArrowRight, ShoppingCart, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export const CartDrawer: React.FC = () => {
+  const router = useRouter();
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const [isProceeding, setIsProceeding] = useState(false);
 
   const FREE_DELIVERY_THRESHOLD = 5000;
   const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal);
@@ -150,14 +153,30 @@ export const CartDrawer: React.FC = () => {
                 Taxes &amp; Delivery calculated at checkout. Cash on Delivery available.
               </p>
 
-              <Link
-                href="/checkout"
-                onClick={() => setIsCartOpen(false)}
-                className="w-full brand-btn-primary text-white py-3.5 rounded-2xl font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg"
+              <button
+                onClick={async () => {
+                  if (isProceeding) return;
+                  setIsProceeding(true);
+                  await new Promise(r => setTimeout(r, 350));
+                  setIsCartOpen(false);
+                  setIsProceeding(false);
+                  router.push('/checkout');
+                }}
+                disabled={isProceeding}
+                className="w-full brand-btn-primary text-white py-3.5 rounded-2xl font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg disabled:opacity-75"
               >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-4 h-4 text-[#fef08a]" />
-              </Link>
+                {isProceeding ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#fef08a]" />
+                    <span>Proceeding to Checkout...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Proceed to Checkout</span>
+                    <ArrowRight className="w-4 h-4 text-[#fef08a]" />
+                  </>
+                )}
+              </button>
             </div>
           )}
         </div>

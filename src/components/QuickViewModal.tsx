@@ -2,18 +2,23 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { X, ShoppingBag, Star, Check } from 'lucide-react';
+import { X, ShoppingBag, Star, Check, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, setQuickViewProduct, addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
   if (!quickViewProduct) return null;
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
+    if (isAdding) return;
+    setIsAdding(true);
     addToCart(quickViewProduct, quantity, selectedSize);
+    await new Promise(r => setTimeout(r, 400));
+    setIsAdding(false);
     setQuickViewProduct(null);
   };
 
@@ -105,10 +110,20 @@ export const QuickViewModal: React.FC = () => {
 
                 <button
                   onClick={handleAdd}
-                  className="flex-1 brand-btn-primary text-white text-xs uppercase tracking-wider font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2"
+                  disabled={isAdding}
+                  className="flex-1 brand-btn-primary text-white text-xs uppercase tracking-wider font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-75"
                 >
-                  <ShoppingBag className="w-4 h-4 text-[#fef08a]" />
-                  <span>Add To Shopping Bag</span>
+                  {isAdding ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-[#fef08a]" />
+                      <span>Adding To Bag...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4 text-[#fef08a]" />
+                      <span>Add To Shopping Bag</span>
+                    </>
+                  )}
                 </button>
               </div>
 

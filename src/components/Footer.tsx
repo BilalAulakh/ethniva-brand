@@ -2,9 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin, ShieldCheck, Truck, RefreshCw, Globe, Share2 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const pathname = usePathname();
+
+  // Hide storefront Footer on /admin routes
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   return (
     <footer className="bg-white text-stone-700 pt-16 pb-8 border-t border-stone-200">
       {/* Top Value Badges (Warm Ivory & Champagne) */}
