@@ -463,7 +463,7 @@ export const Navbar: React.FC = () => {
             </form>
 
             {/* Quick Credentials Demo Box */}
-            <div className="bg-[#FAF7F2] border border-[#E8DFC8] rounded-2xl p-3.5 space-y-2.5">
+            {/* <div className="bg-[#FAF7F2] border border-[#E8DFC8] rounded-2xl p-3.5 space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[10px] font-black text-[#881337] uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
@@ -488,7 +488,7 @@ export const Navbar: React.FC = () => {
                   <span className="font-bold text-[#881337]">zehra2026 (or admin12345)</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
