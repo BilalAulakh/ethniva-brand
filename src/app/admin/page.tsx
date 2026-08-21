@@ -11,8 +11,8 @@ import {
   Loader2, AlertTriangle, Printer, MessageCircle, ExternalLink, Database, Server, Download
 } from 'lucide-react';
 import { 
-  getProducts, getOrders, addProduct, updateProduct, deleteProduct, 
-  updateOrderStatus, deleteOrder, getStoredProducts, checkSupabaseHealth,
+  getProducts, getOrders, addProduct, updateProduct, deleteProduct, deleteAllProducts,
+  updateOrderStatus, deleteOrder, deleteAllOrders, getStoredProducts, checkSupabaseHealth,
   seedProductsToSupabase, Product, Order 
 } from '@/lib/supabase';
 import { TableSkeleton, OrderSkeleton, ShimmerBox } from '@/components/Shimmer';
@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
 
   // Custom Luxury Delete Confirmation Modal State
   const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<{
-    type: 'product' | 'order';
+    type: 'product' | 'order' | 'all_products' | 'all_orders';
     id: string;
     title: string;
     subtitle?: string;
@@ -373,6 +373,34 @@ export default function AdminDashboardPage() {
     });
   };
 
+  // Trigger Delete All Products Confirmation Modal
+  const promptDeleteAllProducts = () => {
+    if (products.length === 0) {
+      showFlash('No products in catalog to delete.', 'error');
+      return;
+    }
+    setDeleteConfirmTarget({
+      type: 'all_products',
+      id: 'all',
+      title: `All ${products.length} Products in Catalog`,
+      subtitle: `Will permanently erase all ${products.length} articles from store & Supabase database`
+    });
+  };
+
+  // Trigger Delete All Orders Confirmation Modal
+  const promptDeleteAllOrders = () => {
+    if (orders.length === 0) {
+      showFlash('No orders to delete.', 'error');
+      return;
+    }
+    setDeleteConfirmTarget({
+      type: 'all_orders',
+      id: 'all',
+      title: `All ${orders.length} Orders & Sales Records`,
+      subtitle: `Will permanently erase all ${orders.length} order history records and reset Gross Sales to RS. 0`
+    });
+  };
+
   // Trigger Delete Confirmation Modal for Order
   const promptDeleteOrder = (order: Order) => {
     if (!order.id) return;
@@ -390,7 +418,13 @@ export default function AdminDashboardPage() {
     if (!deleteConfirmTarget) return;
     setIsDeletingTarget(true);
     try {
-      if (deleteConfirmTarget.type === 'product') {
+      if (deleteConfirmTarget.type === 'all_products') {
+        await deleteAllProducts();
+        showFlash(`All products have been permanently deleted from the store.`);
+      } else if (deleteConfirmTarget.type === 'all_orders') {
+        await deleteAllOrders();
+        showFlash(`All orders and gross sales history have been cleared.`);
+      } else if (deleteConfirmTarget.type === 'product') {
         setDeletingProductId(deleteConfirmTarget.id);
         await deleteProduct(deleteConfirmTarget.id);
         showFlash(`Product "${deleteConfirmTarget.title}" was permanently removed.`);
@@ -688,6 +722,28 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
+            {activeTab === 'products' && products.length > 0 && (
+              <button
+                onClick={() => promptDeleteAllProducts()}
+                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center gap-1.5 hover:scale-[1.02]"
+                title="Delete all products from store catalog"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-600" /> 
+                <span>Delete All ({products.length})</span>
+              </button>
+            )}
+
+            {activeTab === 'orders' && orders.length > 0 && (
+              <button
+                onClick={() => promptDeleteAllOrders()}
+                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center gap-1.5 hover:scale-[1.02]"
+                title="Clear all orders and sales records"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-600" /> 
+                <span>Delete All Orders ({orders.length})</span>
+              </button>
+            )}
+
             <button
               onClick={() => loadData()}
               disabled={loading}
@@ -699,100 +755,14 @@ export default function AdminDashboardPage() {
               <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
             </button>
 
-            <button
-              onClick={() => openProductModal()}
-              className="px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 hover:scale-[1.02]"
-            >
-              <Plus className="w-4 h-4" /> Add New Article
-            </button>
-          </div>
-        </div>
-
-        {/* Supabase Cloud Database Sync Status Widget */}
-        <div className={`p-5 sm:p-6 rounded-3xl border transition-all ${
-          dbHealth?.productsTableExists && dbHealth?.ordersTableExists
-            ? 'bg-gradient-to-r from-[#18181B] via-[#27272A] to-[#18181B] text-white border-[#C7A76C]/40 shadow-xl'
-            : 'bg-amber-50/80 border-amber-300 text-amber-950 shadow-sm'
-        }`}>
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                dbHealth?.productsTableExists && dbHealth?.ordersTableExists
-                  ? 'bg-[#C7A76C]/20 border border-[#C7A76C] text-[#C7A76C]'
-                  : 'bg-amber-200/80 text-amber-800 border border-amber-400'
-              }`}>
-                <Database className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-md font-mono bg-white/10 border border-current">
-                    SUPABASE POSTGRESQL CLOUD
-                  </span>
-                  {dbHealth?.productsTableExists && dbHealth?.ordersTableExists ? (
-                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> LIVE CONNECTED
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-black text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> SCHEMA SETUP NEEDED
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs font-medium opacity-90">
-                  {dbHealth?.productsTableExists && dbHealth?.ordersTableExists
-                    ? `Live Supabase Database active. Total ${dbHealth.productsCount} products & ${dbHealth.ordersCount} orders synced in PostgreSQL.`
-                    : 'Supabase URL connected. Tables `products` and `orders` need to be created in Supabase SQL Editor.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
-              {(!dbHealth?.productsTableExists || !dbHealth?.ordersTableExists) && (
-                <button
-                  type="button"
-                  onClick={() => setShowSqlModal(true)}
-                  className="px-4 py-2 bg-amber-200 hover:bg-amber-300 text-amber-950 text-xs font-black rounded-xl border border-amber-400 flex items-center gap-1.5 transition-all shadow-xs"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>View SQL Script</span>
-                </button>
-              )}
-
+            {activeTab === 'products' && (
               <button
-                type="button"
-                onClick={handleExportBackup}
-                className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 flex items-center gap-1.5 transition-all shadow-xs"
-                title="Download JSON backup of all products and orders"
+                onClick={() => openProductModal()}
+                className="px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 hover:scale-[1.02]"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export Backup</span>
+                <Plus className="w-4 h-4" /> Add New Article
               </button>
-
-              <button
-                type="button"
-                onClick={handleSeedProducts}
-                disabled={isSeedingDb}
-                className={`px-5 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all shadow-md ${
-                  isSeedingDb
-                    ? 'bg-stone-700 text-stone-300 cursor-not-allowed'
-                    : dbHealth?.productsTableExists
-                    ? 'bg-[#C7A76C] hover:bg-[#b5955b] text-[#18181B]'
-                    : 'bg-[#881337] hover:bg-[#6b0f2b] text-white'
-                }`}
-              >
-                {isSeedingDb ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#C7A76C]" />
-                    <span>{seedProgressText || 'Syncing to Supabase...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    <span>⚡ Sync 191+ Catalog to Supabase</span>
-                  </>
-                )}
-              </button>
-            </div>
+            )}
           </div>
         </div>
 
@@ -810,7 +780,18 @@ export default function AdminDashboardPage() {
           <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
             <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>TOTAL ORDERS</span>
-              <Layers className="w-4 h-4 text-[#881337]" />
+              <div className="flex items-center gap-2">
+                {orders.length > 0 && (
+                  <button 
+                    onClick={() => promptDeleteAllOrders()}
+                    className="text-[9px] font-black uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
+                    title="Clear all orders & reset revenue"
+                  >
+                    <Trash2 className="w-2.5 h-2.5" /> Clear All
+                  </button>
+                )}
+                <Layers className="w-4 h-4 text-[#881337]" />
+              </div>
             </div>
             <div className="text-2xl font-serif font-black text-[#18181B]">{orders.length}</div>
             <div className="text-[11px] text-stone-500 font-medium">{pendingOrdersCount} pending dispatch</div>
@@ -819,7 +800,18 @@ export default function AdminDashboardPage() {
           <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
             <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>GROSS SALES (PKR)</span>
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <div className="flex items-center gap-2">
+                {orders.length > 0 && (
+                  <button 
+                    onClick={() => promptDeleteAllOrders()}
+                    className="text-[9px] font-black uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
+                    title="Reset revenue history"
+                  >
+                    <Trash2 className="w-2.5 h-2.5" /> Reset
+                  </button>
+                )}
+                <DollarSign className="w-4 h-4 text-emerald-600" />
+              </div>
             </div>
             <div className="text-2xl font-serif font-black text-emerald-700">
               RS. {totalRevenue.toLocaleString()}
@@ -1557,11 +1549,21 @@ export default function AdminDashboardPage() {
                   CONFIRM PERMANENT REMOVAL
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B] mt-0.5">
-                  {deleteConfirmTarget.type === 'product' ? 'Remove Article?' : 'Delete Order Record?'}
+                  {deleteConfirmTarget.type === 'all_products' 
+                    ? 'Delete All Products?' 
+                    : deleteConfirmTarget.type === 'all_orders'
+                    ? 'Clear All Orders?'
+                    : deleteConfirmTarget.type === 'product' 
+                    ? 'Remove Article?' 
+                    : 'Delete Order Record?'}
                 </h3>
               </div>
               <p className="text-xs text-stone-500 max-w-xs mx-auto">
-                {deleteConfirmTarget.type === 'product'
+                {deleteConfirmTarget.type === 'all_products'
+                  ? 'Are you sure you want to permanently delete ALL products in your catalog? This action cannot be reversed.'
+                  : deleteConfirmTarget.type === 'all_orders'
+                  ? 'Are you sure you want to permanently erase ALL orders and sales history? Gross sales will reset to RS. 0.'
+                  : deleteConfirmTarget.type === 'product'
                   ? 'Are you sure you want to remove this article from the store? This action cannot be reversed.'
                   : 'Are you sure you want to permanently delete this customer order record from database?'}
               </p>
@@ -1584,7 +1586,13 @@ export default function AdminDashboardPage() {
               )}
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] font-black uppercase text-rose-700 tracking-wider">
-                  {deleteConfirmTarget.type === 'product' ? 'CATALOG ARTICLE' : 'STORE ORDER'}
+                  {deleteConfirmTarget.type === 'all_products'
+                    ? 'BULK STORE CATALOG'
+                    : deleteConfirmTarget.type === 'all_orders'
+                    ? 'ALL ORDERS & SALES'
+                    : deleteConfirmTarget.type === 'product'
+                    ? 'CATALOG ARTICLE'
+                    : 'STORE ORDER'}
                 </div>
                 <div className="font-extrabold text-[#18181B] text-sm truncate">
                   {deleteConfirmTarget.title}
@@ -1601,7 +1609,11 @@ export default function AdminDashboardPage() {
             <div className="p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl flex items-start gap-2 text-[11px] text-amber-900 leading-snug">
               <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <span>
-                {deleteConfirmTarget.type === 'product'
+                {deleteConfirmTarget.type === 'all_products'
+                  ? 'All products will be instantly removed from your online store, Supabase database, and local cache.'
+                  : deleteConfirmTarget.type === 'all_orders'
+                  ? 'All order transactions and revenue statistics will be permanently reset to zero.'
+                  : deleteConfirmTarget.type === 'product'
                   ? 'This item will be instantly removed from your active online store & collections.'
                   : 'All order information, customer delivery address, and payment records will be erased.'}
               </span>

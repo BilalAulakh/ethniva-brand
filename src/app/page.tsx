@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
-  ArrowRight, Star, ShieldCheck, Truck, Mail, Send, Gem, 
-  RotateCcw, Headphones, Play, Camera, Heart, ChevronRight, ChevronLeft, ArrowDown, Sparkles 
+  ArrowRight, Star, ShieldCheck, Truck, Gem, 
+  RotateCcw, Headphones, Play, Camera, ChevronRight, ChevronLeft, Sparkles, Plus, Package 
 } from 'lucide-react';
 import { getProducts, getCategories, Product, Category } from '@/lib/supabase';
 import { ProductCard } from '@/components/ProductCard';
@@ -16,84 +16,9 @@ export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-
-  // Hero Slider State & Real ReetWear Articles
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
-  const HERO_SLIDES = [
-    {
-      tag: 'BRIDAL & FORMALS EDIT ’26',
-      line1: 'Gulnaar Royal',
-      line2: 'Heritage.',
-      desc: 'Exquisite handcrafted bridal lehenga on pure silk with handpainted dupatta and elaborate zardozi beadwork.',
-      image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/GULNAAR.png?v=1784821889',
-      btnPrimary: 'DISCOVER GULNAAR',
-      btnSecondary: 'VIEW ALL FORMALS',
-      linkPrimary: '/product/gulnaar',
-      linkSecondary: '/shop'
-    },
-    {
-      tag: 'SILK & ADDA WORK EDIT ’26',
-      line1: 'Shahee Blue',
-      line2: 'Couture.',
-      desc: 'Exquisite beaded handmade adda work meticulously crafted on pure silk with matching sharara and dupatta.',
-      image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SHAHEE_BLUE.png?v=1784821880',
-      btnPrimary: 'VIEW SHAHEE BLUE',
-      btnSecondary: 'SHOP CATALOG',
-      linkPrimary: '/product/shahee_blue',
-      linkSecondary: '/shop'
-    },
-    {
-      tag: 'MAXY FORMALS COLLECTION',
-      line1: 'Nora Handbeaded',
-      line2: 'Elegance.',
-      desc: 'Stunning maxy crafted from premium fabric with intricate pure handbeaded work, paired with trousers and dupatta.',
-      image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/NORA.png?v=1784821888',
-      btnPrimary: 'SHOP NORA MAXY',
-      btnSecondary: 'VIEW ALL DESIGNS',
-      linkPrimary: '/product/nora',
-      linkSecondary: '/shop'
-    },
-    {
-      tag: 'CHERMOUSE LUXURY PRET',
-      line1: 'Pale Purple',
-      line2: 'Sophistication.',
-      desc: 'Crafted from pure chermouse silk ensuring softness and breathability with delicate handmade adda work.',
-      image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/PALE_PURPLE.png?v=1784821844',
-      btnPrimary: 'VIEW PALE PURPLE',
-      btnSecondary: 'EXPLORE PRET',
-      linkPrimary: '/product/pale_purple',
-      linkSecondary: '/shop'
-    },
-    {
-      tag: 'SIGNATURE GHERA CUT',
-      line1: 'Black Bling',
-      line2: 'Glamour.',
-      desc: 'Masterpiece on pure silk with intricate beaded adda work and signature flared ghera design.',
-      image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/BLACK_BLING.png?v=1784821888',
-      btnPrimary: 'ORDER BLACK BLING',
-      btnSecondary: 'SHOP NOW',
-      linkPrimary: '/product/black_bling',
-      linkSecondary: '/shop'
-    }
-  ];
 
-  // Auto-play Hero Slider every 5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveHeroSlide(prev => (prev + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [HERO_SLIDES.length]);
-
-  const handleNextHeroSlide = () => {
-    setActiveHeroSlide(prev => (prev + 1) % HERO_SLIDES.length);
-  };
-
-  const handlePrevHeroSlide = () => {
-    setActiveHeroSlide(prev => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
-  };
-
-  // Slider Refs & Scroll Progress
+  // Slider Refs
   const newArrivalsRef = useRef<HTMLDivElement>(null);
   const collectionsRef = useRef<HTMLDivElement>(null);
   const lookbookRef = useRef<HTMLDivElement>(null);
@@ -119,6 +44,29 @@ export default function HomePage() {
 
   const featuredProducts = products.filter(p => p.is_featured);
   const newArrivals = products.filter(p => p.is_new);
+  
+  // Real dynamic hero slides from actual products
+  const productsWithImages = products.filter(p => p.images && p.images.length > 0 && p.images[0]);
+  const heroProducts = productsWithImages.slice(0, 5);
+
+  // Auto-play Hero Slider when multiple products exist
+  useEffect(() => {
+    if (heroProducts.length <= 1) return;
+    const timer = setInterval(() => {
+      setActiveHeroSlide(prev => (prev + 1) % heroProducts.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroProducts.length]);
+
+  const handleNextHeroSlide = () => {
+    if (heroProducts.length === 0) return;
+    setActiveHeroSlide(prev => (prev + 1) % heroProducts.length);
+  };
+
+  const handlePrevHeroSlide = () => {
+    if (heroProducts.length === 0) return;
+    setActiveHeroSlide(prev => (prev - 1 + heroProducts.length) % heroProducts.length);
+  };
 
   const scrollSlider = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -127,138 +75,139 @@ export default function HomePage() {
     }
   };
 
-  // Real ReetWear Featured Collections Cards
-  const FEATURED_COLLECTIONS = [
-    { title: 'GULNAAR BRIDAL', subtitle: 'Handcrafted Silk & Lehengas', tag: 'COUTURE', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/GULNAAR.png?v=1784821889', link: '/product/gulnaar' },
-    { title: 'SHAHEE BLUE', subtitle: 'Beaded Adda Work on Silk', tag: 'SIGNATURE', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SHAHEE_BLUE.png?v=1784821880', link: '/product/shahee_blue' },
-    { title: 'NORA MAXY', subtitle: 'Handbeaded Pure Flared Maxy', tag: 'TRENDING', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/NORA.png?v=1784821888', link: '/product/nora' },
-    { title: 'BLACK BLING', subtitle: 'Ghera Cut & Pure Silk', tag: 'HIT ARTICLE', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/BLACK_BLING.png?v=1784821888', link: '/product/black_bling' },
-    { title: 'MAROON BLING', subtitle: 'Traditional Beaded Adda Work', tag: 'EID EDIT', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/MAROON_BLING.png?v=1784821880', link: '/product/maroon_bling' },
-    { title: 'PALE PURPLE', subtitle: 'Chermouse Soft Pret', tag: 'NEW LUXURY', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/PALE_PURPLE.png?v=1784821844', link: '/product/pale_purple' }
-  ];
-
-  // Lookbook Vertical Banner Shots from Real ReetWear Products
-  const LOOKBOOK_IMAGES = [
-    { title: 'Gulnaar Zardozi Mastery', issue: 'VOL. 01', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/Gulnaar4_9df8d1b4-7d63-4530-964e-c69d9bd0b9dd.png?v=1776338211' },
-    { title: 'Shahee Blue Silk Sheen', issue: 'VOL. 02', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SnapInsta.to_670598575_18314950543262080_1399575883604697496_n.jpg?v=1776430894' },
-    { title: 'Naaz Handcrafted Elegance', issue: 'VOL. 03', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SnapInsta.to_670166048_18263444161292282_9000666055044581959_n.jpg?v=1776338635' },
-    { title: 'Maroon Bling Detail', issue: 'VOL. 04', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SnapInsta.to_540101160_18072702941474776_5260783250879771553_n.jpg?v=1776101327' },
-    { title: 'Nora Pure Beaded Maxy', issue: 'VOL. 05', image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SnapInsta.to_671136028_18314947678262080_3262451630465070838_n.jpg?v=1776430626' }
-  ];
-
-  const currentSlide = HERO_SLIDES[activeHeroSlide];
+  const currentHeroProduct = heroProducts[activeHeroSlide] || null;
 
   return (
     <div className="space-y-16 sm:space-y-24 md:space-y-32 pb-16 bg-[#FAF9F6] text-[#18181B] font-sans selection:bg-[#C7A76C] selection:text-white">
       
-      {/* 1. HERO SLIDER SECTION (Crystal Clear Luxury Showcase with Responsive Contrast Backdrop) */}
-      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end sm:items-center justify-start overflow-hidden bg-[#FAF9F6]">
-        
-        {/* Crystal Clear Photography */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            key={activeHeroSlide}
-            src={currentSlide.image}
-            alt={currentSlide.line1}
-            fill
-            priority
-            className="object-cover object-center sm:object-[75%_center] lg:object-[82%_25%] transition-all duration-700 animate-fade-in"
-          />
-          {/* Responsive Gradient Overlay (Stronger on Mobile for Maximum Text Legibility) */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/85 to-transparent sm:bg-gradient-to-r sm:from-[#FAF9F6]/95 sm:via-[#FAF9F6]/40 sm:to-transparent z-10 pointer-events-none" />
-        </div>
-
-        {/* Hero Slider Control Arrows (< & >) */}
-        <button 
-          onClick={handlePrevHeroSlide}
-          className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/90 hover:bg-[#881337] text-stone-800 hover:text-white border border-stone-200/80 items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-105"
-          title="Previous Slide"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <button 
-          onClick={handleNextHeroSlide}
-          className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/90 hover:bg-[#881337] text-stone-800 hover:text-white border border-stone-200/80 items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-105"
-          title="Next Slide"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-
-        {/* Hero Content */}
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-12 lg:px-20 w-full pt-16 pb-10 sm:py-24">
-          <div className="max-w-xl space-y-4 sm:space-y-6 text-left animate-fade-in">
-            
-            {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-[#C7A76C]/60 bg-white/90 backdrop-blur-sm text-[9px] sm:text-[10px] font-black text-[#881337] uppercase tracking-[0.25em] sm:tracking-[0.3em] shadow-xs">
-              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#C7A76C]" />
-              <span>{currentSlide.tag}</span>
+      {/* 1. HERO SECTION */}
+      <section className="relative min-h-[75vh] sm:min-h-[85vh] flex items-end sm:items-center justify-start overflow-hidden bg-[#FAF9F6]">
+        {currentHeroProduct && currentHeroProduct.images?.[0] ? (
+          <>
+            <div className="absolute inset-0 z-0">
+              <Image
+                key={currentHeroProduct.id}
+                src={currentHeroProduct.images[0]}
+                alt={currentHeroProduct.title}
+                fill
+                priority
+                className="object-cover object-center sm:object-[75%_center] lg:object-[82%_25%] transition-all duration-700 animate-fade-in"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/85 to-transparent sm:bg-gradient-to-r sm:from-[#FAF9F6]/95 sm:via-[#FAF9F6]/45 sm:to-transparent z-10 pointer-events-none" />
             </div>
 
-            {/* Main Headline */}
-            <div className="space-y-0.5 sm:space-y-1">
-              <h1 className="text-3xl sm:text-6xl lg:text-7xl font-serif font-normal text-[#18181B] tracking-tight leading-[1.1] drop-shadow-xs">
-                {currentSlide.line1}
-              </h1>
-              <h2 className="text-3xl sm:text-6xl lg:text-7xl font-serif italic font-extrabold text-[#881337] tracking-tight drop-shadow-xs">
-                {currentSlide.line2}
-              </h2>
+            {heroProducts.length > 1 && (
+              <>
+                <button 
+                  onClick={handlePrevHeroSlide}
+                  className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/90 hover:bg-[#881337] text-stone-800 hover:text-white border border-stone-200/80 items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-105"
+                  title="Previous Slide"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={handleNextHeroSlide}
+                  className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/90 hover:bg-[#881337] text-stone-800 hover:text-white border border-stone-200/80 items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-105"
+                  title="Next Slide"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+
+            <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-12 lg:px-20 w-full pt-16 pb-10 sm:py-24">
+              <div className="max-w-xl space-y-4 sm:space-y-6 text-left animate-fade-in">
+                <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-[#C7A76C]/60 bg-white/90 backdrop-blur-sm text-[9px] sm:text-[10px] font-black text-[#881337] uppercase tracking-[0.25em] sm:tracking-[0.3em] shadow-xs">
+                  <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#C7A76C]" />
+                  <span>{currentHeroProduct.category || 'FEATURED COUTURE'}</span>
+                </div>
+
+                <div className="space-y-0.5 sm:space-y-1">
+                  <h1 className="text-3xl sm:text-6xl font-serif font-bold text-[#18181B] tracking-tight leading-[1.1]">
+                    {currentHeroProduct.title}
+                  </h1>
+                  <div className="text-2xl sm:text-3xl font-serif italic font-extrabold text-[#881337]">
+                    RS. {currentHeroProduct.price.toLocaleString()}
+                  </div>
+                </div>
+
+                <p className="text-xs sm:text-base text-stone-800 font-semibold sm:font-medium max-w-md leading-relaxed line-clamp-3">
+                  {currentHeroProduct.description || `${currentHeroProduct.fabric} - Handcrafted luxury design.`}
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
+                  <Link
+                    href={`/product/${currentHeroProduct.slug || currentHeroProduct.id}`}
+                    className="btn-luxury-gold px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-xs shadow-lg tracking-widest uppercase font-black text-center"
+                  >
+                    VIEW ARTICLE
+                  </Link>
+                  <Link
+                    href="/shop"
+                    className="btn-luxury-outline px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-xs tracking-widest shadow-xs uppercase font-black bg-white/90 hover:bg-[#881337] hover:text-white text-center"
+                  >
+                    SHOP CATALOG
+                  </Link>
+                </div>
+
+                {heroProducts.length > 1 && (
+                  <div className="flex items-center gap-2 pt-2 sm:pt-3">
+                    {heroProducts.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveHeroSlide(idx)}
+                        className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 ${
+                          activeHeroSlide === idx ? 'w-8 sm:w-10 bg-[#881337]' : 'w-2 sm:w-2.5 bg-stone-400/60 hover:bg-[#881337]'
+                        }`}
+                        title={`Slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
+          </>
+        ) : (
+          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-12 lg:px-20 w-full py-20 sm:py-32 text-center sm:text-left">
+            <div className="max-w-2xl space-y-6 animate-fade-in">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C7A76C]/60 bg-white/90 backdrop-blur-sm text-[10px] font-black text-[#881337] uppercase tracking-[0.3em] shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
+                <span>ZEHRA STUDIO &bull; OFFICIAL ATELIER</span>
+              </div>
 
-            {/* Description */}
-            <p className="text-xs sm:text-base text-stone-800 font-semibold sm:font-medium max-w-md leading-relaxed tracking-wide">
-              {currentSlide.desc}
-            </p>
+              <div className="space-y-2">
+                <h1 className="text-4xl sm:text-7xl font-serif font-bold text-[#18181B] tracking-tight leading-[1.1]">
+                  Luxury Pret &amp;
+                </h1>
+                <h2 className="text-4xl sm:text-7xl font-serif italic font-extrabold text-[#881337] tracking-tight">
+                  Bespoke Couture.
+                </h2>
+              </div>
 
-            {/* Action Buttons (Full width on mobile, inline on desktop) */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
-              <Link
-                href={currentSlide.linkPrimary}
-                className="btn-luxury-gold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs shadow-lg tracking-widest uppercase font-black text-center"
-              >
-                {currentSlide.btnPrimary}
-              </Link>
-              <Link
-                href={currentSlide.linkSecondary}
-                className="btn-luxury-outline px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs tracking-widest shadow-xs uppercase font-black bg-white/90 hover:bg-[#881337] hover:text-white text-center"
-              >
-                {currentSlide.btnSecondary}
-              </Link>
-            </div>
+              <p className="text-xs sm:text-base text-stone-600 font-medium max-w-lg leading-relaxed">
+                Handcrafted pure fabrics, micro velvet formals, and delicate handmade adda work with custom tailoring &amp; express nationwide delivery.
+              </p>
 
-            {/* Slider Dots */}
-            <div className="flex items-center gap-2 pt-2 sm:pt-3">
-              {HERO_SLIDES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveHeroSlide(idx)}
-                  className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 ${
-                    activeHeroSlide === idx ? 'w-8 sm:w-10 bg-[#881337]' : 'w-2 sm:w-2.5 bg-stone-400/60 hover:bg-[#881337]'
-                  }`}
-                  title={`Slide ${idx + 1}`}
-                />
-              ))}
+              <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2">
+                <Link
+                  href="/shop"
+                  className="btn-luxury-gold w-full sm:w-auto px-8 py-4 rounded-full text-xs shadow-lg tracking-widest uppercase font-black text-center"
+                >
+                  EXPLORE SHOP
+                </Link>
+                <Link
+                  href="/admin"
+                  className="w-full sm:w-auto px-8 py-4 rounded-full text-xs tracking-widest uppercase font-black bg-white border border-stone-300 hover:border-[#881337] text-stone-800 text-center shadow-xs flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4 text-[#881337]" /> ADD ARTICLES IN ADMIN
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Floating Social Proof Badge (Bottom Right) */}
-        <div className="absolute bottom-8 right-6 lg:right-12 z-20 hidden md:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200/80 shadow-lg text-xs text-stone-900">
-          <div className="flex -space-x-2">
-            <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="User 1" />
-            <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="User 2" />
-            <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100" alt="User 3" />
-          </div>
-          <div>
-            <div className="font-extrabold flex items-center gap-1">
-              <span>4.9 / 5.0</span>
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            </div>
-            <div className="text-[10px] text-stone-500 font-medium">Trusted by 10,000+ Couture Enthusiasts</div>
-          </div>
-        </div>
+        )}
       </section>
 
-      {/* 2. SECTION 1: LUXURY BENEFITS STRIP */}
+      {/* 2. LUXURY BENEFITS STRIP */}
       <section className="bg-white border-y border-stone-200 py-6 sm:py-8 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6 text-left">
@@ -301,7 +250,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. ULTRA-AESTHETIC FEATURED COLLECTIONS SLIDER */}
+      {/* 3. FEATURED COUTURE COLLECTIONS SLIDER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-stone-200 pb-5 gap-4">
           <div className="space-y-1">
@@ -339,46 +288,60 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div 
-          ref={collectionsRef}
-          className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {FEATURED_COLLECTIONS.map((col, idx) => (
-            <Link 
-              key={idx} 
-              href={col.link} 
-              className="flex-none w-[280px] sm:w-[320px] snap-start group relative aspect-[3/4] rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-stone-200 bg-white"
-            >
-              <Image 
-                src={col.image} 
-                alt={col.title} 
-                fill 
-                className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
-              
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-white/95 backdrop-blur-md border border-[#C7A76C]/60 text-[#881337] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
-                  {col.tag}
-                </span>
-              </div>
+        {categories.filter(cat => cat.item_count > 0 && cat.image).length > 0 ? (
+          <div 
+            ref={collectionsRef}
+            className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {categories.filter(cat => cat.item_count > 0 && cat.image).map((cat, idx) => (
+              <Link 
+                key={idx} 
+                href={`/shop?category=${cat.slug}`} 
+                className="flex-none w-[280px] sm:w-[320px] snap-start group relative aspect-[3/4] rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-stone-200 bg-white"
+              >
+                <Image 
+                  src={cat.image} 
+                  alt={cat.name} 
+                  fill 
+                  className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
+                
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="bg-white/95 backdrop-blur-md border border-[#C7A76C]/60 text-[#881337] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                    {cat.item_count} {cat.item_count === 1 ? 'DESIGN' : 'DESIGNS'}
+                  </span>
+                </div>
 
-              <div className="absolute bottom-6 left-6 right-6 text-white flex justify-between items-end z-10">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold tracking-wider uppercase leading-snug">{col.title}</h3>
-                  <p className="text-[11px] text-stone-200 font-light">{col.subtitle}</p>
+                <div className="absolute bottom-6 left-6 right-6 text-white flex justify-between items-end z-10">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-extrabold tracking-wider uppercase leading-snug">{cat.name}</h3>
+                    <p className="text-[11px] text-stone-200 font-light">Explore Luxury Edit</p>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-md group-hover:bg-[#C7A76C] text-white group-hover:text-black flex items-center justify-center transition-all shadow-md group-hover:scale-110">
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-md group-hover:bg-[#C7A76C] text-white group-hover:text-black flex items-center justify-center transition-all shadow-md group-hover:scale-110">
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-white rounded-3xl border border-stone-200 p-6 space-y-3">
+            <p className="text-xs text-stone-500">
+              Couture collections will dynamically display here with your real product photography once you add articles to categories in Admin.
+            </p>
+            <Link 
+              href="/admin" 
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#881337] hover:underline"
+            >
+              <Plus className="w-3.5 h-3.5" /> Add Articles in Admin Portal
             </Link>
-          ))}
-        </div>
+          </div>
+        )}
       </section>
 
-      {/* 4. ULTRA-AESTHETIC NEW ARRIVALS COUTURE SLIDER */}
+      {/* 4. NEW ARRIVALS SLIDER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-stone-200 pb-5 gap-4">
           <div className="space-y-1">
@@ -410,36 +373,52 @@ export default function HomePage() {
               </button>
             </div>
 
-            <Link href="/shop?sort=newest" className="text-xs font-black text-[#881337] hover:text-[#C7A76C] uppercase tracking-widest hidden lg:block transition-colors">
+            <Link href="/shop" className="text-xs font-black text-[#881337] hover:text-[#C7A76C] uppercase tracking-widest hidden lg:block transition-colors">
               VIEW CATALOG &rarr;
             </Link>
           </div>
         </div>
 
-        <div 
-          ref={newArrivalsRef}
-          className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {loading ? (
-            <div className="flex gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex-none w-[270px] sm:w-[300px]">
-                  <ProductCardSkeleton count={1} />
-                </div>
-              ))}
+        {loading ? (
+          <div className="flex gap-6 overflow-x-auto pb-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex-none w-[270px] sm:w-[300px]">
+                <ProductCardSkeleton count={1} />
+              </div>
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-stone-200 p-8 space-y-4 shadow-xs">
+            <Package className="w-12 h-12 text-[#C7A76C] mx-auto" />
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-[#18181B]">Store Catalog is Ready</h3>
+              <p className="text-xs text-stone-500 max-w-sm mx-auto">
+                No articles have been added to the store yet. Add your original products from the admin portal to showcase them here.
+              </p>
             </div>
-          ) : (
-            (newArrivals.length > 0 ? newArrivals : products).map(product => (
+            <Link 
+              href="/admin" 
+              className="inline-flex items-center gap-2 brand-btn-primary text-white text-xs font-bold px-6 py-3 rounded-full shadow-md hover:scale-105 transition-all"
+            >
+              <Plus className="w-4 h-4" /> Add Your Real Articles
+            </Link>
+          </div>
+        ) : (
+          <div 
+            ref={newArrivalsRef}
+            className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {(newArrivals.length > 0 ? newArrivals : products).map(product => (
               <div key={product.id} className="flex-none w-[270px] sm:w-[300px] snap-start">
                 <ProductCard product={product} />
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* 5. SECTION 4: ASYMMETRICAL LAYERED IMAGE COLLAGE */}
+      {/* 5. ANATOMY OF LUXURY / FEATURED ARTICLES COLLAGE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-2 mb-16">
           <span className="text-[10px] font-black text-[#C7A76C] uppercase tracking-[0.3em]">CRAFT &amp; HERITAGE</span>
@@ -447,48 +426,41 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          <Link href="/product/shahee_blue" className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg group border border-stone-200 bg-white block">
-            <Image src="https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SHAHEE_BLUE.png?v=1784821880" alt="Shahee Blue" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 text-white space-y-1">
-              <div className="text-xs font-extrabold uppercase tracking-wider">01. Shahee Blue Silk</div>
-              <div className="text-[11px] text-stone-200">Handmade Beaded Adda Work</div>
+          {products.slice(0, 3).map((prod, idx) => (
+            <Link 
+              key={prod.id} 
+              href={`/product/${prod.slug || prod.id}`} 
+              className={`relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg group border border-stone-200 bg-white block ${
+                idx === 1 ? 'md:-translate-y-8 border-2 border-[#C7A76C] shadow-2xl' : ''
+              }`}
+            >
+              {prod.images?.[0] ? (
+                <Image src={prod.images[0]} alt={prod.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              ) : (
+                <div className="w-full h-full bg-stone-900" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent" />
+              {idx === 1 && (
+                <div className="absolute top-4 right-4 bg-[#881337] text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase shadow-md">
+                  SIGNATURE
+                </div>
+              )}
+              <div className="absolute bottom-6 left-6 text-white space-y-1">
+                <div className="text-xs font-extrabold uppercase tracking-wider">0{idx + 1}. {prod.title}</div>
+                <div className="text-[11px] text-stone-200">{prod.fabric || prod.category}</div>
+              </div>
+            </Link>
+          ))}
+          {products.length === 0 && (
+            <div className="col-span-3 text-center py-12 bg-white rounded-3xl border border-stone-200 p-6 text-xs text-stone-500">
+              Featured collage will display your top 3 articles once added in the Admin Portal.
             </div>
-          </Link>
-
-          <Link href="/product/gulnaar" className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl group border-2 border-[#C7A76C] md:-translate-y-8 bg-white block">
-            <Image src="https://cdn.shopify.com/s/files/1/0637/4391/8237/files/GULNAAR.png?v=1784821889" alt="Gulnaar Bridal" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent" />
-            <div className="absolute top-4 right-4 bg-[#881337] text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase shadow-md">HOT EDIT</div>
-            <div className="absolute bottom-6 left-6 text-white space-y-1">
-              <div className="text-xs font-extrabold uppercase tracking-wider">02. Gulnaar Bridal Lehenga</div>
-              <div className="text-[11px] text-stone-200">Pure Silk &amp; Handpainted Dupatta</div>
-            </div>
-          </Link>
-
-          <Link href="/product/maroon_bling" className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg group border border-stone-200 bg-white block">
-            <Image src="https://cdn.shopify.com/s/files/1/0637/4391/8237/files/MAROON_BLING.png?v=1784821880" alt="Maroon Bling" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 text-white space-y-1">
-              <div className="text-xs font-extrabold uppercase tracking-wider">03. Maroon Bling Sharara</div>
-              <div className="text-[11px] text-stone-200">Signature Flared Ghera Cut</div>
-            </div>
-          </Link>
+          )}
         </div>
       </section>
 
       {/* 6. CINEMATIC CAMPAIGN VIDEO BANNER */}
-      <section className="relative min-h-[480px] sm:min-h-[520px] flex items-center justify-center overflow-hidden rounded-3xl max-w-7xl mx-auto border border-stone-200 shadow-2xl">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://cdn.shopify.com/s/files/1/0637/4391/8237/files/PALE_PURPLE.png?v=1784821844"
-            alt="ReetWear Luxury Campaign"
-            fill
-            className="object-cover object-[50%_25%] filter brightness-90 contrast-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-stone-950/75 via-stone-950/60 to-stone-950/75" />
-        </div>
-
+      <section className="relative min-h-[440px] sm:min-h-[480px] flex items-center justify-center overflow-hidden rounded-3xl max-w-7xl mx-auto border border-stone-200 shadow-2xl bg-gradient-to-r from-stone-900 via-stone-950 to-stone-900">
         <div className="relative z-10 text-center space-y-6 max-w-2xl px-4 animate-fade-in">
           <button 
             onClick={() => setVideoModalOpen(true)}
@@ -502,7 +474,7 @@ export default function HomePage() {
             <span className="text-[10px] font-black text-amber-200 uppercase tracking-[0.4em]">CAMPAIGN FILM ’26</span>
             <h2 className="text-3xl sm:text-5xl font-serif italic font-bold text-white">The Art of Handcrafting</h2>
             <p className="text-xs text-stone-200 max-w-md mx-auto leading-relaxed font-light">
-              Watch our master artisans bring Zardozi embroidery to life in our Lahore atelier.
+              Watch our master artisans bring traditional embroidery and bespoke couture to life.
             </p>
           </div>
         </div>
@@ -528,7 +500,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 7. ULTRA-AESTHETIC LOOKBOOK JOURNAL SLIDER & CUSTOMER STORY */}
+      {/* 7. LOOKBOOK SPREAD & CUSTOMER STORY */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-stone-200 pb-5 gap-4">
           <div className="space-y-1">
@@ -560,35 +532,46 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div 
-          ref={lookbookRef}
-          className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {LOOKBOOK_IMAGES.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="flex-none w-[240px] sm:w-[280px] snap-start relative aspect-[3/5] rounded-3xl overflow-hidden group shadow-md hover:shadow-2xl border border-stone-200 bg-white"
-            >
-              <Image src={item.image} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
-              
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-white/95 backdrop-blur-md border border-[#C7A76C]/50 text-[#881337] text-[9px] font-black px-3 py-1 rounded-full uppercase shadow-xs">
-                  {item.issue}
-                </span>
-              </div>
+        {products.length > 0 ? (
+          <div 
+            ref={lookbookRef}
+            className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {products.slice(0, 5).map((item, idx) => (
+              <Link 
+                key={idx} 
+                href={`/product/${item.slug || item.id}`}
+                className="flex-none w-[240px] sm:w-[280px] snap-start relative aspect-[3/5] rounded-3xl overflow-hidden group shadow-md hover:shadow-2xl border border-stone-200 bg-white block"
+              >
+                {item.images?.[0] ? (
+                  <Image src={item.images[0]} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                ) : (
+                  <div className="w-full h-full bg-stone-900" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
+                
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="bg-white/95 backdrop-blur-md border border-[#C7A76C]/50 text-[#881337] text-[9px] font-black px-3 py-1 rounded-full uppercase shadow-xs">
+                    VOL. 0{idx + 1}
+                  </span>
+                </div>
 
-              <div className="absolute bottom-5 left-5 right-5 text-white z-10">
-                <h4 className="text-sm font-serif italic font-bold leading-tight">{item.title}</h4>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className="absolute bottom-5 left-5 right-5 text-white z-10">
+                  <h4 className="text-sm font-serif italic font-bold leading-tight">{item.title}</h4>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10 bg-white rounded-3xl border border-stone-200 text-xs text-stone-500">
+            Lookbook editorial cards will showcase your latest uploaded photos.
+          </div>
+        )}
 
-        {/* Customer Story Banner (Warm Ivory & Champagne Luxury Card) */}
+        {/* Customer Story Banner */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-gradient-to-br from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] text-stone-900 rounded-3xl p-8 sm:p-12 border border-[#E8DFC8] shadow-xl">
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-12 space-y-6">
             <div className="w-10 h-10 rounded-full bg-[#881337] text-white flex items-center justify-center font-bold text-lg shadow-sm">
               &ldquo;
             </div>
@@ -599,21 +582,16 @@ export default function HomePage() {
               </h3>
             </div>
             <div className="flex items-center gap-3 pt-4 border-t border-[#E8DFC8]">
-              <img className="w-11 h-11 rounded-full object-cover border-2 border-[#C7A76C]" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Fatima Tariq" />
               <div>
                 <div className="text-xs font-black uppercase tracking-wider text-[#18181B]">FATIMA TARIQ</div>
-                <div className="text-[10px] text-stone-500 font-semibold">Lahore, Pakistan &bull; Verified Bride</div>
+                <div className="text-[10px] text-stone-500 font-semibold">Lahore, Pakistan &bull; Verified Client</div>
               </div>
             </div>
-          </div>
-
-          <div className="lg:col-span-7 relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#E8DFC8] shadow-md">
-            <Image src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1000" alt="Lookbook Story" fill className="object-cover" />
           </div>
         </div>
       </section>
 
-      {/* 8. SECTION 7 & 8: INSTAGRAM GALLERY & VIP NEWSLETTER */}
+      {/* 8. INSTAGRAM JOURNAL & VIP NEWSLETTER */}
       <section className="bg-white text-stone-900 pt-16 pb-0 border-t border-stone-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
@@ -624,40 +602,41 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="relative aspect-square rounded-2xl overflow-hidden group border border-stone-200 shadow-sm">
-                <Image src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600" alt="Insta 1" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-[#881337]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"><Camera className="w-6 h-6" /></div>
-              </div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden group border border-stone-200 shadow-sm">
-                <Image src="https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=600" alt="Insta 2" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-[#881337]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"><Camera className="w-6 h-6" /></div>
-              </div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden group border border-stone-200 shadow-sm">
-                <Image src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600" alt="Insta 3" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-[#881337]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"><Camera className="w-6 h-6" /></div>
-              </div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden group border border-stone-200 shadow-sm">
-                <Image src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=600" alt="Insta 4" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-[#881337]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"><Camera className="w-6 h-6" /></div>
-              </div>
+              {products.slice(0, 4).map((p, i) => (
+                <Link key={i} href={`/product/${p.slug || p.id}`} className="relative aspect-square rounded-2xl overflow-hidden group border border-stone-200 shadow-sm block">
+                  {p.images?.[0] ? (
+                    <Image src={p.images[0]} alt={p.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full bg-stone-900" />
+                  )}
+                  <div className="absolute inset-0 bg-[#881337]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                    <Camera className="w-6 h-6" />
+                  </div>
+                </Link>
+              ))}
+              {products.length === 0 && (
+                <div className="col-span-2 md:col-span-4 text-center py-8 bg-[#FAF7F2] rounded-2xl border border-stone-200 text-xs text-stone-500">
+                  Instagram photo stream will display your articles here.
+                </div>
+              )}
             </div>
           </div>
 
-          {/* VIP Couture Club (Warm Champagne Ivory Luxury Box) */}
+          {/* VIP Couture Club */}
           <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] rounded-3xl p-8 sm:p-12 text-center space-y-6 border border-[#E8DFC8] shadow-lg">
             <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest">VIP COUTURE CLUB</span>
             <h3 className="text-2xl sm:text-3xl font-serif italic font-bold text-[#18181B]">Receive Private Collection Previews</h3>
             <p className="text-xs text-stone-600 max-w-md mx-auto">
-              Subscribe to get exclusive early access to Eid Festive edits and private trunk show invitations.
+              Subscribe to get exclusive early access to Eid Festive edits, bespoke designs, and private previews.
             </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => { e.preventDefault(); alert('Shukriya! Subscribed.'); }}>
+            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing to Zehra Studio!'); }}>
               <input
                 type="email"
                 required
                 placeholder="Enter your email address..."
                 className="flex-1 bg-white border border-stone-300 rounded-full px-5 py-3 text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-[#C7A76C] shadow-xs"
               />
-              <button type="submit" className="btn-luxury-gold text-xs px-8 py-3 rounded-full shadow-md">
+              <button type="submit" className="btn-luxury-gold text-xs px-8 py-3 rounded-full shadow-md font-bold">
                 JOIN VIP
               </button>
             </form>
@@ -669,4 +648,3 @@ export default function HomePage() {
     </div>
   );
 }
-

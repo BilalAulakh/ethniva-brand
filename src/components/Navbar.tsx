@@ -239,56 +239,18 @@ export const Navbar: React.FC = () => {
               </Link>
 
               {readyToWearDropdownOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[720px] bg-white rounded-2xl shadow-2xl border border-stone-200 p-6 grid grid-cols-3 gap-6 z-50 animate-slide-down">
-                  <div className="space-y-3 border-r border-stone-100 pr-4">
-                    <div className="text-[10px] font-black text-[#C7A76C] uppercase tracking-widest">CATEGORIES</div>
-                    <ul className="space-y-2 text-xs font-bold text-stone-700">
-                      <li><Link href="/shop" className="hover:text-[#881337]">Shirts</Link></li>
-                      <li><Link href="/shop" className="hover:text-[#881337]">Kurta Sets</Link></li>
-                      <li><Link href="/shop" className="hover:text-[#881337]">Co-ords</Link></li>
-                      <li><Link href="/shop" className="hover:text-[#881337]">Trousers</Link></li>
-                      <li><Link href="/shop" className="hover:text-[#881337]">Dupattas</Link></li>
-                      <li><Link href="/shop" className="hover:text-[#881337]">Jackets</Link></li>
-                      <li className="pt-1"><Link href="/shop" className="text-[#881337] underline">All Ready To Wear</Link></li>
-                    </ul>
+                <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 p-4 z-50 animate-slide-down">
+                  <div className="text-[10px] font-black text-[#C7A76C] uppercase tracking-widest pb-2 border-b border-stone-100 mb-2">
+                    COLLECTIONS &amp; STYLES
                   </div>
-
-                  <div className="space-y-3 border-r border-stone-100 pr-4">
-                    <div className="text-[10px] font-black text-[#C7A76C] uppercase tracking-widest">BEST SELLERS</div>
-                    <div className="space-y-3">
-                      <div className="flex gap-2.5 items-center">
-                        <div className="w-10 h-12 bg-stone-100 rounded-lg overflow-hidden relative">
-                          <Image src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200" alt="Item" fill className="object-cover" />
-                        </div>
-                        <div className="text-[11px]">
-                          <div className="font-bold text-[#18181B] line-clamp-1">Embroidered Chiffon Shirt</div>
-                          <div className="text-[#881337] font-extrabold">PKR 8,950</div>
-                        </div>
-                      </div>
-                      <div className="flex gap-2.5 items-center">
-                        <div className="w-10 h-12 bg-stone-100 rounded-lg overflow-hidden relative">
-                          <Image src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200" alt="Item" fill className="object-cover" />
-                        </div>
-                        <div className="text-[11px]">
-                          <div className="font-bold text-[#18181B] line-clamp-1">Luxury Lawn Co-ord Set</div>
-                          <div className="text-[#881337] font-extrabold">PKR 7,450</div>
-                        </div>
-                      </div>
-                      <Link href="/shop" className="block text-[10px] font-black text-[#881337] uppercase tracking-wider">VIEW ALL &rarr;</Link>
-                    </div>
-                  </div>
-
-                  <div className="relative rounded-xl overflow-hidden aspect-[4/5] bg-[#FAF6F0] border border-[#E8DFC8] text-stone-900 p-4 flex flex-col justify-end">
-                    <Image src="https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=400" alt="Banner" fill className="object-cover opacity-80" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/30 to-transparent" />
-                    <div className="relative z-10 space-y-2 text-white">
-                      <span className="text-[9px] font-black text-amber-200 uppercase tracking-widest">EID LUXURY EDIT ’26</span>
-                      <h4 className="text-xs font-serif font-bold italic leading-tight">Timeless Pieces For Timeless You</h4>
-                      <Link href="/shop" className="inline-block bg-[#C7A76C] hover:bg-[#881337] text-white text-[9px] font-black px-3 py-1.5 rounded uppercase tracking-wider transition-colors shadow">
-                        SHOP NOW
-                      </Link>
-                    </div>
-                  </div>
+                  <ul className="space-y-1.5 text-xs font-bold text-stone-700">
+                    <li><Link href="/shop?category=luxury-pret" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Luxury Pret</Link></li>
+                    <li><Link href="/shop?category=pret-co-ords" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Pret &amp; Co-Ords</Link></li>
+                    <li><Link href="/shop?category=velvet-silk-couture" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Velvet &amp; Silk Couture</Link></li>
+                    <li><Link href="/shop?category=chiffon-organza-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Chiffon &amp; Organza</Link></li>
+                    <li><Link href="/shop?category=bridal-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Bridal &amp; Formals</Link></li>
+                    <li className="pt-2 border-t border-stone-100"><Link href="/shop" className="block px-3 py-1.5 text-[#881337] font-black underline">View All Ready To Wear &rarr;</Link></li>
+                  </ul>
                 </div>
               )}
             </div>

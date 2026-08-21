@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import reetwearJson from './reetwear_data.json';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://satlkkoaqocikfwkmmdu.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhdGxra29hcW9jaWtmd2ttbWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzM1MjcsImV4cCI6MjEwMjU0OTUyN30.zSWUegpFlzISksyRN-vkTbjiUN72fjywTfDJWMl6-gc';
@@ -57,44 +56,44 @@ export interface Order {
   notes?: string;
 }
 
-// Full Base Product Catalog from reetwear_data.json (191+ Real Articles)
-export const MOCK_PRODUCTS: Product[] = (reetwearJson as Product[]);
+// Mock array kept strictly empty so only actual products added by user/database appear
+export const MOCK_PRODUCTS: Product[] = [];
 
 export const MOCK_CATEGORIES: Category[] = [
   { 
     id: '1', 
-    name: 'Bridal & Formals', 
-    slug: 'bridal-formals', 
-    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/GULNAAR.png?v=1784821889', 
-    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Bridal & Formals').length || 24 
+    name: 'Luxury Pret', 
+    slug: 'luxury-pret', 
+    image: '', 
+    item_count: 0 
   },
   { 
     id: '2', 
-    name: 'Velvet & Silk Couture', 
-    slug: 'velvet-silk-couture', 
-    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/BLACK_BLING.png?v=1784821888', 
-    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Velvet & Silk Couture').length || 38 
+    name: 'Pret & Co-Ords', 
+    slug: 'pret-co-ords', 
+    image: '', 
+    item_count: 0 
   },
   { 
     id: '3', 
-    name: 'Chiffon & Organza Formals', 
-    slug: 'chiffon-organza-formals', 
-    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/SHAHEE_BLUE.png?v=1784821880', 
-    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Chiffon & Organza Formals').length || 42 
+    name: 'Velvet & Silk Couture', 
+    slug: 'velvet-silk-couture', 
+    image: '', 
+    item_count: 0 
   },
   { 
     id: '4', 
-    name: 'Luxury Pret', 
-    slug: 'luxury-pret', 
-    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/PALE_PURPLE.png?v=1784821844', 
-    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Luxury Pret').length || 45 
+    name: 'Chiffon & Organza Formals', 
+    slug: 'chiffon-organza-formals', 
+    image: '', 
+    item_count: 0 
   },
   { 
     id: '5', 
-    name: 'Pret & Co-Ords', 
-    slug: 'pret-co-ords', 
-    image: 'https://cdn.shopify.com/s/files/1/0637/4391/8237/files/NORA.png?v=1784821888', 
-    item_count: MOCK_PRODUCTS.filter(p => p.category === 'Pret & Co-Ords').length || 32 
+    name: 'Bridal & Formals', 
+    slug: 'bridal-formals', 
+    image: '', 
+    item_count: 0 
   }
 ];
 
@@ -102,10 +101,10 @@ export const MOCK_CATEGORIES: Category[] = [
 let memoryProductsCache: Product[] | null = null;
 let inMemoryOrders: Order[] = [];
 
-// Helper to get fallback/local stored products
+// Helper to get stored products (only real user created products)
 export function getStoredProducts(): Product[] {
   if (typeof window === 'undefined') {
-    return MOCK_PRODUCTS;
+    return memoryProductsCache || [];
   }
   try {
     const custom = localStorage.getItem('zehra_custom_products');
@@ -113,15 +112,14 @@ export function getStoredProducts(): Product[] {
     const deletedIds: string[] = deleted ? JSON.parse(deleted) : [];
     const customList: Product[] = custom ? JSON.parse(custom) : [];
     
-    const filteredBase = MOCK_PRODUCTS.filter(p => !deletedIds.includes(p.id) && !deletedIds.includes(p.slug));
-    return [...customList, ...filteredBase];
+    return customList.filter(p => !deletedIds.includes(p.id) && !deletedIds.includes(p.slug));
   } catch {
-    return MOCK_PRODUCTS;
+    return [];
   }
 }
 
 // -----------------------------------------------------------------------------
-// PRODUCTS API (SUPABASE FIRST + JSON FALLBACK)
+// PRODUCTS API (SUPABASE FIRST + LOCAL PERSISTENCE)
 // -----------------------------------------------------------------------------
 
 export async function getProducts(categorySlug?: string): Promise<Product[]> {
@@ -136,21 +134,23 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
 
     const { data, error } = await query;
 
-    if (!error && data && data.length > 0) {
-      memoryProductsCache = data as Product[];
+    if (!error && data) {
+      if (!categorySlug || categorySlug === 'all') {
+        memoryProductsCache = data as Product[];
+      }
       return data as Product[];
     }
   } catch (err) {
-    console.warn('Supabase getProducts fallback notice:', err);
+    console.warn('Supabase getProducts notice:', err);
   }
 
-  // Graceful Fallback to Local/JSON Catalog
+  // Local user-created products fallback
   const allProds = getStoredProducts();
   if (categorySlug && categorySlug !== 'all') {
     const term = categorySlug.toLowerCase().replace(/-/g, ' ');
     return allProds.filter(p => 
-      p.category.toLowerCase().includes(term) || 
-      p.category.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+      p.category?.toLowerCase().includes(term) || 
+      p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
     );
   }
   return allProds;
@@ -169,13 +169,13 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return data as Product;
     }
   } catch (err) {
-    console.warn('Supabase getProductBySlug fallback notice:', err);
+    console.warn('Supabase getProductBySlug notice:', err);
   }
 
-  // Fallback to local catalog
-  const allProds = getStoredProducts();
+  // Check locally stored products
+  const allProds = memoryProductsCache && memoryProductsCache.length > 0 ? memoryProductsCache : getStoredProducts();
   const found = allProds.find(p => p.slug === slug || p.id === slug);
-  return found || allProds[0] || null;
+  return found || null;
 }
 
 export async function addProduct(product: Product): Promise<{ success: boolean; product: Product; error?: string }> {
@@ -290,6 +290,35 @@ export async function deleteProduct(idOrSlug: string): Promise<{ success: boolea
       }
     } catch (e) {
       console.error('LocalStorage product delete error:', e);
+    }
+  }
+
+  return { success: true };
+}
+
+export async function deleteAllProducts(): Promise<{ success: boolean; error?: string }> {
+  // 1. Delete all rows from Supabase
+  try {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .neq('id', '___non_existent_id___');
+
+    if (error) {
+      console.warn('Supabase deleteAllProducts notice:', error.message);
+    }
+  } catch (err: any) {
+    console.warn('Supabase deleteAllProducts error:', err);
+  }
+
+  // 2. Clear memory and local storage
+  memoryProductsCache = [];
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.removeItem('zehra_custom_products');
+      localStorage.removeItem('zehra_deleted_products');
+    } catch (e) {
+      console.error('LocalStorage clear products error:', e);
     }
   }
 
@@ -438,6 +467,34 @@ export async function deleteOrder(orderId: string): Promise<{ success: boolean }
   return { success: true };
 }
 
+export async function deleteAllOrders(): Promise<{ success: boolean }> {
+  // 1. Delete from Supabase
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .neq('id', '___non_existent_id___');
+    
+    if (error) {
+      console.warn('Supabase deleteAllOrders error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase deleteAllOrders error:', err);
+  }
+
+  // 2. Delete from local state
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.removeItem('zehra_orders');
+    } catch (err) {
+      console.error('Delete orders error:', err);
+    }
+  }
+
+  inMemoryOrders = [];
+  return { success: true };
+}
+
 // -----------------------------------------------------------------------------
 // SUPABASE HEALTH CHECK & SEEDING UTILITIES
 // -----------------------------------------------------------------------------
@@ -525,5 +582,17 @@ export async function seedProductsToSupabase(
 }
 
 export async function getCategories(): Promise<Category[]> {
-  return MOCK_CATEGORIES;
+  const prods = await getProducts();
+  return MOCK_CATEGORIES.map(cat => {
+    const matchingProds = prods.filter(p => 
+      p.category?.toLowerCase() === cat.name.toLowerCase() ||
+      p.category?.toLowerCase().replace(/\s+/g, '-') === cat.slug.toLowerCase()
+    );
+    const firstProductWithImage = matchingProds.find(p => p.images && p.images.length > 0 && p.images[0]);
+    return {
+      ...cat,
+      image: firstProductWithImage?.images[0] || cat.image,
+      item_count: matchingProds.length
+    };
+  });
 }
