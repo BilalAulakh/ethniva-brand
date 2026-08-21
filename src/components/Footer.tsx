@@ -107,15 +107,19 @@ export const Footer: React.FC = () => {
           <div className="text-xs space-y-2.5 text-stone-600">
             <div className="flex items-center gap-2.5">
               <Phone className="w-4 h-4 text-[#881337]" />
-              <span>WhatsApp / Order: 0321-0004203</span>
+              <a href="tel:+923094329812" className="hover:text-[#881337] transition-colors font-medium">
+                Phone / WhatsApp: 0309 43 29 812
+              </a>
             </div>
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-[#881337]" />
-              <span>care@reetwear.pk</span>
+              <a href="mailto:zehrastudio3322@gmail.com" className="hover:text-[#881337] transition-colors">
+                zehrastudio3322@gmail.com
+              </a>
             </div>
             <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-[#881337] flex-shrink-0 mt-0.5" />
-              <span>Lahore &amp; Karachi, Pakistan &bull; Express Delivery</span>
+              <span>Faisalabad, Pakistan &bull; Express Nationwide Delivery</span>
             </div>
           </div>
         </div>

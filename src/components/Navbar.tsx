@@ -7,7 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { 
   ShoppingBag, Search, User, Heart, ChevronDown, 
   Menu, X, Sparkles, Check, Truck, ShieldCheck, AlertCircle, ArrowRight,
-  Loader2, Lock, KeyRound, Eye, EyeOff
+  Loader2, Lock, KeyRound, Eye, EyeOff, Phone
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -49,7 +49,7 @@ export const Navbar: React.FC = () => {
     const cleanPass = adminPassword.trim();
 
     if (
-      (cleanEmail === 'admin@zehrastudio.pk' || cleanEmail === 'admin' || cleanEmail === 'zehra' || cleanEmail === 'admin@zehra.com' || cleanEmail === 'admin@reetwear.pk') &&
+      (cleanEmail === 'zehrastudio3322@gmail.com' || cleanEmail === 'admin@zehrastudio.pk' || cleanEmail === 'admin' || cleanEmail === 'zehra' || cleanEmail === 'admin@zehra.com') &&
       (cleanPass === 'zehra2026' || cleanPass === 'admin12345' || cleanPass === '7860')
     ) {
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
@@ -63,7 +63,7 @@ export const Navbar: React.FC = () => {
   };
 
   const fillAdminDemo = () => {
-    setAdminEmail('admin@zehrastudio.pk');
+    setAdminEmail('zehrastudio3322@gmail.com');
     setAdminPassword('zehra2026');
   };
 
@@ -153,8 +153,16 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 text-[11px] font-medium text-stone-500 whitespace-nowrap">
-            <span>SIGNATURE QUALITY</span>
+          <div className="hidden lg:flex items-center gap-2 text-[11px] font-medium text-stone-700 whitespace-nowrap">
+            <a 
+              href="https://wa.me/923094329812" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="flex items-center gap-1 font-extrabold text-[#881337] hover:text-[#785E2F] transition-colors"
+            >
+              <Phone className="w-3 h-3 text-[#C7A76C]" />
+              <span>WHATSAPP / HELP: 0309 43 29 812</span>
+            </a>
             <button 
               onClick={() => setShowTicker(false)}
               className="p-1 hover:text-[#881337] transition-colors ml-2"
@@ -297,10 +305,10 @@ export const Navbar: React.FC = () => {
             </Link>
 
             <Link 
-              href="/shop" 
+              href="/contact" 
               className="text-[11px] xl:text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
-              <span>LOOKBOOK</span>
+              <span>CONTACT</span>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C7A76C] group-hover/link:w-full transition-all duration-300" />
             </Link>
           </nav>
@@ -334,8 +342,8 @@ export const Navbar: React.FC = () => {
           <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
             <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
-            <Link href="/shop?category=lawn-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
-            <Link href="/shop?category=velvet-luxury" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT: 0309 43 29 812</Link>
             <button 
               onClick={(e) => {
                 setMobileMenuOpen(false);
@@ -473,7 +481,7 @@ export const Navbar: React.FC = () => {
               <div className="text-[11px] space-y-1 font-mono text-stone-700 bg-white/70 p-2.5 rounded-lg border border-stone-200/60">
                 <div className="flex justify-between">
                   <span className="text-stone-400">Email:</span>
-                  <span className="font-bold text-[#18181B]">admin@zehrastudio.pk</span>
+                  <span className="font-bold text-[#18181B]">zehrastudio3322@gmail.com</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-stone-400">Password:</span>

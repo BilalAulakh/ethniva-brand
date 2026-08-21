@@ -19,8 +19,8 @@ import { TableSkeleton, OrderSkeleton, ShimmerBox } from '@/components/Shimmer';
 
 // Admin Official Credentials
 const ADMIN_CREDENTIALS = {
-  email: 'admin@zehrastudio.pk',
-  altEmail: 'admin@reetwear.pk',
+  email: 'zehrastudio3322@gmail.com',
+  altEmail: 'admin@zehrastudio.pk',
   password: 'zehra2026',
   altPassword: 'admin12345',
   pin: '7860'
@@ -557,7 +557,7 @@ export default function AdminDashboardPage() {
                 required
                 value={loginEmail}
                 onChange={e => setLoginEmail(e.target.value)}
-                placeholder="admin@zehrastudio.pk"
+                placeholder="zehrastudio3322@gmail.com"
                 className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
               />
             </div>
