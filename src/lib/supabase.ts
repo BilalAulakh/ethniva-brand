@@ -147,6 +147,7 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
   try {
     const allFetched: Product[] = [];
     const CHUNK_SIZE = 10;
+    let queryFailed = false;
     
     for (let i = 0; i < 200; i += CHUNK_SIZE) {
       let query = supabase
@@ -163,17 +164,18 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
       const { data, error } = await query;
       if (error) {
         console.warn('Chunk query error:', error.message);
+        queryFailed = true;
         break;
       }
       if (data && data.length > 0) {
         allFetched.push(...(data as Product[]));
-        if (data.length < CHUNK_SIZE) break; // Finished reading all available rows
+        if (data.length < CHUNK_SIZE) break;
       } else {
         break;
       }
     }
 
-    if (allFetched.length > 0) {
+    if (!queryFailed) {
       if (!categorySlug || categorySlug === 'all') {
         memoryProductsCache = allFetched;
       }
@@ -183,16 +185,19 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
     console.warn('Supabase getProducts notice:', err);
   }
 
-  // Local user-created products fallback
-  const allProds = getStoredProducts();
-  if (categorySlug && categorySlug !== 'all') {
-    const term = categorySlug.toLowerCase().replace(/-/g, ' ');
-    return allProds.filter(p => 
-      p.category?.toLowerCase().includes(term) || 
-      p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
-    );
+  // If query failed and memory cache exists
+  if (memoryProductsCache && memoryProductsCache.length > 0) {
+    if (categorySlug && categorySlug !== 'all') {
+      const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+      return memoryProductsCache.filter(p => 
+        p.category?.toLowerCase().includes(term) || 
+        p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+      );
+    }
+    return memoryProductsCache;
   }
-  return allProds;
+
+  return [];
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {

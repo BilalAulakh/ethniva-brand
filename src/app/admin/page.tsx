@@ -40,19 +40,9 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'analytics'>('products');
 
   // Data States (Instant zero-delay initial load)
-  const [orders, setOrders] = useState<Order[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('zehra_orders');
-        if (stored) return JSON.parse(stored);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return [];
-  });
-  const [products, setProducts] = useState<Product[]>(() => getStoredProducts());
-  const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
