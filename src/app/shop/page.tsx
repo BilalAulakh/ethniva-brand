@@ -5,6 +5,7 @@ import { getProducts, getCategories } from '@/lib/supabase';
 import { ProductCard } from '@/components/ProductCard';
 
 interface ShopPageProps {
+  
   searchParams: Promise<{
     category?: string;
     sort?: string;
