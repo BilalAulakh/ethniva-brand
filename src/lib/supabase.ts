@@ -145,21 +145,39 @@ export function getStoredProducts(): Product[] {
 
 export async function getProducts(categorySlug?: string): Promise<Product[]> {
   try {
-    let query = supabase.from('products').select('*').order('created_at', { ascending: false });
+    const allFetched: Product[] = [];
+    const CHUNK_SIZE = 10;
     
-    if (categorySlug && categorySlug !== 'all') {
-      const term = categorySlug.toLowerCase().replace(/-/g, ' ');
-      // Search category case-insensitively
-      query = query.ilike('category', `%${term}%`);
+    for (let i = 0; i < 200; i += CHUNK_SIZE) {
+      let query = supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(i, i + CHUNK_SIZE - 1);
+
+      if (categorySlug && categorySlug !== 'all') {
+        const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+        query = query.ilike('category', `%${term}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.warn('Chunk query error:', error.message);
+        break;
+      }
+      if (data && data.length > 0) {
+        allFetched.push(...(data as Product[]));
+        if (data.length < CHUNK_SIZE) break; // Finished reading all available rows
+      } else {
+        break;
+      }
     }
 
-    const { data, error } = await query;
-
-    if (!error && data) {
+    if (allFetched.length > 0) {
       if (!categorySlug || categorySlug === 'all') {
-        memoryProductsCache = data as Product[];
+        memoryProductsCache = allFetched;
       }
-      return data as Product[];
+      return allFetched;
     }
   } catch (err) {
     console.warn('Supabase getProducts notice:', err);
