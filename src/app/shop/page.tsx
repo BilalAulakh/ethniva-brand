@@ -1,31 +1,44 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { Filter, SlidersHorizontal, Sparkles } from 'lucide-react';
-import { getProducts, getCategories } from '@/lib/supabase';
+import { useSearchParams } from 'next/navigation';
+import { Filter, SlidersHorizontal, Sparkles, Package } from 'lucide-react';
+import { getProducts, getCategories, Product, Category } from '@/lib/supabase';
 import { ProductCard } from '@/components/ProductCard';
+import { ProductCardSkeleton } from '@/components/Shimmer';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+function ShopContent() {
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get('category') || '';
+  const selectedSort = searchParams.get('sort') || 'featured';
+  const searchQuery = searchParams.get('search') || '';
 
-interface ShopPageProps {
-  searchParams: Promise<{
-    category?: string;
-    sort?: string;
-    search?: string;
-  }>;
-}
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const params = await searchParams;
-  const selectedCategory = params?.category || '';
-  const selectedSort = params?.sort || 'featured';
-  const searchQuery = params?.search || '';
-
-  const allProducts = await getProducts();
-  const categories = await getCategories();
+  useEffect(() => {
+    async function loadShopData() {
+      setLoading(true);
+      try {
+        const [prodList, catList] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setProducts(prodList);
+        setCategories(catList);
+      } catch (err) {
+        console.error('Error loading shop data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadShopData();
+  }, []);
 
   // Smart Normalized Filter for Category & Search
-  let filteredProducts = allProducts.filter(p => {
+  let filteredProducts = products.filter(p => {
     if (!p) return false;
     
     let matchesCategory = true;
@@ -70,7 +83,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#FAF9F6] text-[#18181B]">
-      {/* Header Banner (Warm Ivory & Champagne Luxury Card) */}
+      {/* Header Banner */}
       <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] rounded-3xl p-8 sm:p-12 text-stone-900 relative overflow-hidden shadow-sm border border-[#E8DFC8]">
         <div className="max-w-xl space-y-3 z-10 relative">
           <div className="flex items-center gap-2 text-xs font-black text-[#881337] uppercase tracking-widest">
@@ -78,7 +91,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             <span>ZEHRA STUDIO CATALOG</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-serif italic font-extrabold text-[#18181B] tracking-tight">
-            {selectedCategory ? selectedCategory.replace('-', ' ').toUpperCase() : 'ALL DRESS DESIGNS'}
+            {selectedCategory ? selectedCategory.replace(/-/g, ' ').toUpperCase() : 'ALL DRESS DESIGNS'}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600">
             Handcrafted Pakistani Pret, Micro Velvet Luxury, and Pure Chiffon Formals with free express delivery across Pakistan.
@@ -105,7 +118,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                     : 'text-stone-700 hover:bg-stone-50'
                 }`}
               >
-                All Categories ({allProducts.length})
+                All Categories ({products.length})
               </Link>
               {categories.map(cat => (
                 <Link
@@ -164,9 +177,16 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </div>
           </div>
 
-          {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
+          {/* Product Grid / Loading State */}
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProductCardSkeleton key={i} count={1} />
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-stone-200 p-8 space-y-3 shadow-xs">
+              <Package className="w-12 h-12 text-[#C7A76C] mx-auto" />
               <h3 className="text-lg font-bold text-[#18181B]">No Dress Designs Found</h3>
               <p className="text-xs text-stone-500">Try changing your search keywords or category filters.</p>
               <Link href="/shop" className="inline-block brand-btn-primary text-white text-xs font-bold px-6 py-2.5 rounded-full mt-2 shadow-md">
@@ -183,5 +203,21 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProductCardSkeleton key={i} count={1} />
+          ))}
+        </div>
+      </div>
+    }>
+      <ShopContent />
+    </Suspense>
   );
 }
