@@ -189,29 +189,29 @@ export async function addProduct(product: Product): Promise<{ success: boolean; 
     created_at: product.created_at || new Date().toISOString()
   };
 
-  // 1. Save to Supabase
+  // 1. Save directly to Supabase
   try {
-    const { data, error } = await supabase.from('products').insert([newProduct]).select().single();
+    const { data, error } = await supabase.from('products').upsert([newProduct], { onConflict: 'id' }).select().single();
     if (error) {
-      console.warn('Supabase product insert notice:', error.message);
+      console.error('Supabase product save error:', error.message);
     } else if (data) {
-      // Invalidate memory cache
       memoryProductsCache = null;
       return { success: true, product: data as Product };
     }
   } catch (err: any) {
-    console.warn('Supabase addProduct exception:', err);
+    console.error('Supabase addProduct exception:', err);
   }
 
-  // 2. LocalStorage sync fallback
+  // 2. LocalStorage sync backup
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem('zehra_custom_products');
       const list: Product[] = existing ? JSON.parse(existing) : [];
-      list.unshift(newProduct);
-      localStorage.setItem('zehra_custom_products', JSON.stringify(list));
+      const filtered = list.filter(p => p.id !== newProduct.id);
+      filtered.unshift(newProduct);
+      localStorage.setItem('zehra_custom_products', JSON.stringify(filtered));
     } catch (e) {
-      console.error('LocalStorage product save error:', e);
+      console.warn('LocalStorage backup quota notice:', e);
     }
   }
 

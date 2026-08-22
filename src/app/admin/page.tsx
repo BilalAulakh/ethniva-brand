@@ -240,23 +240,84 @@ export default function AdminDashboardPage() {
     showFlash('Signed out successfully.');
   };
 
-  // Handle File Upload (Convert to Base64)
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  // Automatic High-Performance Image Compressor for Fast Supabase Storage
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      // If already small svg or small file, read directly
+      if (file.size < 80000 && !file.type.includes('image/heic')) {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+        return;
+      }
 
-    Array.from(files).forEach(file => {
+      const img = new window.Image();
       const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          setProductForm(prev => ({
-            ...prev,
-            images: [...prev.images, reader.result as string]
-          }));
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1600;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
         }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          // Compress to efficient 82% JPEG
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          resolve(dataUrl);
+        } else {
+          resolve(img.src);
+        }
+      };
+      img.onerror = () => {
+        // Fallback to normal data URL
+        const fallbackReader = new FileReader();
+        fallbackReader.onloadend = () => resolve(fallbackReader.result as string);
+        fallbackReader.readAsDataURL(file);
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  // Handle File Upload (Auto Compressed Base64)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    showFlash('Processing & optimizing image quality...', 'success');
+    const fileArray = Array.from(files);
+    
+    for (const file of fileArray) {
+      try {
+        const optimizedBase64 = await compressImage(file);
+        setProductForm(prev => ({
+          ...prev,
+          images: [...prev.images, optimizedBase64]
+        }));
+      } catch (err) {
+        console.error('Image compression error:', err);
+      }
+    }
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
