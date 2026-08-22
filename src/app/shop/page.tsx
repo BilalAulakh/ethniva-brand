@@ -47,13 +47,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     let matchesSearch = true;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      matchesSearch = 
+      matchesSearch = Boolean(
         (p.title && p.title.toLowerCase().includes(q)) ||
         (p.fabric && p.fabric.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q));
+        (p.category && p.category.toLowerCase().includes(q))
+      );
     }
 
-    return matchesCategory && matchesSearch;
+    return Boolean(matchesCategory && matchesSearch);
   });
 
   // Sort products

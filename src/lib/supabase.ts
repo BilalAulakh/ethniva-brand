@@ -1,7 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://satlkkoaqocikfwkmmdu.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhdGxra29hcW9jaWtmd2ttbWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzM1MjcsImV4cCI6MjEwMjU0OTUyN30.zSWUegpFlzISksyRN-vkTbjiUN72fjywTfDJWMl6-gc';
+const DEFAULT_SUPABASE_URL = 'https://satlkkoaqocikfwkmmdu.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhdGxra29hcW9jaWtmd2ttbWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NzM1MjcsImV4cCI6MjEwMjU0OTUyN30.zSWUegpFlzISksyRN-vkTbjiUN72fjywTfDJWMl6-gc';
+
+function sanitizeUrl(rawUrl?: string): string {
+  if (!rawUrl) return DEFAULT_SUPABASE_URL;
+  const clean = rawUrl.trim().replace(/^["']|["']$/g, '');
+  if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
+    return DEFAULT_SUPABASE_URL;
+  }
+  return clean;
+}
+
+function sanitizeKey(rawKey?: string): string {
+  if (!rawKey) return DEFAULT_SUPABASE_ANON_KEY;
+  const clean = rawKey.trim().replace(/^["']|["']$/g, '');
+  if (clean.length < 20) {
+    return DEFAULT_SUPABASE_ANON_KEY;
+  }
+  return clean;
+}
+
+const supabaseUrl = sanitizeUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseAnonKey = sanitizeKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
