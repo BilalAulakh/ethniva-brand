@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Heart, ShoppingBag, Eye, Star, Zap, Loader2 } from 'lucide-react';
 import { Product } from '@/lib/supabase';
+
 import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
