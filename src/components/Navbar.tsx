@@ -239,7 +239,7 @@ export const Navbar: React.FC = () => {
               onMouseLeave={() => setReadyToWearDropdownOpen(false)}
             >
               <Link 
-                href="/shop?category=lawn-pret" 
+                href="/shop?category=luxury-pret" 
                 className="text-[12px] font-extrabold text-[#18181B] group-hover:text-[#881337] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
               >
                 <span>READY TO WEAR</span>
@@ -253,6 +253,7 @@ export const Navbar: React.FC = () => {
                   </div>
                   <ul className="space-y-1.5 text-xs font-bold text-stone-700">
                     <li><Link href="/shop?category=luxury-pret" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Luxury Pret</Link></li>
+                    <li><Link href="/shop?category=silk-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Silk Formals</Link></li>
                     <li><Link href="/shop?category=pret-co-ords" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Pret &amp; Co-Ords</Link></li>
                     <li><Link href="/shop?category=velvet-silk-couture" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Velvet &amp; Silk Couture</Link></li>
                     <li><Link href="/shop?category=chiffon-organza-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Chiffon &amp; Organza</Link></li>
@@ -270,7 +271,7 @@ export const Navbar: React.FC = () => {
               onMouseLeave={() => setLuxuryPretDropdownOpen(false)}
             >
               <Link 
-                href="/shop?category=velvet-luxury" 
+                href="/shop?category=luxury-pret" 
                 className="text-[12px] font-extrabold text-[#18181B] group-hover:text-[#881337] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
               >
                 <span>LUXURY PRET</span>
@@ -278,19 +279,22 @@ export const Navbar: React.FC = () => {
               </Link>
 
               {luxuryPretDropdownOpen && (
-                <div className="absolute top-full left-0 w-48 bg-white rounded-2xl shadow-xl border border-stone-200 p-2 z-50 animate-slide-down">
-                  <Link href="/shop?category=velvet-luxury" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
-                    Velvet Luxury Edition
+                <div className="absolute top-full left-0 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 p-2 z-50 animate-slide-down">
+                  <Link href="/shop?category=luxury-pret" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
+                    Luxury Pret Collection
                   </Link>
-                  <Link href="/shop?category=chiffon-formals" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
-                    Handmade Chiffon
+                  <Link href="/shop?category=velvet-silk-couture" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
+                    Velvet &amp; Silk Couture
+                  </Link>
+                  <Link href="/shop?category=silk-formals" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
+                    Silk Formals
                   </Link>
                 </div>
               )}
             </div>
 
             <Link 
-              href="/shop?category=chiffon-formals" 
+              href="/shop?category=chiffon-organza-formals" 
               className="text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
               <span>FORMALS</span>

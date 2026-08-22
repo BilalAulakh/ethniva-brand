@@ -583,15 +583,40 @@ export async function seedProductsToSupabase(
 
 export async function getCategories(): Promise<Category[]> {
   const prods = await getProducts();
-  return MOCK_CATEGORIES.map(cat => {
-    const matchingProds = prods.filter(p => 
-      p.category?.toLowerCase() === cat.name.toLowerCase() ||
-      p.category?.toLowerCase().replace(/\s+/g, '-') === cat.slug.toLowerCase()
-    );
+  
+  // Extract all unique category names from real products
+  const productCatNames = Array.from(
+    new Set(prods.map(p => p.category?.trim()).filter(Boolean) as string[])
+  );
+
+  // Standard predefined base list
+  const baseCategories = [
+    'Luxury Pret',
+    'Silk Formals',
+    'Pret & Co-Ords',
+    'Velvet & Silk Couture',
+    'Chiffon & Organza Formals',
+    'Bridal & Formals'
+  ];
+
+  // Merge unique names
+  const allNames = Array.from(new Set([...baseCategories, ...productCatNames]));
+
+  return allNames.map((name, idx) => {
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const matchingProds = prods.filter(p => {
+      const pCat = (p.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cCat = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return pCat === cCat || pCat.includes(cCat) || cCat.includes(pCat);
+    });
+    
     const firstProductWithImage = matchingProds.find(p => p.images && p.images.length > 0 && p.images[0]);
+    
     return {
-      ...cat,
-      image: firstProductWithImage?.images[0] || cat.image,
+      id: String(idx + 1),
+      name,
+      slug,
+      image: firstProductWithImage?.images?.[0] || '',
       item_count: matchingProds.length
     };
   });

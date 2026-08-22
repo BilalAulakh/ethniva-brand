@@ -4,8 +4,10 @@ import { Filter, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { getProducts, getCategories } from '@/lib/supabase';
 import { ProductCard } from '@/components/ProductCard';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ShopPageProps {
-  
   searchParams: Promise<{
     category?: string;
     sort?: string;
@@ -15,24 +17,41 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;
-  const selectedCategory = params.category || '';
-  const selectedSort = params.sort || 'featured';
-  const searchQuery = params.search || '';
+  const selectedCategory = params?.category || '';
+  const selectedSort = params?.sort || 'featured';
+  const searchQuery = params?.search || '';
 
   const allProducts = await getProducts();
   const categories = await getCategories();
 
-  // Filter products by Category & Search
+  // Smart Normalized Filter for Category & Search
   let filteredProducts = allProducts.filter(p => {
-    const matchesCategory = selectedCategory 
-      ? p.category.toLowerCase().replace(/\s+/g, '-') === selectedCategory.toLowerCase()
-      : true;
+    if (!p) return false;
+    
+    let matchesCategory = true;
+    if (selectedCategory && selectedCategory !== 'all') {
+      const pCat = (p.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const sCat = selectedCategory.toLowerCase().replace(/[^a-z0-9]/g, '');
+      
+      matchesCategory = 
+        pCat === sCat ||
+        pCat.includes(sCat) ||
+        sCat.includes(pCat) ||
+        (sCat.includes('pret') && pCat.includes('pret')) ||
+        (sCat.includes('velvet') && pCat.includes('velvet')) ||
+        (sCat.includes('chiffon') && pCat.includes('chiffon')) ||
+        (sCat.includes('formal') && pCat.includes('formal')) ||
+        (sCat.includes('bridal') && pCat.includes('bridal'));
+    }
 
-    const matchesSearch = searchQuery
-      ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.fabric.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
+    let matchesSearch = true;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      matchesSearch = 
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.fabric && p.fabric.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q));
+    }
 
     return matchesCategory && matchesSearch;
   });
@@ -44,6 +63,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     filteredProducts.sort((a, b) => b.price - a.price);
   } else if (selectedSort === 'rating') {
     filteredProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  } else if (selectedSort === 'newest') {
+    filteredProducts.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
   }
 
   return (
