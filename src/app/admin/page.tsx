@@ -117,16 +117,33 @@ export default function AdminDashboardPage() {
   const loadData = async (isBackground = false) => {
     if (!isBackground && products.length === 0) setLoading(true);
     try {
-      const [orderList, prodList, health] = await Promise.all([
-        getOrders(),
-        getProducts(),
-        checkSupabaseHealth()
-      ]);
-      setOrders(orderList);
-      setProducts(prodList);
-      setDbHealth(health);
-    } catch (e) {
-      console.error(e);
+      // 1. Fetch products independently
+      try {
+        const prodList = await getProducts();
+        if (prodList && Array.isArray(prodList)) {
+          setProducts(prodList);
+        }
+      } catch (e) {
+        console.error('Products load error:', e);
+      }
+
+      // 2. Fetch orders independently
+      try {
+        const orderList = await getOrders();
+        if (orderList && Array.isArray(orderList)) {
+          setOrders(orderList);
+        }
+      } catch (e) {
+        console.error('Orders load error:', e);
+      }
+
+      // 3. Fetch DB health independently
+      try {
+        const health = await checkSupabaseHealth();
+        setDbHealth(health);
+      } catch (e) {
+        console.warn('DB health check notice:', e);
+      }
     } finally {
       setLoading(false);
     }

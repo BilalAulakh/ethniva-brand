@@ -27,14 +27,23 @@ export default function HomePage() {
     async function loadHomeData() {
       setLoading(true);
       try {
-        const [prodData, catData] = await Promise.all([
-          getProducts(),
-          getCategories()
-        ]);
-        setProducts(prodData);
-        setCategories(catData);
-      } catch (err) {
-        console.error(err);
+        try {
+          const prodData = await getProducts();
+          if (prodData && Array.isArray(prodData)) {
+            setProducts(prodData);
+          }
+        } catch (err) {
+          console.error('Home products error:', err);
+        }
+
+        try {
+          const catData = await getCategories();
+          if (catData && Array.isArray(catData)) {
+            setCategories(catData);
+          }
+        } catch (err) {
+          console.error('Home categories error:', err);
+        }
       } finally {
         setLoading(false);
       }

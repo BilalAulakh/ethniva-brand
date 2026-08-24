@@ -22,14 +22,23 @@ function ShopContent() {
     async function loadShopData() {
       setLoading(true);
       try {
-        const [prodList, catList] = await Promise.all([
-          getProducts(),
-          getCategories()
-        ]);
-        setProducts(prodList);
-        setCategories(catList);
-      } catch (err) {
-        console.error('Error loading shop data:', err);
+        try {
+          const prodList = await getProducts();
+          if (prodList && Array.isArray(prodList)) {
+            setProducts(prodList);
+          }
+        } catch (err) {
+          console.error('Error loading shop products:', err);
+        }
+
+        try {
+          const catList = await getCategories();
+          if (catList && Array.isArray(catList)) {
+            setCategories(catList);
+          }
+        } catch (err) {
+          console.error('Error loading shop categories:', err);
+        }
       } finally {
         setLoading(false);
       }
