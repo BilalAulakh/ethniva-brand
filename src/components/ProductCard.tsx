@@ -51,6 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200 hover:border-[#C7A76C] transition-all duration-500 shadow-xs hover:shadow-xl flex flex-col justify-between"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        
       >
         {/* Product Image Box with React Shimmer placeholder */}
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FAF9F6]">
