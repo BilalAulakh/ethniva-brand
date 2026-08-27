@@ -71,6 +71,9 @@ export default function AdminDashboardPage() {
     slug: '',
     price: '',
     compare_at_price: '',
+    unstitched_price: '',
+    package_includes: '3PC (Shirt, Shalwar, Dupatta)',
+    colors: '',
     category: 'Luxury Pret',
     fabric: 'Pure Silk & Handmade Adda Work',
     description: '',
@@ -349,6 +352,9 @@ export default function AdminDashboardPage() {
         slug: prodToEdit.slug,
         price: String(prodToEdit.price),
         compare_at_price: String(prodToEdit.compare_at_price || ''),
+        unstitched_price: String(prodToEdit.unstitched_price || ''),
+        package_includes: prodToEdit.package_includes || '3PC (Shirt, Shalwar, Dupatta)',
+        colors: prodToEdit.colors ? prodToEdit.colors.join(', ') : '',
         category: prodToEdit.category,
         fabric: prodToEdit.fabric || '',
         description: prodToEdit.description || '',
@@ -365,9 +371,12 @@ export default function AdminDashboardPage() {
         slug: '',
         price: '',
         compare_at_price: '',
+        unstitched_price: '',
+        package_includes: '3PC (Shirt, Shalwar, Dupatta)',
+        colors: '',
         category: 'Luxury Pret',
         fabric: 'Pure Chermouse Silk & Adda Work',
-        description: 'Exquisite handcrafted formal ensemble with intricate hand embroidery and fine silk finish. Includes 1PC Shirt, 1PC Trouser/Sharara, 1PC Dupatta.',
+        description: 'Exquisite handcrafted formal ensemble with intricate hand embroidery and fine silk finish.\n\nPackage Includes: 1PC Shirt, 1PC Trouser/Sharara, 1PC Dupatta.\nFabric Details: Pure Chiffon / Raw Silk.\nCare Instructions: Dry clean only.',
         sizes: ['XS', 'Small', 'Medium', 'Large', 'XL'],
         images: [],
         is_featured: true,
@@ -398,12 +407,21 @@ export default function AdminDashboardPage() {
     try {
       const finalSlug = editingProduct?.slug || productForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+      // Parse colors list
+      const parsedColors = productForm.colors
+        .split(',')
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
+
       const productPayload: Product = {
         id: editingProduct ? editingProduct.id : 'prod-' + Date.now(),
         title: productForm.title.trim(),
         slug: finalSlug,
         price: parseFloat(productForm.price),
         compare_at_price: productForm.compare_at_price ? parseFloat(productForm.compare_at_price) : undefined,
+        unstitched_price: productForm.unstitched_price ? parseFloat(productForm.unstitched_price) : undefined,
+        package_includes: productForm.package_includes ? productForm.package_includes.trim() : undefined,
+        colors: parsedColors.length > 0 ? parsedColors : undefined,
         category: productForm.category,
         fabric: productForm.fabric,
         description: productForm.description,
@@ -1367,11 +1385,11 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              {/* Price & Compare at Price */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Prices: Selling, Compare At, and Unstitched */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                    Selling Price (PKR) *
+                    Stitched Price (PKR) *
                   </label>
                   <input
                     type="number"
@@ -1379,20 +1397,62 @@ export default function AdminDashboardPage() {
                     placeholder="10500"
                     value={productForm.price}
                     onChange={e => setProductForm(prev => ({ ...prev, price: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-[#881337] focus:border-[#881337] focus:outline-none font-mono"
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-[#6B1D2F] focus:border-[#6B1D2F] focus:outline-none font-mono"
                   />
                 </div>
 
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                    Original Price (Compare At)
+                    Original (Compare At)
                   </label>
                   <input
                     type="number"
                     placeholder="18500"
                     value={productForm.compare_at_price}
                     onChange={e => setProductForm(prev => ({ ...prev, compare_at_price: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 focus:border-[#881337] focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 focus:border-[#6B1D2F] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                    Unstitched Price (PKR)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Optional (e.g. 9500)"
+                    value={productForm.unstitched_price}
+                    onChange={e => setProductForm(prev => ({ ...prev, unstitched_price: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-emerald-700 font-bold focus:border-[#6B1D2F] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Package Includes & Available Colors */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                    Package Includes (What is in the box)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 3PC (Shirt, Shalwar, Dupatta)"
+                    value={productForm.package_includes}
+                    onChange={e => setProductForm(prev => ({ ...prev, package_includes: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#6B1D2F] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                    Available Colors (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Maroon, Emerald Green, Black, Royal Blue"
+                    value={productForm.colors}
+                    onChange={e => setProductForm(prev => ({ ...prev, colors: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#6B1D2F] focus:outline-none"
                   />
                 </div>
               </div>
@@ -1406,7 +1466,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={productForm.category}
                     onChange={e => setProductForm(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-[#18181B] focus:border-[#881337] focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-[#18181B] focus:border-[#6B1D2F] focus:outline-none"
                   >
                     {categoryOptions.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -1423,22 +1483,27 @@ export default function AdminDashboardPage() {
                     placeholder="Pure Chermouse Silk & Handmade Adda Work"
                     value={productForm.fabric}
                     onChange={e => setProductForm(prev => ({ ...prev, fabric: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#881337] focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#6B1D2F] focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                  Product Description &amp; Package Details
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                    Product Description &amp; Details
+                  </label>
+                  <span className="text-[10px] text-stone-400 font-normal">
+                    (Linebreaks &amp; spacing are preserved on product page)
+                  </span>
+                </div>
                 <textarea
-                  rows={3}
+                  rows={4}
                   value={productForm.description}
                   onChange={e => setProductForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Includes 1PC Shirt, 1PC Sharara, 1PC Dupatta. Pure silk with handcrafted beadwork."
-                  className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#881337] focus:outline-none"
+                  placeholder="DESIGN CODE: EVARA&#10;Package Includes: 1PC SHIRT, 1PC SHALWAR, 1PC DUPATTA&#10;FABRIC DETAILS: Pure Handcrafted Chiffon with Farshi Shalwar."
+                  className="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium text-[#18181B] focus:border-[#6B1D2F] focus:outline-none font-sans whitespace-pre-wrap"
                 />
               </div>
 

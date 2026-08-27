@@ -32,6 +32,9 @@ export interface Product {
   slug: string;
   price: number;
   compare_at_price?: number;
+  unstitched_price?: number;
+  package_includes?: string;
+  colors?: string[];
   category: string;
   fabric: string;
   images: string[];
@@ -59,6 +62,8 @@ export interface OrderItem {
   quantity: number;
   price: number;
   selected_size: string;
+  selected_color?: string;
+  stitching_type?: string;
   custom_measurements?: string;
   image: string;
 }

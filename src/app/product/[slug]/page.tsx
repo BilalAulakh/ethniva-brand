@@ -20,6 +20,8 @@ interface ProductDetailPageProps {
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = use(params);
   const router = useRouter();
+  const { addToCart } = useCart();
+  
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState('M');
@@ -29,6 +31,67 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  const [stitchingType, setStitchingType] = useState<'stitched' | 'unstitched' | 'custom'>('stitched');
+  const [selectedColor, setSelectedColor] = useState<string>('');
+
+  // Determine active price based on stitching type
+  const effectiveUnstitchedPrice = product?.unstitched_price 
+    ? product.unstitched_price 
+    : (product ? Math.max(1000, product.price - 1000) : 0);
+
+  const activePrice = stitchingType === 'unstitched' 
+    ? effectiveUnstitchedPrice 
+    : (product?.price || 0);
+
+  // Available colors list (from product or default smart palette)
+  const availableColors = (product?.colors && product.colors.length > 0)
+    ? product.colors
+    : [];
+
+  useEffect(() => {
+    if (availableColors.length > 0 && !selectedColor) {
+      setSelectedColor(availableColors[0]);
+    }
+  }, [availableColors, selectedColor]);
+
+  // Extract or format package includes
+  const packageIncludesText = product?.package_includes 
+    || (product?.description?.match(/package includes?:?\s*([^.\n]+)/i)?.[1]?.trim())
+    || '3-Piece Set (Shirt, Bottom / Shalwar, Dupatta)';
+
+  // Handle Buy Now & Add to Cart with updated options
+  const handleBuyNow = () => {
+    if (!product) return;
+    setIsBuyingNow(true);
+    const targetProduct: Product = { ...product, price: activePrice };
+    const targetSize = stitchingType === 'unstitched' 
+      ? 'Unstitched' 
+      : stitchingType === 'custom' 
+      ? `Custom (${customMeasurements || 'Made-to-Measure'})` 
+      : selectedSize;
+    addToCart(targetProduct, quantity, targetSize, customMeasurements);
+    setTimeout(() => {
+      router.push('/checkout');
+    }, 200);
+  };
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    setIsAddingToCart(true);
+    const targetProduct: Product = { ...product, price: activePrice };
+    const targetSize = stitchingType === 'unstitched' 
+      ? 'Unstitched' 
+      : stitchingType === 'custom' 
+      ? `Custom (${customMeasurements || 'Made-to-Measure'})` 
+      : selectedSize;
+    addToCart(targetProduct, quantity, targetSize, customMeasurements);
+    setTimeout(() => {
+      setIsAddingToCart(false);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }, 300);
+  };
 
   // Zoom Lightbox Modal States
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
@@ -37,8 +100,6 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   // Touch swipe support for mobile
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-
-  const { addToCart } = useCart();
 
   useEffect(() => {
     async function loadProduct() {
@@ -106,26 +167,6 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
   const toggleZoomLevel = () => {
     setZoomLevel(prev => prev === 1 ? 2 : prev === 2 ? 2.5 : 1);
-  };
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    setIsAddingToCart(true);
-    setTimeout(() => {
-      addToCart(product, quantity, selectedSize, customMeasurements);
-      setIsAddingToCart(false);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    }, 400);
-  };
-
-  const handleBuyNow = () => {
-    if (!product) return;
-    setIsBuyingNow(true);
-    addToCart(product, quantity, selectedSize, customMeasurements);
-    setTimeout(() => {
-      router.push('/checkout');
-    }, 300);
   };
 
   if (loading) {
@@ -260,60 +301,155 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                 <span className="text-stone-500 text-[11px] font-medium">({product.reviews_count || 8} verified reviews)</span>
               </div>
 
+              {/* Dynamic Price Display */}
               <div className="flex items-baseline gap-3">
                 <span className="text-2xl sm:text-3xl font-bold text-[#6B1D2F]">
-                  PKR {product.price.toLocaleString()}
+                  PKR {activePrice.toLocaleString()}
                 </span>
                 {product.compare_at_price && (
                   <span className="text-xs font-medium text-stone-400 line-through">
                     PKR {product.compare_at_price.toLocaleString()}
                   </span>
                 )}
+                {stitchingType === 'unstitched' && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Unstitched Discount Applied
+                  </span>
+                )}
               </div>
             </div>
 
-            <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 text-xs text-stone-700 space-y-1 font-medium">
-              <div><strong className="text-[#18181B]">Fabric:</strong> {product.fabric}</div>
-              <div><strong className="text-[#18181B]">Availability:</strong> Ready for Dispatch across Pakistan (2-3 days).</div>
+            {/* Priority Specs: Fabric & Package Includes */}
+            <div className="p-3.5 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 text-xs text-stone-700 space-y-1.5 font-medium">
+              <div className="flex items-start gap-2">
+                <strong className="text-[#18181B] min-w-[70px]">Stuff/Fabric:</strong> 
+                <span className="text-stone-800 font-semibold">{product.fabric}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <strong className="text-[#6B1D2F] min-w-[70px]">Package:</strong> 
+                <span className="text-[#18181B] font-bold">{packageIncludesText}</span>
+              </div>
+              <div className="flex items-start gap-2 text-[11px] text-stone-500 pt-0.5 border-t border-stone-200/60">
+                <strong className="min-w-[70px]">Dispatch:</strong> 
+                <span>2-3 Days Nationwide Express Delivery</span>
+              </div>
             </div>
 
-            {/* Size Selector */}
+            {/* Stitching Type Selector (Stitched Pret / Unstitched Fabric / Custom Made-to-Measure) */}
             <div className="space-y-2 pt-1">
-              <div className="flex justify-between items-center text-xs font-bold text-[#18181B]">
-                <span className="uppercase tracking-wider">SELECT SIZE</span>
-                <span className="text-[#6B1D2F] text-[11px] font-bold cursor-pointer hover:underline">Size Guide</span>
-              </div>
+              <span className="text-xs font-bold text-[#18181B] uppercase tracking-wider block">
+                CHOOSE STITCHING OPTION:
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStitchingType('stitched')}
+                  className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-center ${
+                    stitchingType === 'stitched'
+                      ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                  }`}
+                >
+                  <div>Stitched Pret</div>
+                  <div className="text-[10px] font-normal opacity-90">Ready to wear</div>
+                </button>
 
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map(size => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
-                      selectedSize === size
-                        ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-xs'
-                        : 'border-stone-200 bg-white text-stone-800 hover:border-[#C5A880]'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                <button
+                  type="button"
+                  onClick={() => setStitchingType('unstitched')}
+                  className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-center ${
+                    stitchingType === 'unstitched'
+                      ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                  }`}
+                >
+                  <div>Unstitched</div>
+                  <div className={`text-[10px] ${stitchingType === 'unstitched' ? 'text-amber-200' : 'text-emerald-700 font-bold'}`}>
+                    PKR {effectiveUnstitchedPrice.toLocaleString()}
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setStitchingType('custom')}
+                  className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-center ${
+                    stitchingType === 'custom'
+                      ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                  }`}
+                >
+                  <div>Custom Size</div>
+                  <div className="text-[10px] font-normal opacity-90">Made to measure</div>
+                </button>
               </div>
             </div>
 
-            {/* Custom Measurements Input */}
-            {selectedSize === 'Custom Stitching' && (
-              <div className="p-3.5 bg-[#FAF7F2] rounded-2xl border border-[#C5A880]/60 space-y-2">
+            {/* Color Selector (If multiple colors exist) */}
+            {availableColors.length > 0 && (
+              <div className="space-y-2 pt-1">
+                <div className="flex justify-between items-center text-xs font-bold text-[#18181B]">
+                  <span className="uppercase tracking-wider">SELECT COLOR:</span>
+                  <span className="text-[#6B1D2F] font-bold">{selectedColor}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {availableColors.map((col) => (
+                    <button
+                      key={col}
+                      type="button"
+                      onClick={() => setSelectedColor(col)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                        selectedColor === col
+                          ? 'border-[#6B1D2F] bg-[#FAF7F2] text-[#6B1D2F] ring-1 ring-[#6B1D2F]'
+                          : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                      }`}
+                    >
+                      {col}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Size Selector (Visible for Stitched Pret) */}
+            {stitchingType === 'stitched' && (
+              <div className="space-y-2 pt-1">
+                <div className="flex justify-between items-center text-xs font-bold text-[#18181B]">
+                  <span className="uppercase tracking-wider">SELECT SIZE</span>
+                  <span className="text-[#6B1D2F] text-[11px] font-bold cursor-pointer hover:underline">Size Guide</span>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map(size => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+                        selectedSize === size
+                          ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-xs'
+                          : 'border-stone-200 bg-white text-stone-800 hover:border-[#C5A880]'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Custom Measurements Input (Visible for Custom Size or Custom Stitching size) */}
+            {(stitchingType === 'custom' || selectedSize === 'Custom Stitching') && (
+              <div className="p-3.5 bg-[#FAF7F2] rounded-2xl border border-[#C5A880]/60 space-y-2 animate-fade-in">
                 <div className="text-xs font-bold text-[#18181B] flex items-center gap-1.5">
                   <Scissors className="w-4 h-4 text-[#6B1D2F]" />
-                  <span>Custom Measurement Notes</span>
+                  <span>Custom Measurement Details (Inches)</span>
                 </div>
                 <textarea
-                  placeholder="Enter custom measurements (e.g. Chest: 36 in, Length: 42 in, Waist: 30 in)..."
+                  placeholder="Enter your custom measurements (e.g. Chest: 38 in, Shirt Length: 42 in, Waist: 32 in, Shalwar Length: 38 in)..."
                   value={customMeasurements}
                   onChange={(e) => setCustomMeasurements(e.target.value)}
                   rows={3}
-                  className="w-full bg-white border border-stone-300 rounded-xl p-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880]"
+                  className="w-full bg-white border border-stone-300 rounded-xl p-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880] shadow-2xs"
                 />
               </div>
             )}
@@ -323,6 +459,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               <span className="text-xs font-bold text-[#18181B] uppercase tracking-wider">QUANTITY:</span>
               <div className="flex items-center border border-stone-300 rounded-xl bg-[#FAF7F2] px-3 py-1">
                 <button
+                  type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1"
                 >
@@ -330,6 +467,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                 </button>
                 <span className="text-xs font-bold text-[#18181B] px-3">{quantity}</span>
                 <button
+                  type="button"
                   onClick={() => setQuantity(quantity + 1)}
                   className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1"
                 >
@@ -377,7 +515,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </button>
 
               <a
-                href={`https://wa.me/923094329812?text=Hello%20Zehra%20Studio!%20I%20would%20like%20to%20order%20${encodeURIComponent(product.title)}%20(Size:%20${selectedSize},%20Price:%20PKR%20${product.price.toLocaleString()})`}
+                href={`https://wa.me/923094329812?text=Hello%20Zehra%20Studio!%20I%20would%20like%20to%20order%20${encodeURIComponent(product.title)}%20(Option:%20${stitchingType.toUpperCase()}${selectedColor ? `%20Color:%20${encodeURIComponent(selectedColor)}` : ''},%20Size:%20${selectedSize},%20Price:%20PKR%20${activePrice.toLocaleString()})`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full bg-[#FAF7F2] hover:bg-[#25D366] text-[#18181B] hover:text-white border border-[#C5A880]/60 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-2xs group"
@@ -387,35 +525,37 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </a>
             </div>
 
-            {/* Value Trust Badges */}
-            <div className="grid grid-cols-3 gap-2 pt-3 border-t border-stone-200/80 text-[10.5px] text-stone-700 text-center font-medium">
-              <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
-                <Truck className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
-                <span>Free Delivery</span>
-              </div>
-              <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
-                <span>100% Original</span>
-              </div>
-              <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
-                <RefreshCw className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
-                <span>7-Day Exchange</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-stone-500 font-medium pt-1">
-              <MapPin className="w-3.5 h-3.5 text-[#6B1D2F]" />
-              <span>Atelier: Faisalabad, Pakistan &bull; Express Delivery</span>
-            </div>
-
-            {/* Description */}
-            <div className="pt-3 border-t border-stone-200/80 space-y-1">
+            {/* 1. PRODUCT DESCRIPTION & DETAILS (COMES FIRST) */}
+            <div className="pt-4 border-t border-stone-200/80 space-y-2">
               <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wider">
                 Product Description &amp; Details
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed font-normal">
+              <div className="text-xs text-stone-700 leading-relaxed font-normal whitespace-pre-line bg-[#FCFAF7] p-3.5 rounded-2xl border border-stone-200/60">
                 {product.description}
-              </p>
+              </div>
+            </div>
+
+            {/* 2. SATISFACTION & DELIVERY BADGES (COMES BELOW DESCRIPTION) */}
+            <div className="space-y-2 pt-2 border-t border-stone-200/80">
+              <div className="grid grid-cols-3 gap-2 text-[10.5px] text-stone-700 text-center font-medium">
+                <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
+                  <Truck className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
+                  <span>Free Delivery</span>
+                </div>
+                <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
+                  <span>100% Original</span>
+                </div>
+                <div className="p-2 bg-[#FAF7F2] rounded-xl border border-stone-200/80">
+                  <RefreshCw className="w-3.5 h-3.5 text-[#6B1D2F] mx-auto mb-0.5" />
+                  <span>7-Day Exchange</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-stone-500 font-medium pt-1">
+                <MapPin className="w-3.5 h-3.5 text-[#6B1D2F]" />
+                <span>Atelier: Faisalabad, Pakistan &bull; Express Delivery</span>
+              </div>
             </div>
           </div>
         </div>
