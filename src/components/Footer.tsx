@@ -50,76 +50,77 @@ export const Footer: React.FC = () => {
       </div>
 
       {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-10 mb-12">
         {/* Brand Info */}
         <div className="space-y-4">
           <Link href="/" className="inline-block">
-            <span className="font-serif font-bold text-2xl tracking-[0.2em] text-[#18181B] hover:text-[#881337] transition-colors">
+            <span className="font-bold text-2xl tracking-[0.15em] text-[#18181B] hover:text-[#6B1D2F] transition-colors">
               ZEHRA STUDIO
             </span>
           </Link>
-          <p className="text-xs text-stone-500 leading-relaxed">
-            ZEHRA STUDIO is Pakistan’s premier luxury women’s fashion couture offering handmade stitched pret, velvet formals, chiffon ensembles, and party wear.
+          <p className="text-xs text-stone-500 leading-relaxed font-normal">
+            ZEHRA STUDIO is Pakistan’s premier luxury fashion atelier offering pure silk formals, velvet couture, handmade chiffon ensembles, and ready to wear pret.
           </p>
-          <div className="flex gap-3 text-stone-600 pt-2">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#881337] hover:border-[#881337] transition-all shadow-2xs" title="Instagram">
-              <Globe className="w-4 h-4" />
+          <div className="flex gap-2.5 text-stone-600 pt-1">
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#6B1D2F] hover:border-[#6B1D2F] transition-all shadow-2xs" title="Instagram">
+              <Globe className="w-3.5 h-3.5" />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#881337] hover:border-[#881337] transition-all shadow-2xs" title="Facebook">
-              <Share2 className="w-4 h-4" />
+            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#6B1D2F] hover:border-[#6B1D2F] transition-all shadow-2xs" title="Facebook">
+              <Share2 className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
 
         {/* Collections */}
         <div>
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-4 border-b border-stone-200 pb-2">
+          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
             Luxury Collections
           </h4>
-          <ul className="space-y-2.5 text-xs text-stone-600">
-            <li><Link href="/shop?category=velvet-luxury" className="hover:text-[#881337] transition-colors">Velvet Luxury Edition</Link></li>
-            <li><Link href="/shop?category=chiffon-formals" className="hover:text-[#881337] transition-colors">Handmade Chiffon Formals</Link></li>
-            <li><Link href="/shop?category=lawn-pret" className="hover:text-[#881337] transition-colors">Swiss Lawn Pret 3-Piece</Link></li>
-            <li><Link href="/shop?category=handmade-party-wear" className="hover:text-[#881337] transition-colors">Party Wear Angrakhas</Link></li>
-            <li><Link href="/shop" className="hover:text-[#881337] transition-colors">All Stitched Dresses</Link></li>
+          <ul className="space-y-2 text-xs text-stone-600">
+            <li><Link href="/shop?category=luxury-pret" className="hover:text-[#6B1D2F] transition-colors font-medium">Luxury Pret</Link></li>
+            <li><Link href="/shop?category=ready-to-wear" className="hover:text-[#6B1D2F] transition-colors font-medium">Ready To Wear</Link></li>
+            <li><Link href="/shop?category=raw-silk-chiffon" className="hover:text-[#6B1D2F] transition-colors font-medium">Raw Silk &amp; Chiffon</Link></li>
+            <li><Link href="/shop?category=velvet-festive" className="hover:text-[#6B1D2F] transition-colors font-medium">Velvet Festive</Link></li>
+            <li><Link href="/shop?category=bridal-couture" className="hover:text-[#6B1D2F] transition-colors font-medium">Bridal &amp; Couture</Link></li>
+            <li><Link href="/shop?category=sale-clearance" className="hover:text-[#6B1D2F] transition-colors font-medium text-[#6B1D2F]">Top Sale &amp; Clearance</Link></li>
           </ul>
         </div>
 
         {/* Customer Care */}
         <div>
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-4 border-b border-stone-200 pb-2">
+          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
             Customer Care
           </h4>
-          <ul className="space-y-2.5 text-xs text-stone-600">
-            <li><Link href="/shop" className="hover:text-[#881337] transition-colors">Track Your Order</Link></li>
-            <li><Link href="/shop" className="hover:text-[#881337] transition-colors">Custom Stitching Guide</Link></li>
-            <li><Link href="/shop" className="hover:text-[#881337] transition-colors">Shipping &amp; Delivery Policy</Link></li>
-            <li><Link href="/shop" className="hover:text-[#881337] transition-colors">Returns &amp; Exchange Policy</Link></li>
-            <li><Link href="/admin" className="hover:text-[#881337] transition-colors font-bold text-[#881337]">Store Admin Dashboard</Link></li>
+          <ul className="space-y-2 text-xs text-stone-600">
+            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Track Your Order</Link></li>
+            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Custom Stitching Guide</Link></li>
+            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Shipping &amp; Delivery Policy</Link></li>
+            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Returns &amp; Exchange Policy</Link></li>
+            <li><Link href="/admin" className="hover:text-[#6B1D2F] transition-colors text-stone-400 text-[11px]">Staff Access</Link></li>
           </ul>
         </div>
 
         {/* Contact Info */}
         <div className="space-y-3">
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-4 border-b border-stone-200 pb-2">
+          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
             Contact Support
           </h4>
-          <div className="text-xs space-y-2.5 text-stone-600">
-            <div className="flex items-center gap-2.5">
-              <Phone className="w-4 h-4 text-[#881337]" />
-              <a href="tel:+923094329812" className="hover:text-[#881337] transition-colors font-medium">
-                Phone / WhatsApp: 0309 43 29 812
+          <div className="text-xs space-y-2.5 text-stone-600 font-medium">
+            <div className="flex items-center gap-2">
+              <Phone className="w-3.5 h-3.5 text-[#6B1D2F]" />
+              <a href="tel:+923094329812" className="hover:text-[#6B1D2F] transition-colors">
+                WhatsApp: 0309 43 29 812
               </a>
             </div>
-            <div className="flex items-center gap-2.5">
-              <Mail className="w-4 h-4 text-[#881337]" />
-              <a href="mailto:zehrastudio3322@gmail.com" className="hover:text-[#881337] transition-colors">
-                zehrastudio3322@gmail.com
+            <div className="flex items-center gap-2">
+              <Mail className="w-3.5 h-3.5 text-[#6B1D2F]" />
+              <a href="mailto:zehrastudioofficial@gmail.com" className="hover:text-[#6B1D2F] transition-colors">
+                zehrastudioofficial@gmail.com
               </a>
             </div>
-            <div className="flex items-start gap-2.5">
-              <MapPin className="w-4 h-4 text-[#881337] flex-shrink-0 mt-0.5" />
-              <span>Faisalabad, Pakistan &bull; Express Nationwide Delivery</span>
+            <div className="flex items-start gap-2">
+              <MapPin className="w-3.5 h-3.5 text-[#6B1D2F] flex-shrink-0 mt-0.5" />
+              <span>Faisalabad, Pakistan &bull; Express Delivery</span>
             </div>
           </div>
         </div>
@@ -127,8 +128,8 @@ export const Footer: React.FC = () => {
 
       {/* Copyright */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-xs text-stone-500 gap-4">
-        <div>&copy; {new Date().getFullYear()} ZEHRA STUDIO. All rights reserved. Powered by Next.js &amp; Supabase.</div>
-        <div className="flex gap-2 font-semibold text-[11px] text-stone-700">
+        <div>&copy; {new Date().getFullYear()} ZEHRA STUDIO. All rights reserved.</div>
+        <div className="flex gap-2 font-semibold text-[10px] text-stone-700">
           <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">CASH ON DELIVERY</span>
           <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">JAZZCASH</span>
           <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">EASYPAISA</span>

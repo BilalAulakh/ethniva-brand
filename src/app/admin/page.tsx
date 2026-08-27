@@ -77,7 +77,8 @@ export default function AdminDashboardPage() {
     sizes: ['XS', 'Small', 'Medium', 'Large', 'XL'],
     images: [] as string[],
     is_featured: false,
-    is_new: true
+    is_new: true,
+    is_top_sale: false
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -251,7 +252,7 @@ export default function AdminDashboardPage() {
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve) => {
       // If already small svg or small file, read directly
-      if (file.size < 80000 && !file.type.includes('image/heic')) {
+      if (file.size < 60000 && !file.type.includes('image/heic')) {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(file);
@@ -265,8 +266,8 @@ export default function AdminDashboardPage() {
       };
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1600;
+        const MAX_WIDTH = 960;
+        const MAX_HEIGHT = 1280;
         let width = img.width;
         let height = img.height;
 
@@ -289,8 +290,8 @@ export default function AdminDashboardPage() {
           ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
-          // Compress to efficient 82% JPEG
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          // Compress to lightweight 78% JPEG for lightning fast loading
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
           resolve(dataUrl);
         } else {
           resolve(img.src);
@@ -354,7 +355,8 @@ export default function AdminDashboardPage() {
         sizes: prodToEdit.sizes || ['XS', 'Small', 'Medium', 'Large', 'XL'],
         images: [...prodToEdit.images],
         is_featured: !!prodToEdit.is_featured,
-        is_new: !!prodToEdit.is_new
+        is_new: !!prodToEdit.is_new,
+        is_top_sale: !!prodToEdit.is_top_sale
       });
     } else {
       setEditingProduct(null);
@@ -369,7 +371,8 @@ export default function AdminDashboardPage() {
         sizes: ['XS', 'Small', 'Medium', 'Large', 'XL'],
         images: [],
         is_featured: true,
-        is_new: true
+        is_new: true,
+        is_top_sale: false
       });
     }
     setIsProductModalOpen(true);
@@ -408,6 +411,7 @@ export default function AdminDashboardPage() {
         images: productForm.images,
         is_featured: productForm.is_featured,
         is_new: productForm.is_new,
+        is_top_sale: productForm.is_top_sale,
         rating: editingProduct?.rating || 4.9,
         reviews_count: editingProduct?.reviews_count || 12
       };
@@ -562,13 +566,12 @@ export default function AdminDashboardPage() {
 
   // Categories list
   const categoryOptions = [
-    'Bridal & Formals',
-    'Velvet & Silk Couture',
-    'Chiffon & Organza Formals',
     'Luxury Pret',
-    'Pret & Co-Ords',
-    'Silk Formals',
-    'Maxy Formals'
+    'Ready To Wear',
+    'Raw Silk & Chiffon',
+    'Velvet Festive',
+    'Bridal & Couture',
+    'Top Sale & Clearance'
   ];
 
   // -------------------------------------------------------------
@@ -598,7 +601,7 @@ export default function AdminDashboardPage() {
             <span className="text-[10px] font-black text-[#C7A76C] uppercase tracking-[0.3em] block">
               AUTHENTICATION REQUIRED
             </span>
-            <h1 className="text-2xl sm:text-3xl font-serif italic font-bold text-[#18181B]">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B]">
               Store Admin Portal
             </h1>
             <p className="text-xs text-stone-500 max-w-xs mx-auto">
@@ -742,14 +745,14 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-[#881337] text-white font-serif font-black text-xs flex items-center justify-center shadow-xs">
+              <div className="w-8 h-8 rounded-lg bg-[#6B1D2F] text-white font-bold text-xs flex items-center justify-center shadow-2xs">
                 ZS
               </div>
-              <span className="font-serif font-bold text-lg tracking-wider text-[#18181B] hidden sm:inline">
+              <span className="font-bold text-base tracking-wider text-[#18181B] hidden sm:inline">
                 ZEHRA STUDIO &bull; ADMIN
               </span>
             </Link>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
               Live Portal
             </span>
           </div>
@@ -757,7 +760,7 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="px-3.5 py-1.5 rounded-xl border border-stone-200 hover:border-[#881337] text-xs font-bold text-stone-700 hover:text-[#881337] flex items-center gap-1.5 transition-all bg-white"
+              className="px-3.5 py-1.5 rounded-xl border border-stone-200 hover:border-[#6B1D2F] text-xs font-bold text-stone-700 hover:text-[#6B1D2F] flex items-center gap-1.5 transition-all bg-white shadow-2xs"
             >
               <span>View Storefront</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -780,11 +783,11 @@ export default function AdminDashboardPage() {
         {/* Header & Quick Action Buttons */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-6">
           <div>
-            <div className="text-[10px] font-black text-[#881337] uppercase tracking-[0.3em] flex items-center gap-1.5 mb-1">
-              <ShieldCheck className="w-4 h-4 text-[#C7A76C]" />
+            <div className="text-[10px] font-bold text-[#6B1D2F] uppercase tracking-[0.25em] flex items-center gap-1.5 mb-1">
+              <ShieldCheck className="w-4 h-4 text-[#C5A880]" />
               <span>COUTURE MANAGEMENT HUB</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-serif italic font-extrabold text-[#18181B]">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">
               Store Administration &amp; Inventory
             </h1>
           </div>
@@ -793,7 +796,7 @@ export default function AdminDashboardPage() {
             {activeTab === 'products' && products.length > 0 && (
               <button
                 onClick={() => promptDeleteAllProducts()}
-                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center gap-1.5 hover:scale-[1.02]"
+                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-2xs flex items-center gap-1.5 hover:scale-[1.02]"
                 title="Delete all products from store catalog"
               >
                 <Trash2 className="w-3.5 h-3.5 text-rose-600" /> 
@@ -804,7 +807,7 @@ export default function AdminDashboardPage() {
             {activeTab === 'orders' && orders.length > 0 && (
               <button
                 onClick={() => promptDeleteAllOrders()}
-                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center gap-1.5 hover:scale-[1.02]"
+                className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-2xs flex items-center gap-1.5 hover:scale-[1.02]"
                 title="Clear all orders and sales records"
               >
                 <Trash2 className="w-3.5 h-3.5 text-rose-600" /> 
@@ -815,18 +818,18 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => loadData()}
               disabled={loading}
-              className={`px-4 py-2 bg-white border border-stone-300 hover:border-[#C7A76C] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-xs ${
+              className={`px-4 py-2 bg-white border border-stone-300 hover:border-[#C5A880] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-2xs ${
                 loading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-[#881337] ${loading ? 'animate-spin' : ''}`} /> 
+              <RefreshCw className={`w-3.5 h-3.5 text-[#6B1D2F] ${loading ? 'animate-spin' : ''}`} /> 
               <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
             </button>
 
             {activeTab === 'products' && (
               <button
                 onClick={() => openProductModal()}
-                className="px-5 py-2.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 hover:scale-[1.02]"
+                className="px-5 py-2.5 bg-[#6B1D2F] hover:bg-[#521323] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center gap-2 hover:scale-[1.02]"
               >
                 <Plus className="w-4 h-4" /> Add New Article
               </button>
@@ -836,43 +839,43 @@ export default function AdminDashboardPage() {
 
         {/* Quick Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
-            <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
+          <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-2xs space-y-1">
+            <div className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>TOTAL PRODUCTS</span>
-              <Package className="w-4 h-4 text-[#C7A76C]" />
+              <Package className="w-4 h-4 text-[#C5A880]" />
             </div>
-            <div className="text-2xl font-serif font-black text-[#18181B]">{products.length}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">{products.length}</div>
             <div className="text-[11px] text-stone-500 font-medium">Active in store catalog</div>
           </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
-            <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
+          <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-2xs space-y-1">
+            <div className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>TOTAL ORDERS</span>
               <div className="flex items-center gap-2">
                 {orders.length > 0 && (
                   <button 
                     onClick={() => promptDeleteAllOrders()}
-                    className="text-[9px] font-black uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
+                    className="text-[9px] font-bold uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
                     title="Clear all orders & reset revenue"
                   >
                     <Trash2 className="w-2.5 h-2.5" /> Clear All
                   </button>
                 )}
-                <Layers className="w-4 h-4 text-[#881337]" />
+                <Layers className="w-4 h-4 text-[#6B1D2F]" />
               </div>
             </div>
-            <div className="text-2xl font-serif font-black text-[#18181B]">{orders.length}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">{orders.length}</div>
             <div className="text-[11px] text-stone-500 font-medium">{pendingOrdersCount} pending dispatch</div>
           </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-1">
-            <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center justify-between">
+          <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-2xs space-y-1">
+            <div className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex items-center justify-between">
               <span>GROSS SALES (PKR)</span>
               <div className="flex items-center gap-2">
                 {orders.length > 0 && (
                   <button 
                     onClick={() => promptDeleteAllOrders()}
-                    className="text-[9px] font-black uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
+                    className="text-[9px] font-bold uppercase text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-200 flex items-center gap-1 transition-all"
                     title="Reset revenue history"
                   >
                     <Trash2 className="w-2.5 h-2.5" /> Reset
@@ -881,7 +884,7 @@ export default function AdminDashboardPage() {
                 <DollarSign className="w-4 h-4 text-emerald-600" />
               </div>
             </div>
-            <div className="text-2xl font-serif font-black text-emerald-700">
+            <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight">
               RS. {totalRevenue.toLocaleString()}
             </div>
             <div className="text-[11px] text-stone-500 font-medium">From received orders</div>
@@ -1531,8 +1534,8 @@ export default function AdminDashboardPage() {
                 )}
               </div>
 
-              {/* Toggles (Featured & New) */}
-              <div className="flex gap-6 pt-2">
+              {/* Toggles (Featured, New Arrival, and Top Sale) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 bg-[#FAF7F2] p-3.5 rounded-2xl border border-stone-200">
                 <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-stone-700">
                   <input
                     type="checkbox"
@@ -1540,7 +1543,7 @@ export default function AdminDashboardPage() {
                     onChange={e => setProductForm(prev => ({ ...prev, is_featured: e.target.checked }))}
                     className="w-4 h-4 rounded text-[#881337] focus:ring-[#881337]"
                   />
-                  <span>Mark as Featured (Hero / Highlights)</span>
+                  <span>⭐ Hero / Spotlight</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-stone-700">
@@ -1550,7 +1553,17 @@ export default function AdminDashboardPage() {
                     onChange={e => setProductForm(prev => ({ ...prev, is_new: e.target.checked }))}
                     className="w-4 h-4 rounded text-[#881337] focus:ring-[#881337]"
                   />
-                  <span>Show New Arrival Badge</span>
+                  <span>✨ New Arrival</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-stone-700">
+                  <input
+                    type="checkbox"
+                    checked={productForm.is_top_sale}
+                    onChange={e => setProductForm(prev => ({ ...prev, is_top_sale: e.target.checked }))}
+                    className="w-4 h-4 rounded text-[#881337] focus:ring-[#881337]"
+                  />
+                  <span>🔥 Top Sale / Best Seller</span>
                 </label>
               </div>
 

@@ -19,31 +19,38 @@ function ShopContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function loadShopData() {
-      setLoading(true);
       try {
-        try {
-          const prodList = await getProducts();
-          if (prodList && Array.isArray(prodList)) {
-            setProducts(prodList);
+        const prodList = await getProducts(undefined, (streamingList) => {
+          if (isMounted && streamingList && streamingList.length > 0) {
+            setProducts(streamingList);
+            setLoading(false);
           }
-        } catch (err) {
-          console.error('Error loading shop products:', err);
+        });
+        if (isMounted && prodList && Array.isArray(prodList)) {
+          setProducts(prodList);
+          setLoading(false);
         }
 
         try {
           const catList = await getCategories();
-          if (catList && Array.isArray(catList)) {
+          if (isMounted && catList && Array.isArray(catList)) {
             setCategories(catList);
           }
         } catch (err) {
           console.error('Error loading shop categories:', err);
         }
+      } catch (err) {
+        console.error('Error loading shop products:', err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
     loadShopData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Smart Normalized Filter for Category & Search
@@ -52,18 +59,23 @@ function ShopContent() {
     
     let matchesCategory = true;
     if (selectedCategory && selectedCategory !== 'all') {
-      const pCat = (p.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      const sCat = selectedCategory.toLowerCase().replace(/[^a-z0-9]/g, '');
-      
-      matchesCategory = 
-        pCat === sCat ||
-        pCat.includes(sCat) ||
-        sCat.includes(pCat) ||
-        (sCat.includes('pret') && pCat.includes('pret')) ||
-        (sCat.includes('velvet') && pCat.includes('velvet')) ||
-        (sCat.includes('chiffon') && pCat.includes('chiffon')) ||
-        (sCat.includes('formal') && pCat.includes('formal')) ||
-        (sCat.includes('bridal') && pCat.includes('bridal'));
+      if (selectedCategory === 'sale-clearance' || selectedCategory === 'sale') {
+        matchesCategory = Boolean(p.is_top_sale || (p.compare_at_price && p.compare_at_price > p.price) || (p.category && p.category.toLowerCase().includes('sale')));
+      } else {
+        const pCat = (p.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const sCat = selectedCategory.toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        matchesCategory = 
+          pCat === sCat ||
+          pCat.includes(sCat) ||
+          sCat.includes(pCat) ||
+          (sCat.includes('pret') && pCat.includes('pret')) ||
+          (sCat.includes('velvet') && pCat.includes('velvet')) ||
+          (sCat.includes('chiffon') && pCat.includes('chiffon')) ||
+          (sCat.includes('silk') && pCat.includes('silk')) ||
+          (sCat.includes('formal') && pCat.includes('formal')) ||
+          (sCat.includes('bridal') && pCat.includes('bridal'));
+      }
     }
 
     let matchesSearch = true;
@@ -91,30 +103,30 @@ function ShopContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#FAF9F6] text-[#18181B]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8 bg-[#FCFAF7] text-[#18181B]">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] rounded-3xl p-8 sm:p-12 text-stone-900 relative overflow-hidden shadow-sm border border-[#E8DFC8]">
-        <div className="max-w-xl space-y-3 z-10 relative">
-          <div className="flex items-center gap-2 text-xs font-black text-[#881337] uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
+      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] rounded-3xl p-6 sm:p-10 text-stone-900 relative overflow-hidden shadow-2xs border border-[#E8DFC8]">
+        <div className="max-w-xl space-y-2 z-10 relative">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#6B1D2F] uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
             <span>ZEHRA STUDIO CATALOG</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif italic font-extrabold text-[#18181B] tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#18181B] tracking-tight">
             {selectedCategory ? selectedCategory.replace(/-/g, ' ').toUpperCase() : 'ALL DRESS DESIGNS'}
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600">
+          <p className="text-xs sm:text-sm text-stone-600 font-normal">
             Handcrafted Pakistani Pret, Micro Velvet Luxury, and Pure Chiffon Formals with free express delivery across Pakistan.
           </p>
         </div>
       </div>
 
       {/* Filter Sidebar & Product Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
         {/* Left Filter Sidebar */}
         <div className="space-y-6 lg:col-span-1">
-          <div className="bg-white p-6 rounded-3xl border border-stone-200 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-xs font-extrabold text-[#18181B] uppercase tracking-wider pb-3 border-b border-stone-100">
-              <Filter className="w-4 h-4 text-[#881337]" />
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#18181B] uppercase tracking-wider pb-3 border-b border-stone-100">
+              <Filter className="w-4 h-4 text-[#6B1D2F]" />
               <span>Filter By Category</span>
             </div>
 
@@ -123,7 +135,7 @@ function ShopContent() {
                 href="/shop"
                 className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                   !selectedCategory 
-                    ? 'bg-rose-50 text-[#881337] font-bold' 
+                    ? 'bg-rose-50 text-[#6B1D2F] font-bold' 
                     : 'text-stone-700 hover:bg-stone-50'
                 }`}
               >
@@ -135,7 +147,7 @@ function ShopContent() {
                   href={`/shop?category=${cat.slug}`}
                   className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                     selectedCategory === cat.slug 
-                      ? 'bg-rose-50 text-[#881337] font-bold' 
+                      ? 'bg-rose-50 text-[#6B1D2F] font-bold' 
                       : 'text-stone-700 hover:bg-stone-50'
                   }`}
                 >

@@ -39,6 +39,7 @@ export interface Product {
   sizes: string[];
   is_featured?: boolean;
   is_new?: boolean;
+  is_top_sale?: boolean;
   rating?: number;
   reviews_count?: number;
   created_at?: string;
@@ -90,29 +91,36 @@ export const MOCK_CATEGORIES: Category[] = [
   },
   { 
     id: '2', 
-    name: 'Pret & Co-Ords', 
-    slug: 'pret-co-ords', 
+    name: 'Ready To Wear', 
+    slug: 'ready-to-wear', 
     image: '', 
     item_count: 0 
   },
   { 
     id: '3', 
-    name: 'Velvet & Silk Couture', 
-    slug: 'velvet-silk-couture', 
+    name: 'Raw Silk & Chiffon', 
+    slug: 'raw-silk-chiffon', 
     image: '', 
     item_count: 0 
   },
   { 
     id: '4', 
-    name: 'Chiffon & Organza Formals', 
-    slug: 'chiffon-organza-formals', 
+    name: 'Velvet Festive', 
+    slug: 'velvet-festive', 
     image: '', 
     item_count: 0 
   },
   { 
     id: '5', 
-    name: 'Bridal & Formals', 
-    slug: 'bridal-formals', 
+    name: 'Bridal & Couture', 
+    slug: 'bridal-couture', 
+    image: '', 
+    item_count: 0 
+  },
+  { 
+    id: '6', 
+    name: 'Top Sale & Clearance', 
+    slug: 'sale-clearance', 
     image: '', 
     item_count: 0 
   }
@@ -140,75 +148,16 @@ export function getStoredProducts(): Product[] {
 }
 
 // -----------------------------------------------------------------------------
-// PRODUCTS API (SUPABASE FIRST + LOCAL PERSISTENCE)
+// PRODUCTS API (GUARANTEED ALL 72+ LIVE PRODUCTS FETCHING + FAST STREAMING)
 // -----------------------------------------------------------------------------
 
-export async function getProducts(categorySlug?: string): Promise<Product[]> {
-  // 1. Initial cached return for instant 0ms UI render
-  if (typeof window !== 'undefined' && (!memoryProductsCache || memoryProductsCache.length === 0)) {
-    try {
-      const cached = localStorage.getItem('zehra_live_supabase_products');
-      if (cached) {
-        memoryProductsCache = JSON.parse(cached);
-      }
-    } catch (e) {
-      console.warn('Cache parse notice:', e);
-    }
-  }
-
-  // 2. Fetch fresh live data from Supabase in fast parallel chunks
-  try {
-    const chunkPromises = [
-      supabase.from('products').select('*').range(0, 7),
-      supabase.from('products').select('*').range(8, 15),
-      supabase.from('products').select('*').range(16, 23),
-      supabase.from('products').select('*').range(24, 31),
-      supabase.from('products').select('*').range(32, 39)
-    ];
-
-    const results = await Promise.allSettled(chunkPromises);
-    const fetched: Product[] = [];
-
-    for (const res of results) {
-      if (res.status === 'fulfilled' && res.value.data && res.value.data.length > 0) {
-        fetched.push(...(res.value.data as Product[]));
-      }
-    }
-
-    if (fetched.length > 0) {
-      // Deduplicate by ID
-      const seen = new Set<string>();
-      const deduped = fetched.filter(p => {
-        if (!p.id || seen.has(p.id)) return false;
-        seen.add(p.id);
-        return true;
-      });
-
-      memoryProductsCache = deduped;
-
-      if (typeof window !== 'undefined') {
-        try {
-          localStorage.setItem('zehra_live_supabase_products', JSON.stringify(deduped));
-        } catch (e) {
-          console.warn('Storage quota notice:', e);
-        }
-      }
-
-      if (categorySlug && categorySlug !== 'all') {
-        const term = categorySlug.toLowerCase().replace(/-/g, ' ');
-        return deduped.filter(p => 
-          p.category?.toLowerCase().includes(term) || 
-          p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
-        );
-      }
-      return deduped;
-    }
-  } catch (err) {
-    console.warn('Supabase getProducts notice:', err);
-  }
-
-  // 3. Fallback to memory / local cache
-  if (memoryProductsCache && memoryProductsCache.length > 0) {
+export async function getProducts(
+  categorySlug?: string,
+  onPartialLoad?: (products: Product[]) => void
+): Promise<Product[]> {
+  // 1. If memory cache already has full 70+ live items, serve instantly
+  if (memoryProductsCache && memoryProductsCache.length >= 70) {
+    if (onPartialLoad) onPartialLoad(memoryProductsCache);
     if (categorySlug && categorySlug !== 'all') {
       const term = categorySlug.toLowerCase().replace(/-/g, ' ');
       return memoryProductsCache.filter(p => 
@@ -219,10 +168,113 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
     return memoryProductsCache;
   }
 
+  // 2. If valid localStorage cache exists, hydrate UI first for 0ms initial render, then refresh from live DB
+  if (typeof window !== 'undefined') {
+    try {
+      const cached = localStorage.getItem('zehra_live_supabase_v2');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length >= 70) {
+          memoryProductsCache = parsed;
+          if (onPartialLoad) onPartialLoad(parsed);
+          if (categorySlug && categorySlug !== 'all') {
+            const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+            return parsed.filter(p => 
+              p.category?.toLowerCase().includes(term) || 
+              p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+            );
+          }
+          return parsed;
+        } else if (Array.isArray(parsed) && parsed.length > 0) {
+          // Stale cache: provide initial render preview but DO NOT return early so live 72 items get fetched
+          if (onPartialLoad) onPartialLoad(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Cache parse notice:', e);
+    }
+  }
+
+  // 3. Fetch all live products from Supabase in safe batches of 15 (retrieving all 72 items)
+  try {
+    const limit = 15;
+    let offset = 0;
+    let hasMore = true;
+    const fetchedLiveList: Product[] = [];
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (!error && data && Array.isArray(data) && data.length > 0) {
+        fetchedLiveList.push(...(data as Product[]));
+        // Progressive UI streaming
+        if (onPartialLoad) {
+          onPartialLoad([...fetchedLiveList]);
+        }
+        if (data.length < limit || offset >= 300) {
+          hasMore = false;
+        } else {
+          offset += limit;
+        }
+      } else {
+        hasMore = false;
+      }
+    }
+
+    if (fetchedLiveList.length > 0) {
+      memoryProductsCache = fetchedLiveList;
+
+      if (typeof window !== 'undefined') {
+        try {
+          // Clear any old key and save fresh live catalog
+          localStorage.removeItem('zehra_live_supabase_products');
+          localStorage.setItem('zehra_live_supabase_v2', JSON.stringify(fetchedLiveList.slice(0, 35)));
+        } catch (e) {
+          console.warn('Storage quota notice:', e);
+        }
+      }
+
+      if (categorySlug && categorySlug !== 'all') {
+        const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+        return fetchedLiveList.filter(p => 
+          p.category?.toLowerCase().includes(term) || 
+          p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+        );
+      }
+      return fetchedLiveList;
+    }
+  } catch (err) {
+    console.warn('Supabase getProducts notice:', err);
+  }
+
+  // 4. Fallback
+  const localList = memoryProductsCache || getStoredProducts();
+  if (localList && localList.length > 0) {
+    if (onPartialLoad) onPartialLoad(localList);
+    if (categorySlug && categorySlug !== 'all') {
+      const term = categorySlug.toLowerCase().replace(/-/g, ' ');
+      return localList.filter(p => 
+        p.category?.toLowerCase().includes(term) || 
+        p.category?.toLowerCase().replace(/\s+/g, '-').includes(categorySlug.toLowerCase())
+      );
+    }
+    return localList;
+  }
+
   return [];
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  // First check memory cache
+  if (memoryProductsCache && memoryProductsCache.length > 0) {
+    const found = memoryProductsCache.find(p => p.slug === slug || p.id === slug);
+    if (found) return found;
+  }
+
   try {
     const { data, error } = await supabase
       .from('products')
@@ -658,11 +710,11 @@ export async function getCategories(): Promise<Category[]> {
   // Standard predefined base list
   const baseCategories = [
     'Luxury Pret',
-    'Silk Formals',
-    'Pret & Co-Ords',
-    'Velvet & Silk Couture',
-    'Chiffon & Organza Formals',
-    'Bridal & Formals'
+    'Ready To Wear',
+    'Raw Silk & Chiffon',
+    'Velvet Festive',
+    'Bridal & Couture',
+    'Top Sale & Clearance'
   ];
 
   // Merge unique names

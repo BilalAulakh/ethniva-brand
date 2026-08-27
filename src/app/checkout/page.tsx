@@ -73,8 +73,8 @@ export default function CheckoutPage() {
             <Check className="w-10 h-10" />
           </div>
           <div className="space-y-2">
-            <span className="text-xs font-black text-[#881337] uppercase tracking-[0.3em]">ORDER CONFIRMED &bull; ZEHRA STUDIO</span>
-            <h1 className="text-3xl sm:text-4xl font-serif italic font-extrabold text-[#18181B]">Shukriya, {formData.name}!</h1>
+            <span className="text-xs font-bold text-[#6B1D2F] uppercase tracking-[0.25em]">ORDER CONFIRMED &bull; ZEHRA STUDIO</span>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B]">Shukriya, {formData.name}!</h1>
             <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
               Aap ka order <strong className="text-[#881337] font-mono">{placedOrderId}</strong> successfully record ho chuka hai. Hamari team dispatch update ke liye aap se contact karegi.
             </p>
@@ -117,8 +117,8 @@ export default function CheckoutPage() {
     return (
       <div className="bg-[#FAF9F6] min-h-screen py-24 text-[#18181B]">
         <div className="max-w-md mx-auto px-4 text-center space-y-4">
-          <ShoppingBag className="w-16 h-16 text-[#881337] mx-auto opacity-70" />
-          <h2 className="text-2xl font-serif italic font-extrabold text-[#18181B]">Your Bag is Empty</h2>
+          <ShoppingBag className="w-14 h-14 text-[#6B1D2F] mx-auto opacity-75" />
+          <h2 className="text-2xl font-bold text-[#18181B]">Your Bag is Empty</h2>
           <p className="text-xs text-stone-600">Add luxury pret designs to your shopping cart to proceed to checkout.</p>
           <Link href="/shop" className="inline-block btn-luxury-gold text-xs font-black uppercase tracking-widest px-8 py-3.5 rounded-full transition-all shadow-xl">
             Explore Catalog
@@ -139,8 +139,8 @@ export default function CheckoutPage() {
           {/* Shipping & Payment Form */}
           <form onSubmit={handleSubmit} className="lg:col-span-7 bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 space-y-6 shadow-md">
             <div>
-              <span className="text-[10px] font-black text-[#881337] uppercase tracking-[0.25em]">EXPRESS SHIPPING PAKISTAN</span>
-              <h1 className="text-2xl font-serif italic font-extrabold text-[#18181B] mt-1">Delivery &amp; Billing Details</h1>
+              <span className="text-[10px] font-bold text-[#6B1D2F] uppercase tracking-[0.25em]">EXPRESS SHIPPING PAKISTAN</span>
+              <h1 className="text-2xl font-bold text-[#18181B] mt-1">Delivery &amp; Billing Details</h1>
             </div>
 
             <div className="space-y-4">
@@ -276,7 +276,7 @@ export default function CheckoutPage() {
 
           {/* Order Items Summary Column */}
           <div className="lg:col-span-5 bg-white rounded-3xl border border-stone-200 p-6 space-y-6 shadow-md">
-            <h2 className="text-lg font-serif italic font-extrabold text-[#18181B] pb-3 border-b border-stone-200">
+            <h2 className="text-base font-bold text-[#18181B] pb-3 border-b border-stone-200 uppercase tracking-wider">
               Order Summary ({cart.length} Items)
             </h2>
 
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
                   {deliveryCharges === 0 ? <strong className="text-emerald-700 font-bold">FREE</strong> : `RS. ${deliveryCharges}`}
                 </span>
               </div>
-              <div className="flex justify-between text-sm font-serif font-black text-[#18181B] pt-2 border-t border-stone-200">
+              <div className="flex justify-between text-sm font-bold text-[#18181B] pt-2 border-t border-stone-200">
                 <span>Total Payable Amount</span>
                 <span className="text-[#881337]">RS. {finalGrandTotal.toLocaleString()}</span>
               </div>

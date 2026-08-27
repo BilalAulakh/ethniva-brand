@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { Navbar } from '@/components/Navbar';
@@ -8,7 +8,7 @@ import { CartDrawer } from '@/components/CartDrawer';
 import { QuickViewModal } from '@/components/QuickViewModal';
 import { WhatsAppWidget } from '@/components/WhatsAppWidget';
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-sans',
@@ -26,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen flex flex-col antialiased bg-[#FAF9F6] text-[#18181B] selection:bg-[#C7A76C] selection:text-white text-[13px] sm:text-[14px]">
+    <html lang="en" className={plusJakarta.variable}>
+      <body className="min-h-screen flex flex-col antialiased bg-[#FCFAF7] text-[#18181B] selection:bg-[#C5A880] selection:text-white text-[13px] sm:text-[14px] overflow-x-hidden font-sans">
         <CartProvider>
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 w-full overflow-x-hidden">
             {children}
           </main>
           <Footer />

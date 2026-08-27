@@ -1,68 +1,73 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: var(--font-sans), 'Inter', sans-serif;
+  --font-sans: var(--font-sans), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: var(--font-sans), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {
   :root {
     --bg-canvas: #FFFFFF;
-    --bg-surface: #FAF9F6;
+    --bg-surface: #FCFAF7;
     --primary-text: #18181B;
     --secondary-text: #52525B;
-    --accent-gold: #C7A76C;
-    --accent-gold-dark: #A88647;
-    --accent-rose: #881337;
-    --border-subtle: #E4E4E7;
+    --accent-gold: #C5A880;
+    --accent-gold-dark: #9E7D47;
+    --accent-rose: #6B1D2F;
+    --border-subtle: #E8E3DC;
+  }
+
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   body {
     background-color: var(--bg-surface);
     color: var(--primary-text);
-    font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    overflow-x: hidden;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sans);
     letter-spacing: -0.02em;
+    font-style: normal;
   }
 }
 
-/* Luxury Editorial Design System Utilities (White & Ivory Luxury Theme) */
+/* Luxury Editorial Design System Utilities */
 .bg-canvas {
   background-color: #FFFFFF;
 }
 
 .bg-ivory {
-  background-color: #FAF9F6;
+  background-color: #FCFAF7;
 }
 
 .bg-champagne {
-  background-color: #FAF6F0;
+  background-color: #F8F4ED;
 }
 
 .text-gold {
-  color: #C7A76C;
+  color: #C5A880;
 }
 
 .text-gold-dark {
-  color: #967432;
+  color: #9E7D47;
 }
 
 .border-gold {
-  border-color: #C7A76C;
+  border-color: #C5A880;
 }
 
 .border-gold-light {
-  border-color: rgba(199, 167, 108, 0.35);
+  border-color: rgba(197, 168, 128, 0.35);
 }
 
 .bg-gold {
-  background-color: #C7A76C;
+  background-color: #C5A880;
 }
 
 /* Glassmorphism Frosted Panels (White Luxury) */
@@ -70,39 +75,39 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(199, 167, 108, 0.3);
+  border: 1px solid rgba(197, 168, 128, 0.25);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
 }
 
 .glass-panel-white {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(228, 228, 231, 0.8);
+  border: 1px solid rgba(232, 227, 220, 0.8);
 }
 
-/* Buttons */
+/* Luxury Buttons */
 .btn-luxury-gold {
-  background-color: #C7A76C;
+  background-color: #C5A880;
   color: #FFFFFF;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px 0 rgba(199, 167, 108, 0.35);
+  box-shadow: 0 4px 14px 0 rgba(197, 168, 128, 0.35);
 }
 
 .btn-luxury-gold:hover {
-  background-color: #881337;
+  background-color: #6B1D2F;
   color: #FFFFFF;
-  box-shadow: 0 8px 20px -3px rgba(136, 19, 55, 0.4);
+  box-shadow: 0 8px 20px -3px rgba(107, 29, 47, 0.4);
   transform: translateY(-1px);
 }
 
 .btn-luxury-outline {
   background-color: #FFFFFF;
   color: #18181B;
-  border: 1.5px solid #E4E4E7;
+  border: 1.5px solid #E8E3DC;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -111,65 +116,65 @@
 }
 
 .btn-luxury-outline:hover {
-  background-color: #FAF9F6;
-  border-color: #C7A76C;
-  color: #881337;
+  background-color: #FCFAF7;
+  border-color: #C5A880;
+  color: #6B1D2F;
   transform: translateY(-1px);
 }
 
 .brand-btn-primary {
-  background-color: #881337;
+  background-color: #6B1D2F;
   color: #FFFFFF;
   font-weight: 800;
   letter-spacing: 0.1em;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px 0 rgba(136, 19, 55, 0.3);
+  box-shadow: 0 4px 14px 0 rgba(107, 29, 47, 0.3);
 }
 
 .brand-btn-primary:hover {
-  background-color: #C7A76C;
+  background-color: #C5A880;
   color: #FFFFFF;
-  box-shadow: 0 8px 20px -3px rgba(199, 167, 108, 0.45);
+  box-shadow: 0 8px 20px -3px rgba(197, 168, 128, 0.45);
   transform: translateY(-1px);
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {
-  0% { opacity: 0; transform: scale(0.94) translateY(6px); }
+  0% { opacity: 0; transform: scale(0.96) translateY(4px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-down {
-  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* React Shimmer Skeleton Utilities */
+/* Shimmer Skeleton Utilities */
 .shimmer-effect {
   background: linear-gradient(
     90deg,
-    #F3F1EC 0%,
-    #FAF9F6 25%,
-    #E8E4DB 50%,
-    #FAF9F6 75%,
-    #F3F1EC 100%
+    #F4F1EA 0%,
+    #FCFAF7 25%,
+    #ECE8DF 50%,
+    #FCFAF7 75%,
+    #F4F1EA 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -178,11 +183,11 @@
 .shimmer-gold {
   background: linear-gradient(
     90deg,
-    rgba(245, 243, 238, 0.8) 0%,
+    rgba(248, 244, 237, 0.8) 0%,
     rgba(255, 255, 255, 0.95) 30%,
-    rgba(232, 223, 200, 0.6) 50%,
+    rgba(235, 227, 212, 0.6) 50%,
     rgba(255, 255, 255, 0.95) 70%,
-    rgba(245, 243, 238, 0.8) 100%
+    rgba(248, 244, 237, 0.8) 100%
   );
   background-size: 250% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
@@ -191,14 +196,19 @@
 .shimmer-card {
   background: linear-gradient(
     90deg,
-    #FAF9F6 0%,
+    #FCFAF7 0%,
     #FFFFFF 35%,
-    #EFECE6 50%,
+    #F1EDE4 50%,
     #FFFFFF 65%,
-    #FAF9F6 100%
+    #FCFAF7 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Custom Scrollbar for sliders */

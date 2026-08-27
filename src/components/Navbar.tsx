@@ -132,24 +132,24 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* 1. Header Announcement Bar (40px Height, Luxury Champagne Cream #FAF6F0, Golden Typography) */}
+      {/* 1. Header Announcement Bar (Sleek 34px Height, Warm Champagne #F8F4ED) */}
       {showTicker && (
-        <div className="h-[40px] bg-[#FAF6F0] text-[#785E2F] px-4 text-xs font-semibold flex items-center justify-between border-b border-[#E8DFC8] relative z-50 whitespace-nowrap">
-          <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-bold text-[#881337] tracking-wider whitespace-nowrap">
-            <Truck className="w-3.5 h-3.5 text-[#C7A76C] flex-shrink-0" />
+        <div className="h-[34px] bg-[#F8F4ED] text-[#785E2F] px-3 sm:px-4 text-[10.5px] sm:text-xs font-medium flex items-center justify-between border-b border-[#E8DFC8] relative z-50 overflow-hidden">
+          <div className="hidden lg:flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-[#6B1D2F] tracking-wider whitespace-nowrap">
+            <Truck className="w-3.5 h-3.5 text-[#C5A880] flex-shrink-0" />
             <span>FREE SHIPPING ACROSS PAKISTAN</span>
           </div>
 
           {/* Auto Sliding Ticker Message */}
-          <div className="flex-1 text-center font-extrabold tracking-wide flex items-center justify-center gap-3 whitespace-nowrap">
-            <span className="text-[#881337] transition-all duration-500 animate-fade-in whitespace-nowrap">
+          <div className="flex-1 text-center font-bold tracking-wide flex items-center justify-center gap-2 sm:gap-3 overflow-hidden px-1">
+            <span className="text-[#6B1D2F] transition-all duration-500 animate-fade-in text-[10px] sm:text-xs truncate">
               {tickerMessages[tickerIndex]}
             </span>
-            <div className="hidden sm:flex items-center gap-1 font-mono text-[10px] font-bold text-[#785E2F] flex-shrink-0">
-              <span className="bg-white border border-[#C7A76C]/40 px-1.5 py-0.5 rounded shadow-xs">{String(timeLeft.days).padStart(2, '0')}D</span>
-              <span className="bg-white border border-[#C7A76C]/40 px-1.5 py-0.5 rounded shadow-xs">{String(timeLeft.hours).padStart(2, '0')}H</span>
-              <span className="bg-white border border-[#C7A76C]/40 px-1.5 py-0.5 rounded shadow-xs">{String(timeLeft.minutes).padStart(2, '0')}M</span>
-              <span className="bg-white border border-[#C7A76C]/40 px-1.5 py-0.5 rounded shadow-xs">{String(timeLeft.seconds).padStart(2, '0')}S</span>
+            <div className="hidden sm:flex items-center gap-1 font-mono text-[9.5px] font-bold text-[#785E2F] flex-shrink-0">
+              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.days).padStart(2, '0')}D</span>
+              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.hours).padStart(2, '0')}H</span>
+              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.minutes).padStart(2, '0')}M</span>
+              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.seconds).padStart(2, '0')}S</span>
             </div>
           </div>
 
@@ -158,26 +158,26 @@ export const Navbar: React.FC = () => {
               href="https://wa.me/923094329812" 
               target="_blank" 
               rel="noreferrer" 
-              className="flex items-center gap-1 font-extrabold text-[#881337] hover:text-[#785E2F] transition-colors"
+              className="flex items-center gap-1 font-bold text-[#6B1D2F] hover:text-[#C5A880] transition-colors"
             >
-              <Phone className="w-3 h-3 text-[#C7A76C]" />
-              <span>WHATSAPP / HELP: 0309 43 29 812</span>
+              <Phone className="w-3 h-3 text-[#C5A880]" />
+              <span>WHATSAPP: 0309 43 29 812</span>
             </a>
             <button 
               onClick={() => setShowTicker(false)}
-              className="p-1 hover:text-[#881337] transition-colors ml-2"
+              className="p-1 hover:text-[#6B1D2F] transition-colors ml-2"
               title="Close announcement"
             >
-              <X className="w-3.5 h-3.5 text-[#C7A76C]" />
+              <X className="w-3.5 h-3.5 text-stone-400 hover:text-stone-700" />
             </button>
           </div>
 
           <button 
             onClick={() => setShowTicker(false)}
-            className="lg:hidden p-1 hover:text-[#881337] transition-colors"
+            className="lg:hidden p-1 hover:text-[#6B1D2F] transition-colors flex-shrink-0"
             title="Close announcement"
           >
-            <X className="w-3.5 h-3.5 text-[#C7A76C]" />
+            <X className="w-3.5 h-3.5 text-stone-400" />
           </button>
         </div>
       )}
@@ -186,7 +186,7 @@ export const Navbar: React.FC = () => {
       <header 
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200/90 py-2 sm:py-2.5' 
+            ? 'bg-white/95 backdrop-blur-md shadow-xs border-b border-stone-200/80 py-2 sm:py-2.5' 
             : 'bg-white border-b border-stone-200 py-2.5 sm:py-3.5'
         }`}
       >
@@ -194,7 +194,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 text-stone-800 hover:text-[#881337] flex-shrink-0"
+            className="lg:hidden p-1.5 text-stone-800 hover:text-[#6B1D2F] flex-shrink-0"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
@@ -202,63 +202,63 @@ export const Navbar: React.FC = () => {
 
           {/* Left Brand Logo */}
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group flex-shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 xl:w-10 xl:h-10 rounded-full bg-[#FAF6F0] border border-[#C7A76C]/60 text-[#881337] flex items-center justify-center font-serif font-black text-xs sm:text-sm xl:text-lg tracking-tighter shadow-xs group-hover:bg-[#881337] group-hover:text-white transition-all">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 xl:w-10 xl:h-10 rounded-full bg-[#F8F4ED] border border-[#C5A880]/60 text-[#6B1D2F] flex items-center justify-center font-bold text-xs sm:text-sm xl:text-lg tracking-tighter shadow-2xs group-hover:bg-[#6B1D2F] group-hover:text-white transition-all">
               ZS
             </div>
             <div className="flex flex-col whitespace-nowrap">
-              <span className="font-serif font-bold text-base sm:text-lg xl:text-2xl tracking-[0.12em] sm:tracking-[0.15em] text-[#18181B] group-hover:text-[#881337] transition-colors leading-none">
+              <span className="font-bold text-base sm:text-lg xl:text-xl tracking-[0.12em] text-[#18181B] group-hover:text-[#6B1D2F] transition-colors leading-none">
                 ZEHRA STUDIO
               </span>
-              <span className="text-[7.5px] sm:text-[8px] xl:text-[9px] tracking-[0.25em] sm:tracking-[0.35em] text-[#C7A76C] uppercase font-extrabold mt-0.5 sm:mt-1">
+              <span className="text-[7.5px] sm:text-[8px] xl:text-[9px] tracking-[0.25em] sm:tracking-[0.3em] text-[#C5A880] uppercase font-bold mt-0.5 sm:mt-1">
                 LUXURY PRET &amp; COUTURE
               </span>
             </div>
           </Link>
 
           {/* Center Main Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-3 lg:gap-4 xl:gap-6 whitespace-nowrap flex-shrink">
+          <nav className="hidden lg:flex items-center gap-3 lg:gap-4 xl:gap-6 whitespace-nowrap flex-shrink font-sans">
             <Link 
               href="/" 
-              className="text-[11px] xl:text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#C7A76C]"
+              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
-              HOME
+              <span>HOME</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
             </Link>
 
             <Link 
               href="/shop?sort=newest" 
-              className="text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
+              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
               <span>NEW ARRIVALS</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C7A76C] group-hover/link:w-full transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
             </Link>
 
-            {/* Ready to Wear Mega Menu */}
+            {/* Ready to Wear Dropdown */}
             <div 
               className="relative py-2 group cursor-pointer whitespace-nowrap"
               onMouseEnter={() => setReadyToWearDropdownOpen(true)}
               onMouseLeave={() => setReadyToWearDropdownOpen(false)}
             >
               <Link 
-                href="/shop?category=luxury-pret" 
-                className="text-[12px] font-extrabold text-[#18181B] group-hover:text-[#881337] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
+                href="/shop?category=ready-to-wear" 
+                className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] group-hover:text-[#6B1D2F] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
               >
                 <span>READY TO WEAR</span>
-                <ChevronDown className="w-3.5 h-3.5 text-stone-500 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
+                <ChevronDown className="w-3.5 h-3.5 text-stone-400 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
               </Link>
 
               {readyToWearDropdownOpen && (
-                <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 p-4 z-50 animate-slide-down">
-                  <div className="text-[10px] font-black text-[#C7A76C] uppercase tracking-widest pb-2 border-b border-stone-100 mb-2">
-                    COLLECTIONS &amp; STYLES
+                <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 p-3.5 z-50 animate-slide-down">
+                  <div className="text-[9.5px] font-extrabold text-[#C5A880] uppercase tracking-widest pb-2 border-b border-stone-100 mb-1.5">
+                    COLLECTIONS &amp; CATEGORIES
                   </div>
-                  <ul className="space-y-1.5 text-xs font-bold text-stone-700">
-                    <li><Link href="/shop?category=luxury-pret" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Luxury Pret</Link></li>
-                    <li><Link href="/shop?category=silk-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Silk Formals</Link></li>
-                    <li><Link href="/shop?category=pret-co-ords" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Pret &amp; Co-Ords</Link></li>
-                    <li><Link href="/shop?category=velvet-silk-couture" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Velvet &amp; Silk Couture</Link></li>
-                    <li><Link href="/shop?category=chiffon-organza-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Chiffon &amp; Organza</Link></li>
-                    <li><Link href="/shop?category=bridal-formals" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#881337] transition-all">Bridal &amp; Formals</Link></li>
-                    <li className="pt-2 border-t border-stone-100"><Link href="/shop" className="block px-3 py-1.5 text-[#881337] font-black underline">View All Ready To Wear &rarr;</Link></li>
+                  <ul className="space-y-1 text-xs font-semibold text-stone-700">
+                    <li><Link href="/shop?category=luxury-pret" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Luxury Pret</Link></li>
+                    <li><Link href="/shop?category=ready-to-wear" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Ready To Wear</Link></li>
+                    <li><Link href="/shop?category=raw-silk-chiffon" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Raw Silk &amp; Chiffon</Link></li>
+                    <li><Link href="/shop?category=velvet-festive" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Velvet Festive</Link></li>
+                    <li><Link href="/shop?category=bridal-couture" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Bridal &amp; Couture</Link></li>
+                    <li className="pt-1.5 border-t border-stone-100"><Link href="/shop" className="block px-3 py-1.5 text-[#6B1D2F] font-bold">View All Catalog &rarr;</Link></li>
                   </ul>
                 </div>
               )}
@@ -272,71 +272,62 @@ export const Navbar: React.FC = () => {
             >
               <Link 
                 href="/shop?category=luxury-pret" 
-                className="text-[12px] font-extrabold text-[#18181B] group-hover:text-[#881337] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
+                className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] group-hover:text-[#6B1D2F] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
               >
                 <span>LUXURY PRET</span>
-                <ChevronDown className="w-3.5 h-3.5 text-stone-500 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
+                <ChevronDown className="w-3.5 h-3.5 text-stone-400 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
               </Link>
 
               {luxuryPretDropdownOpen && (
-                <div className="absolute top-full left-0 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 p-2 z-50 animate-slide-down">
-                  <Link href="/shop?category=luxury-pret" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
-                    Luxury Pret Collection
+                <div className="absolute top-full left-0 w-56 bg-white rounded-2xl shadow-xl border border-stone-200 p-2.5 z-50 animate-slide-down">
+                  <Link href="/shop?category=luxury-pret" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
+                    Luxury Pret Formals
                   </Link>
-                  <Link href="/shop?category=velvet-silk-couture" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
-                    Velvet &amp; Silk Couture
+                  <Link href="/shop?category=velvet-festive" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
+                    Velvet Festive Edit
                   </Link>
-                  <Link href="/shop?category=silk-formals" className="block px-3 py-2 text-xs font-bold text-stone-800 hover:bg-rose-50 hover:text-[#881337] rounded-xl">
-                    Silk Formals
+                  <Link href="/shop?category=raw-silk-chiffon" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
+                    Raw Silk &amp; Chiffon
                   </Link>
                 </div>
               )}
             </div>
 
             <Link 
-              href="/shop?category=chiffon-organza-formals" 
-              className="text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
+              href="/shop?category=sale-clearance" 
+              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#6B1D2F] hover:text-[#18181B] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
-              <span>FORMALS</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C7A76C] group-hover/link:w-full transition-all duration-300" />
-            </Link>
-
-            <Link 
-              href="/shop?sort=price-low" 
-              className="text-[11px] xl:text-[12px] font-extrabold text-[#881337] hover:text-[#18181B] transition-colors uppercase tracking-wider py-2 whitespace-nowrap"
-            >
-              SALE
+              <span>TOP SALE</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#6B1D2F] group-hover/link:w-full transition-all duration-300" />
             </Link>
 
             <Link 
               href="/contact" 
-              className="text-[11px] xl:text-[12px] font-extrabold text-[#18181B] hover:text-[#881337] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
+              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
             >
               <span>CONTACT</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C7A76C] group-hover/link:w-full transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
             </Link>
           </nav>
 
-          {/* Right Action Icons & Currency Selector */}
-          <div className="flex items-center gap-1 sm:gap-2 xl:gap-3 flex-shrink-0">
-            {/* Compact Admin Portal Button */}
-            <button 
-              onClick={handleAdminLinkClick}
-              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#FAF6F0] hover:bg-[#881337] text-[#881337] hover:text-white border border-[#C7A76C]/60 text-[10px] sm:text-[11px] font-black tracking-wider uppercase transition-all shadow-2xs group flex-shrink-0"
-              title="Store Admin Dashboard"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#C7A76C] group-hover:text-white transition-colors flex-shrink-0" />
-              <span className="hidden sm:inline">Admin Portal</span>
-              <span className="sm:hidden">Admin</span>
-            </button>
-
+          {/* Right Action Icons */}
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Search Trigger */}
             <button 
               onClick={() => setSearchOpen(true)}
-              className="p-1.5 sm:p-2 text-stone-800 hover:text-[#881337] hover:bg-stone-50 rounded-full transition-colors flex-shrink-0"
-              title="Search"
+              className="p-1.5 sm:p-2 text-stone-800 hover:text-[#6B1D2F] hover:bg-stone-50 rounded-full transition-colors flex-shrink-0"
+              title="Search Catalog"
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+
+            {/* Discrete Luxury Admin Link */}
+            <button 
+              onClick={handleAdminLinkClick}
+              className="p-1.5 sm:p-2 text-stone-500 hover:text-[#6B1D2F] hover:bg-stone-100 rounded-full transition-colors flex-shrink-0"
+              title="Admin Portal"
+            >
+              <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C5A880] hover:text-[#6B1D2F]" />
             </button>
           </div>
         </div>
@@ -344,22 +335,26 @@ export const Navbar: React.FC = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
-            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
-            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#881337] py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT: 0309 43 29 812</Link>
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
+            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
+            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
+            <Link href="/shop?category=raw-silk-chiffon" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">RAW SILK &amp; CHIFFON</Link>
+            <Link href="/shop?category=velvet-festive" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">VELVET FESTIVE</Link>
+            <Link href="/shop?category=sale-clearance" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">TOP SALE &amp; CLEARANCE</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-700 py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT: 0309 43 29 812</Link>
             <button 
               onClick={(e) => {
                 setMobileMenuOpen(false);
                 handleAdminLinkClick(e);
               }} 
-              className="w-full flex items-center justify-between text-xs font-black text-white bg-[#881337] px-4 py-3 rounded-2xl shadow-md uppercase tracking-wider mt-2"
+              className="w-full flex items-center justify-between text-xs font-bold text-stone-700 bg-stone-100 hover:bg-[#6B1D2F] hover:text-white px-4 py-3 rounded-2xl transition-all uppercase tracking-wider mt-2 border border-stone-200"
             >
               <span className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#C7A76C]" />
-                ADMIN DASHBOARD
+                <Lock className="w-4 h-4 text-[#C5A880]" />
+                ADMIN PORTAL
               </span>
-              <ArrowRight className="w-4 h-4 text-[#C7A76C]" />
+              <ArrowRight className="w-4 h-4 text-stone-400" />
             </button>
           </div>
         )}
@@ -371,7 +366,7 @@ export const Navbar: React.FC = () => {
           <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border border-[#E8DFC8] shadow-2xl p-6 sm:p-8 space-y-6 animate-scale-in relative overflow-hidden">
             
             {/* Top Gold Ornament */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C7A76C] via-[#881337] to-[#C7A76C]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C5A880] via-[#6B1D2F] to-[#C5A880]" />
 
             {/* Close Button */}
             <button 
@@ -384,13 +379,13 @@ export const Navbar: React.FC = () => {
 
             {/* Header */}
             <div className="text-center space-y-2 pt-2">
-              <div className="w-13 h-13 rounded-2xl bg-[#881337] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#881337]/20">
+              <div className="w-13 h-13 rounded-2xl bg-[#6B1D2F] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#6B1D2F]/20">
                 <Lock className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-black text-[#C7A76C] uppercase tracking-[0.3em] block">
+              <span className="text-[10px] font-black text-[#C5A880] uppercase tracking-[0.3em] block">
                 ADMIN ACCESS REQUIRED
               </span>
-              <h3 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#18181B]">
                 Store Admin Portal
               </h3>
               <p className="text-xs text-stone-500 max-w-xs mx-auto">
@@ -417,8 +412,8 @@ export const Navbar: React.FC = () => {
                   required
                   value={adminEmail}
                   onChange={e => setAdminEmail(e.target.value)}
-                  placeholder="admin@zehrastudio.pk"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                  placeholder="zehrastudio3322@gmail.com"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#6B1D2F] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
                 />
               </div>
 
@@ -430,7 +425,7 @@ export const Navbar: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowAdminPassword(!showAdminPassword)}
-                    className="text-[10px] text-[#881337] font-semibold hover:underline"
+                    className="text-[10px] text-[#6B1D2F] font-semibold hover:underline"
                   >
                     {showAdminPassword ? 'Hide' : 'Show'}
                   </button>
@@ -441,20 +436,20 @@ export const Navbar: React.FC = () => {
                   value={adminPassword}
                   onChange={e => setAdminPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#6B1D2F] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isAdminLoggingIn}
-                className={`w-full py-3.5 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#881337]/30 flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 bg-[#6B1D2F] hover:bg-[#521423] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#6B1D2F]/30 flex items-center justify-center gap-2 ${
                   isAdminLoggingIn ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.01] active:scale-[0.99]'
                 }`}
               >
                 {isAdminLoggingIn ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#C7A76C]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A880]" />
                     <span>Verifying Master Access...</span>
                   </>
                 ) : (
@@ -465,34 +460,6 @@ export const Navbar: React.FC = () => {
                 )}
               </button>
             </form>
-
-            {/* Quick Credentials Demo Box */}
-            {/* <div className="bg-[#FAF7F2] border border-[#E8DFC8] rounded-2xl p-3.5 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[10px] font-black text-[#881337] uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
-                  <span>Demo Credentials</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={fillAdminDemo}
-                  className="text-[10px] font-bold text-[#881337] bg-white border border-[#C7A76C]/40 px-2 py-0.5 rounded-md hover:bg-[#881337] hover:text-white transition-all shadow-2xs"
-                >
-                  1-Click Auto Fill
-                </button>
-              </div>
-
-              <div className="text-[11px] space-y-1 font-mono text-stone-700 bg-white/70 p-2.5 rounded-lg border border-stone-200/60">
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Email:</span>
-                  <span className="font-bold text-[#18181B]">zehrastudio3322@gmail.com</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Password:</span>
-                  <span className="font-bold text-[#881337]">zehra2026 (or admin12345)</span>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       )}
@@ -505,7 +472,7 @@ export const Navbar: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center space-y-1">
-              <div className="w-12 h-12 bg-rose-50 text-[#881337] rounded-full flex items-center justify-center mx-auto mb-2 font-bold text-lg">ZS</div>
+              <div className="w-12 h-12 bg-rose-50 text-[#6B1D2F] rounded-full flex items-center justify-center mx-auto mb-2 font-bold text-lg">ZS</div>
               <h3 className="text-lg font-bold text-[#18181B]">Zehra Studio Account Login</h3>
               <p className="text-xs text-stone-500">Sign in to track orders and save custom body measurements.</p>
             </div>
@@ -516,7 +483,7 @@ export const Navbar: React.FC = () => {
                 value={customerEmail}
                 onChange={e => setCustomerEmail(e.target.value)}
                 placeholder="Phone Number or Email" 
-                className="w-full bg-[#FAF9F6] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C7A76C]" 
+                className="w-full bg-[#FCFAF7] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880]" 
               />
               <input 
                 type="password" 
@@ -524,12 +491,12 @@ export const Navbar: React.FC = () => {
                 value={customerPassword}
                 onChange={e => setCustomerPassword(e.target.value)}
                 placeholder="Password" 
-                className="w-full bg-[#FAF9F6] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C7A76C]" 
+                className="w-full bg-[#FCFAF7] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880]" 
               />
               <button 
                 type="submit"
                 disabled={isCustomerLoggingIn}
-                className="w-full btn-luxury-gold py-3.5 rounded-xl text-xs font-black tracking-wider uppercase flex items-center justify-center gap-2 disabled:opacity-75"
+                className="w-full btn-luxury-gold py-3.5 rounded-xl text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2 disabled:opacity-75"
               >
                 {isCustomerLoggingIn ? (
                   <>
@@ -550,34 +517,48 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Search Modal */}
+      {/* Search Modal (Fully responsive, no mobile cutoff) */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
-          <div className="bg-white border border-stone-200 rounded-3xl w-full max-w-2xl p-6 shadow-2xl relative">
-            <button onClick={() => setSearchOpen(false)} className="absolute top-4 right-4 text-stone-400 hover:text-stone-700">
-              <X className="w-6 h-6" />
-            </button>
-            <h3 className="text-lg font-bold text-[#18181B] mb-4 flex items-center gap-2">
-              <Search className="w-5 h-5 text-[#881337]" />
-              <span>Search ZEHRA STUDIO Catalog</span>
-            </h3>
-            <div className="flex gap-2">
+        <div className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-start justify-center pt-16 sm:pt-24 px-3 sm:px-4 animate-fade-in">
+          <div className="bg-white border border-stone-200 rounded-3xl w-full max-w-xl p-5 sm:p-7 shadow-2xl relative space-y-4 animate-scale-in">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base sm:text-lg font-bold text-[#18181B] flex items-center gap-2">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#6B1D2F]" />
+                <span>Search Catalog</span>
+              </h3>
+              <button 
+                onClick={() => setSearchOpen(false)} 
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  setSearchOpen(false);
+                  router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
+              className="flex items-center gap-2 w-full"
+            >
               <input 
                 type="text" 
-                placeholder="Search by dress name, fabric (Velvet, Lawn, Chiffon)..." 
+                placeholder="Search by dress name, fabric, style..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-[#FAF9F6] border border-stone-300 rounded-2xl px-4 py-3 text-sm text-stone-900 focus:outline-none focus:border-[#C7A76C]"
+                className="flex-1 min-w-0 bg-[#FCFAF7] border border-stone-300 focus:border-[#C5A880] rounded-xl sm:rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
                 autoFocus
               />
-              <Link 
-                href={`/shop?search=${encodeURIComponent(searchQuery)}`}
-                onClick={() => setSearchOpen(false)}
-                className="btn-luxury-gold px-6 py-3 rounded-2xl text-xs flex items-center"
+              <button 
+                type="submit"
+                className="btn-luxury-gold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider flex-shrink-0 whitespace-nowrap shadow-sm"
               >
                 Search
-              </Link>
-            </div>
+              </button>
+            </form>
           </div>
         </div>
       )}
