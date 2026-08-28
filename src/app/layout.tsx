@@ -25,7 +25,12 @@ export const metadata: Metadata = {
   title: 'ETHNIVA | Luxury Fashion & Modern Clothing Brand',
   description: 'ETHNIVA is a luxury and modern fashion clothing brand focused on elegance, confidence, timeless style, and premium quality.',
   icons: {
-    icon: '/logo.jpg',
+    icon: [
+      { url: '/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/logo.jpg', sizes: 'any' },
+    ],
+    shortcut: '/logo.jpg',
+    apple: '/logo.jpg',
   },
 };
 
