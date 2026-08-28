@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { 
-  ShoppingBag, Search, User, Heart, ChevronDown, 
+  ShoppingBag, Search, User, Heart, ChevronDown, ChevronLeft, ChevronRight,
   Menu, X, Sparkles, Check, Truck, ShieldCheck, AlertCircle, ArrowRight,
   Loader2, Lock, KeyRound, Eye, EyeOff, Phone
 } from 'lucide-react';
@@ -14,7 +14,7 @@ import { useCart } from '@/context/CartContext';
 export const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { cartCount, wishlistCount, setIsCartOpen } = useCart();
+  const { cartCount, wishlist, wishlistCount, setIsCartOpen } = useCart();
   const [showTicker, setShowTicker] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -49,9 +49,10 @@ export const Navbar: React.FC = () => {
     const cleanPass = adminPassword.trim();
 
     if (
-      (cleanEmail === 'zehrastudio3322@gmail.com' || cleanEmail === 'admin@zehrastudio.pk' || cleanEmail === 'admin' || cleanEmail === 'zehra' || cleanEmail === 'admin@zehra.com') &&
-      (cleanPass === 'zehra2026' || cleanPass === 'admin12345' || cleanPass === '7860')
+      (cleanEmail === 'ethnivabrand@gmail.com' || cleanEmail === 'admin@ethniva.com' || cleanEmail === 'admin' || cleanEmail === 'ethniva' || cleanEmail === 'zehrastudio3322@gmail.com') &&
+      (cleanPass === 'ethniva2026' || cleanPass === 'zehra2026' || cleanPass === 'admin12345' || cleanPass === '7860')
     ) {
+      localStorage.setItem('ethniva_admin_auth', 'authenticated_true');
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
       setIsAdminLoggingIn(false);
       setAdminAuthModalOpen(false);
@@ -63,8 +64,8 @@ export const Navbar: React.FC = () => {
   };
 
   const fillAdminDemo = () => {
-    setAdminEmail('zehrastudio3322@gmail.com');
-    setAdminPassword('zehra2026');
+    setAdminEmail('ethnivabrand@gmail.com');
+    setAdminPassword('ethniva2026');
   };
 
   // Customer Account Login States
@@ -89,7 +90,7 @@ export const Navbar: React.FC = () => {
   // Auto sliding ticker message index
   const [tickerIndex, setTickerIndex] = useState(0);
   const tickerMessages = [
-    '👑 EID LUXURY FESTIVE EDIT ’26 — FLAT 50% OFF',
+    '👑 ETHNIVA FESTIVE COUTURE ’26 — FLAT 50% OFF',
     '🚚 COMPLIMENTARY EXPRESS SHIPPING ACROSS PAKISTAN',
     '✨ BESPOKE TAILORING & CUSTOM MEASUREMENTS AVAILABLE'
   ];
@@ -132,202 +133,150 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* 1. Header Announcement Bar (Sleek 34px Height, Warm Champagne #F8F4ED) */}
+      {/* 1. Header Announcement Bar (Black background, luxury gold text with chevron arrows) */}
       {showTicker && (
-        <div className="h-[34px] bg-[#F8F4ED] text-[#785E2F] px-3 sm:px-4 text-[10.5px] sm:text-xs font-medium flex items-center justify-between border-b border-[#E8DFC8] relative z-50 overflow-hidden">
-          <div className="hidden lg:flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-[#6B1D2F] tracking-wider whitespace-nowrap">
-            <Truck className="w-3.5 h-3.5 text-[#C5A880] flex-shrink-0" />
-            <span>FREE SHIPPING ACROSS PAKISTAN</span>
-          </div>
+        <div className="h-[34px] bg-[#0A0A0A] text-[#B08A4A] px-4 text-[10.5px] sm:text-xs font-medium flex items-center justify-between border-b border-[#171717] relative z-50 overflow-hidden">
+          <button 
+            onClick={() => setTickerIndex((prev) => (prev - 1 + tickerMessages.length) % tickerMessages.length)} 
+            className="hover:text-[#C9A86A] transition-colors p-1"
+            aria-label="Previous announcement"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
 
-          {/* Auto Sliding Ticker Message */}
-          <div className="flex-1 text-center font-bold tracking-wide flex items-center justify-center gap-2 sm:gap-3 overflow-hidden px-1">
-            <span className="text-[#6B1D2F] transition-all duration-500 animate-fade-in text-[10px] sm:text-xs truncate">
-              {tickerMessages[tickerIndex]}
-            </span>
-            <div className="hidden sm:flex items-center gap-1 font-mono text-[9.5px] font-bold text-[#785E2F] flex-shrink-0">
-              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.days).padStart(2, '0')}D</span>
-              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.hours).padStart(2, '0')}H</span>
-              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.minutes).padStart(2, '0')}M</span>
-              <span className="bg-white border border-[#C5A880]/40 px-1 py-0.2 rounded shadow-2xs">{String(timeLeft.seconds).padStart(2, '0')}S</span>
-            </div>
-          </div>
-
-          <div className="hidden lg:flex items-center gap-2 text-[11px] font-medium text-stone-700 whitespace-nowrap">
-            <a 
-              href="https://wa.me/923094329812" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="flex items-center gap-1 font-bold text-[#6B1D2F] hover:text-[#C5A880] transition-colors"
-            >
-              <Phone className="w-3 h-3 text-[#C5A880]" />
-              <span>WHATSAPP: 0309 43 29 812</span>
-            </a>
-            <button 
-              onClick={() => setShowTicker(false)}
-              className="p-1 hover:text-[#6B1D2F] transition-colors ml-2"
-              title="Close announcement"
-            >
-              <X className="w-3.5 h-3.5 text-stone-400 hover:text-stone-700" />
-            </button>
+          {/* Centered Announcement Message */}
+          <div className="flex-1 text-center font-medium tracking-[2px] uppercase text-[10px] sm:text-[11px] truncate px-2">
+            <span>FREE SHIPPING ON ORDERS OVER PKR 5,000</span>
           </div>
 
           <button 
-            onClick={() => setShowTicker(false)}
-            className="lg:hidden p-1 hover:text-[#6B1D2F] transition-colors flex-shrink-0"
-            title="Close announcement"
+            onClick={() => setTickerIndex((prev) => (prev + 1) % tickerMessages.length)} 
+            className="hover:text-[#C9A86A] transition-colors p-1"
+            aria-label="Next announcement"
           >
-            <X className="w-3.5 h-3.5 text-stone-400" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
-      {/* 2. Main Luxury Sticky Navbar (Pristine White Background) */}
+      {/* 2. Main Luxury Sticky Header (Warm Cream / White background) */}
       <header 
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-xs border-b border-stone-200/80 py-2 sm:py-2.5' 
-            : 'bg-white border-b border-stone-200 py-2.5 sm:py-3.5'
+            ? 'bg-white/95 backdrop-blur-md shadow-xs border-b border-[#D8D2C7] py-2 sm:py-2.5' 
+            : 'bg-white border-b border-[#D8D2C7] py-3 sm:py-3.5'
         }`}
       >
-        <div className="max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 lg:gap-4">
-          {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 text-stone-800 hover:text-[#6B1D2F] flex-shrink-0"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
-          </button>
-
-          {/* Left Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group flex-shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 xl:w-10 xl:h-10 rounded-full bg-[#F8F4ED] border border-[#C5A880]/60 text-[#6B1D2F] flex items-center justify-center font-bold text-xs sm:text-sm xl:text-lg tracking-tighter shadow-2xs group-hover:bg-[#6B1D2F] group-hover:text-white transition-all">
-              ZS
-            </div>
-            <div className="flex flex-col whitespace-nowrap">
-              <span className="font-bold text-base sm:text-lg xl:text-xl tracking-[0.12em] text-[#18181B] group-hover:text-[#6B1D2F] transition-colors leading-none">
-                ZEHRA STUDIO
-              </span>
-              <span className="text-[7.5px] sm:text-[8px] xl:text-[9px] tracking-[0.25em] sm:tracking-[0.3em] text-[#C5A880] uppercase font-bold mt-0.5 sm:mt-1">
-                LUXURY PRET &amp; COUTURE
-              </span>
-            </div>
-          </Link>
-
-          {/* Center Main Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-3 lg:gap-4 xl:gap-6 whitespace-nowrap flex-shrink font-sans">
-            <Link 
-              href="/" 
-              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-6">
+          
+          {/* Mobile Hamburger & Left Brand Logo */}
+          <div className="flex items-center gap-3.5 sm:gap-4">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-1.5 text-[#171717] hover:text-[#B08A4A]"
+              aria-label="Toggle menu"
             >
-              <span>HOME</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {/* Left Brand Logo (ETHNIVA) */}
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0">
+              <div className="relative w-8 h-8 sm:w-9 sm:h-9 overflow-hidden flex items-center justify-center">
+                <Image 
+                  src="/logo.jpg" 
+                  alt="ETHNIVA Logo" 
+                  fill 
+                  sizes="40px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif tracking-[0.25em] text-xl sm:text-2xl xl:text-[26px] font-normal text-[#0A0A0A] group-hover:text-[#B08A4A] transition-colors leading-none">
+                  ETHNIVA
+                </span>
+                <span className="text-[7.5px] tracking-[0.3em] text-[#B08A4A] uppercase font-sans font-medium mt-0.5">
+                  CLOTHING BRAND
+                </span>
+              </div>
             </Link>
+          </div>
 
-            <Link 
-              href="/shop?sort=newest" 
-              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
-            >
-              <span>NEW ARRIVALS</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
+          {/* Center Navigation Links (NEW IN, WOMEN, MEN, READY TO WEAR, COLLECTIONS, SALE) */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <Link href="/shop?sort=newest" className="nav-link-luxury">
+              NEW IN
             </Link>
-
-            {/* Ready to Wear Dropdown */}
-            <div 
-              className="relative py-2 group cursor-pointer whitespace-nowrap"
-              onMouseEnter={() => setReadyToWearDropdownOpen(true)}
-              onMouseLeave={() => setReadyToWearDropdownOpen(false)}
-            >
-              <Link 
-                href="/shop?category=ready-to-wear" 
-                className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] group-hover:text-[#6B1D2F] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
-              >
-                <span>READY TO WEAR</span>
-                <ChevronDown className="w-3.5 h-3.5 text-stone-400 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
-              </Link>
-
-              {readyToWearDropdownOpen && (
-                <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 p-3.5 z-50 animate-slide-down">
-                  <div className="text-[9.5px] font-extrabold text-[#C5A880] uppercase tracking-widest pb-2 border-b border-stone-100 mb-1.5">
-                    COLLECTIONS &amp; CATEGORIES
-                  </div>
-                  <ul className="space-y-1 text-xs font-semibold text-stone-700">
-                    <li><Link href="/shop?category=luxury-pret" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Luxury Pret</Link></li>
-                    <li><Link href="/shop?category=ready-to-wear" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Ready To Wear</Link></li>
-                    <li><Link href="/shop?category=raw-silk-chiffon" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Raw Silk &amp; Chiffon</Link></li>
-                    <li><Link href="/shop?category=velvet-festive" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Velvet Festive</Link></li>
-                    <li><Link href="/shop?category=bridal-couture" className="block px-3 py-1.5 rounded-lg hover:bg-rose-50 hover:text-[#6B1D2F] transition-all">Bridal &amp; Couture</Link></li>
-                    <li className="pt-1.5 border-t border-stone-100"><Link href="/shop" className="block px-3 py-1.5 text-[#6B1D2F] font-bold">View All Catalog &rarr;</Link></li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Luxury Pret Dropdown */}
-            <div 
-              className="relative py-2 group cursor-pointer whitespace-nowrap"
-              onMouseEnter={() => setLuxuryPretDropdownOpen(true)}
-              onMouseLeave={() => setLuxuryPretDropdownOpen(false)}
-            >
-              <Link 
-                href="/shop?category=luxury-pret" 
-                className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] group-hover:text-[#6B1D2F] transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
-              >
-                <span>LUXURY PRET</span>
-                <ChevronDown className="w-3.5 h-3.5 text-stone-400 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
-              </Link>
-
-              {luxuryPretDropdownOpen && (
-                <div className="absolute top-full left-0 w-56 bg-white rounded-2xl shadow-xl border border-stone-200 p-2.5 z-50 animate-slide-down">
-                  <Link href="/shop?category=luxury-pret" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
-                    Luxury Pret Formals
-                  </Link>
-                  <Link href="/shop?category=velvet-festive" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
-                    Velvet Festive Edit
-                  </Link>
-                  <Link href="/shop?category=raw-silk-chiffon" className="block px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-rose-50 hover:text-[#6B1D2F] rounded-xl">
-                    Raw Silk &amp; Chiffon
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <Link 
-              href="/shop?category=sale-clearance" 
-              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#6B1D2F] hover:text-[#18181B] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
-            >
-              <span>TOP SALE</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#6B1D2F] group-hover/link:w-full transition-all duration-300" />
+            <Link href="/shop?category=women" className="nav-link-luxury">
+              WOMEN
             </Link>
-
-            <Link 
-              href="/contact" 
-              className="text-[11.5px] xl:text-[12.5px] font-bold text-[#18181B] hover:text-[#6B1D2F] transition-colors uppercase tracking-wider py-2 whitespace-nowrap relative group/link"
-            >
-              <span>CONTACT</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C5A880] group-hover/link:w-full transition-all duration-300" />
+            <Link href="/shop?category=men" className="nav-link-luxury">
+              MEN
+            </Link>
+            <Link href="/shop?category=ready-to-wear" className="nav-link-luxury">
+              READY TO WEAR
+            </Link>
+            <Link href="/shop" className="nav-link-luxury">
+              COLLECTIONS
+            </Link>
+            <Link href="/shop?category=sale" className="nav-link-luxury text-[#B08A4A]">
+              SALE
             </Link>
           </nav>
 
-          {/* Right Action Icons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
-            {/* Search Trigger */}
+          {/* Right Action Icons (Search, Account, Wishlist, Bag, Admin) */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-shrink-0">
+            {/* Search */}
             <button 
               onClick={() => setSearchOpen(true)}
-              className="p-1.5 sm:p-2 text-stone-800 hover:text-[#6B1D2F] hover:bg-stone-50 rounded-full transition-colors flex-shrink-0"
+              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1"
               title="Search Catalog"
             >
-              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Search className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
             </button>
 
-            {/* Discrete Luxury Admin Link */}
+            {/* Account */}
+            <button 
+              onClick={() => setAccountModalOpen(true)}
+              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 hidden sm:block"
+              title="Customer Account"
+            >
+              <User className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
+            </button>
+
+            {/* Wishlist */}
+            <Link 
+              href="/shop?view=wishlist" 
+              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 relative hidden sm:block"
+              title="Wishlist"
+            >
+              <Heart className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#B08A4A] text-white text-[8.5px] font-mono font-bold rounded-full flex items-center justify-center">
+                  {wishlist.length}
+                </span>
+              )}
+            </Link>
+
+            {/* Shopping Bag */}
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 relative"
+              title="Shopping Bag"
+            >
+              <ShoppingBag className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
+              <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#B08A4A] text-white text-[9px] font-mono font-medium rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            </button>
+
+            {/* Discreet Admin Lock */}
             <button 
               onClick={handleAdminLinkClick}
-              className="p-1.5 sm:p-2 text-stone-500 hover:text-[#6B1D2F] hover:bg-stone-100 rounded-full transition-colors flex-shrink-0"
+              className="text-stone-400 hover:text-[#B08A4A] transition-colors p-1"
               title="Admin Portal"
             >
-              <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C5A880] hover:text-[#6B1D2F]" />
+              <Lock className="w-3.5 h-3.5 stroke-[1.5]" />
             </button>
           </div>
         </div>
@@ -335,23 +284,23 @@ export const Navbar: React.FC = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
-            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
-            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
-            <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
-            <Link href="/shop?category=raw-silk-chiffon" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">RAW SILK &amp; CHIFFON</Link>
-            <Link href="/shop?category=velvet-festive" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">VELVET FESTIVE</Link>
-            <Link href="/shop?category=sale-clearance" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#6B1D2F] py-2.5 border-b border-stone-100 uppercase tracking-wider">TOP SALE &amp; CLEARANCE</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-700 py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT: 0309 43 29 812</Link>
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
+            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
+            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
+            <Link href="/shop?category=raw-silk-chiffon" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">RAW SILK &amp; CHIFFON</Link>
+            <Link href="/shop?category=velvet-festive" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">VELVET FESTIVE</Link>
+            <Link href="/shop?category=sale-clearance" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">TOP SALE &amp; CLEARANCE</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#171717] hover:text-[#B08A4A] py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT US</Link>
             <button 
               onClick={(e) => {
                 setMobileMenuOpen(false);
                 handleAdminLinkClick(e);
               }} 
-              className="w-full flex items-center justify-between text-xs font-bold text-stone-700 bg-stone-100 hover:bg-[#6B1D2F] hover:text-white px-4 py-3 rounded-2xl transition-all uppercase tracking-wider mt-2 border border-stone-200"
+              className="w-full flex items-center justify-between text-xs font-bold text-stone-700 bg-stone-100 hover:bg-[#111111] hover:text-white px-4 py-3 rounded-2xl transition-all uppercase tracking-wider mt-2 border border-stone-200"
             >
               <span className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-[#C5A880]" />
+                <Lock className="w-4 h-4 text-[#C5A059]" />
                 ADMIN PORTAL
               </span>
               <ArrowRight className="w-4 h-4 text-stone-400" />
@@ -366,7 +315,7 @@ export const Navbar: React.FC = () => {
           <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border border-[#E8DFC8] shadow-2xl p-6 sm:p-8 space-y-6 animate-scale-in relative overflow-hidden">
             
             {/* Top Gold Ornament */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C5A880] via-[#6B1D2F] to-[#C5A880]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C5A059] via-[#111111] to-[#C5A059]" />
 
             {/* Close Button */}
             <button 
@@ -379,14 +328,14 @@ export const Navbar: React.FC = () => {
 
             {/* Header */}
             <div className="text-center space-y-2 pt-2">
-              <div className="w-13 h-13 rounded-2xl bg-[#6B1D2F] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#6B1D2F]/20">
+              <div className="w-13 h-13 rounded-2xl bg-[#111111] text-[#C5A059] border border-[#C5A059]/40 flex items-center justify-center mx-auto shadow-lg shadow-black/20">
                 <Lock className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-black text-[#C5A880] uppercase tracking-[0.3em] block">
+              <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-[0.3em] block">
                 ADMIN ACCESS REQUIRED
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold text-[#18181B]">
-                Store Admin Portal
+              <h3 className="text-xl sm:text-2xl font-bold text-[#111111]">
+                ETHNIVA Admin Portal
               </h3>
               <p className="text-xs text-stone-500 max-w-xs mx-auto">
                 Please enter administrator credentials to manage products, pricing, and live orders.
@@ -404,7 +353,7 @@ export const Navbar: React.FC = () => {
             {/* Login Form */}
             <form onSubmit={handleAdminModalLogin} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                <label className="text-[11px] font-bold text-[#111111] uppercase tracking-wider">
                   Admin Email / Username
                 </label>
                 <input
@@ -412,20 +361,20 @@ export const Navbar: React.FC = () => {
                   required
                   value={adminEmail}
                   onChange={e => setAdminEmail(e.target.value)}
-                  placeholder="zehrastudio3322@gmail.com"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#6B1D2F] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                  placeholder="ethnivabrand@gmail.com"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#111111] focus:outline-none transition-all font-medium"
                 />
               </div>
 
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                  <label className="text-[11px] font-bold text-[#111111] uppercase tracking-wider">
                     Master Password / PIN
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowAdminPassword(!showAdminPassword)}
-                    className="text-[10px] text-[#6B1D2F] font-semibold hover:underline"
+                    className="text-[10px] text-[#C5A059] font-semibold hover:underline"
                   >
                     {showAdminPassword ? 'Hide' : 'Show'}
                   </button>
@@ -436,20 +385,20 @@ export const Navbar: React.FC = () => {
                   value={adminPassword}
                   onChange={e => setAdminPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#6B1D2F] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#111111] focus:outline-none transition-all font-medium"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isAdminLoggingIn}
-                className={`w-full py-3.5 bg-[#6B1D2F] hover:bg-[#521423] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#6B1D2F]/30 flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 bg-[#111111] hover:bg-[#C5A059] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-black/20 flex items-center justify-center gap-2 ${
                   isAdminLoggingIn ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.01] active:scale-[0.99]'
                 }`}
               >
                 {isAdminLoggingIn ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A880]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" />
                     <span>Verifying Master Access...</span>
                   </>
                 ) : (
@@ -472,8 +421,10 @@ export const Navbar: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center space-y-1">
-              <div className="w-12 h-12 bg-rose-50 text-[#6B1D2F] rounded-full flex items-center justify-center mx-auto mb-2 font-bold text-lg">ZS</div>
-              <h3 className="text-lg font-bold text-[#18181B]">Zehra Studio Account Login</h3>
+              <div className="relative w-14 h-14 rounded-full overflow-hidden border border-[#C5A059] mx-auto mb-2">
+                <Image src="/logo.jpg" alt="ETHNIVA" fill className="object-cover" />
+              </div>
+              <h3 className="font-brand-serif text-lg font-bold text-[#111111]">ETHNIVA Account Login</h3>
               <p className="text-xs text-stone-500">Sign in to track orders and save custom body measurements.</p>
             </div>
             <form onSubmit={handleCustomerLogin} className="space-y-3 pt-2">
@@ -483,7 +434,7 @@ export const Navbar: React.FC = () => {
                 value={customerEmail}
                 onChange={e => setCustomerEmail(e.target.value)}
                 placeholder="Phone Number or Email" 
-                className="w-full bg-[#FCFAF7] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880]" 
+                className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]" 
               />
               <input 
                 type="password" 
@@ -491,7 +442,7 @@ export const Navbar: React.FC = () => {
                 value={customerPassword}
                 onChange={e => setCustomerPassword(e.target.value)}
                 placeholder="Password" 
-                className="w-full bg-[#FCFAF7] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A880]" 
+                className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]" 
               />
               <button 
                 type="submit"
@@ -517,13 +468,13 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Search Modal (Fully responsive, no mobile cutoff) */}
+      {/* Search Modal */}
       {searchOpen && (
         <div className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-start justify-center pt-16 sm:pt-24 px-3 sm:px-4 animate-fade-in">
           <div className="bg-white border border-stone-200 rounded-3xl w-full max-w-xl p-5 sm:p-7 shadow-2xl relative space-y-4 animate-scale-in">
             <div className="flex items-center justify-between">
-              <h3 className="text-base sm:text-lg font-bold text-[#18181B] flex items-center gap-2">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#6B1D2F]" />
+              <h3 className="text-base sm:text-lg font-bold text-[#111111] flex items-center gap-2">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
                 <span>Search Catalog</span>
               </h3>
               <button 
@@ -549,7 +500,7 @@ export const Navbar: React.FC = () => {
                 placeholder="Search by dress name, fabric, style..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 min-w-0 bg-[#FCFAF7] border border-stone-300 focus:border-[#C5A880] rounded-xl sm:rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+                className="flex-1 min-w-0 bg-[#FAF7F2] border border-stone-300 focus:border-[#C5A059] rounded-xl sm:rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
                 autoFocus
               />
               <button 
@@ -565,3 +516,4 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
+

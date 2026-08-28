@@ -1,142 +1,194 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Phone, Mail, MapPin, ShieldCheck, Truck, RefreshCw, Globe, Share2 } from 'lucide-react';
+import { Send, Check } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  
   const pathname = usePathname();
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
   // Hide storefront Footer on /admin routes
   if (pathname?.startsWith('/admin')) {
     return null;
   }
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+    }
+  };
+
   return (
-    <footer className="bg-white text-stone-700 pt-16 pb-8 border-t border-stone-200">
-      {/* Top Value Badges (Warm Ivory & Champagne) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-8 bg-[#FAF7F2] rounded-3xl border border-[#E8DFC8] shadow-xs">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#C7A76C]/50 flex items-center justify-center text-[#881337] shadow-xs">
-              <Truck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-[#18181B]">Free Nationwide Delivery</h4>
-              <p className="text-xs text-stone-500">On all orders above RS. 5,000 across Pakistan</p>
-            </div>
-          </div>
+    <footer className="bg-[#0A0A0A] text-white pt-16 sm:pt-20 pb-10 border-t border-[#171717]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        
+        {/* Main 5-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-14 border-b border-[#262626]">
+          
+          {/* COLUMN 1: Brand Info & Socials */}
+          <div className="space-y-4 lg:col-span-1">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#B08A4A]/50 bg-[#171717] flex items-center justify-center">
+                <Image 
+                  src="/logo.jpg" 
+                  alt="ETHNIVA" 
+                  fill 
+                  sizes="32px"
+                  className="object-contain"
+                />
+              </div>
+              <span className="font-serif text-xl tracking-[0.25em] text-white group-hover:text-[#B08A4A] transition-colors leading-none">
+                ETHNIVA
+              </span>
+            </Link>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#C7A76C]/50 flex items-center justify-center text-[#881337] shadow-xs">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-[#18181B]">100% Authentic Handcraft</h4>
-              <p className="text-xs text-stone-500">Pure chiffon, micro velvet, and zardozi embroidery</p>
-            </div>
-          </div>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              ETHNIVA is more than fashion.<br />
+              It&apos;s who you choose to be.
+            </p>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-[#C7A76C]/50 flex items-center justify-center text-[#881337] shadow-xs">
-              <RefreshCw className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-[#18181B]">7-Day Easy Exchange</h4>
-              <p className="text-xs text-stone-500">Hassle-free size replacement &amp; exchange policy</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-10 mb-12">
-        {/* Brand Info */}
-        <div className="space-y-4">
-          <Link href="/" className="inline-block">
-            <span className="font-bold text-2xl tracking-[0.15em] text-[#18181B] hover:text-[#6B1D2F] transition-colors">
-              ZEHRA STUDIO
-            </span>
-          </Link>
-          <p className="text-xs text-stone-500 leading-relaxed font-normal">
-            ZEHRA STUDIO is Pakistan’s premier luxury fashion atelier offering pure silk formals, velvet couture, handmade chiffon ensembles, and ready to wear pret.
-          </p>
-          <div className="flex gap-2.5 text-stone-600 pt-1">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#6B1D2F] hover:border-[#6B1D2F] transition-all shadow-2xs" title="Instagram">
-              <Globe className="w-3.5 h-3.5" />
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-stone-200 flex items-center justify-center hover:text-[#6B1D2F] hover:border-[#6B1D2F] transition-all shadow-2xs" title="Facebook">
-              <Share2 className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        </div>
-
-        {/* Collections */}
-        <div>
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
-            Luxury Collections
-          </h4>
-          <ul className="space-y-2 text-xs text-stone-600">
-            <li><Link href="/shop?category=luxury-pret" className="hover:text-[#6B1D2F] transition-colors font-medium">Luxury Pret</Link></li>
-            <li><Link href="/shop?category=ready-to-wear" className="hover:text-[#6B1D2F] transition-colors font-medium">Ready To Wear</Link></li>
-            <li><Link href="/shop?category=raw-silk-chiffon" className="hover:text-[#6B1D2F] transition-colors font-medium">Raw Silk &amp; Chiffon</Link></li>
-            <li><Link href="/shop?category=velvet-festive" className="hover:text-[#6B1D2F] transition-colors font-medium">Velvet Festive</Link></li>
-            <li><Link href="/shop?category=bridal-couture" className="hover:text-[#6B1D2F] transition-colors font-medium">Bridal &amp; Couture</Link></li>
-            <li><Link href="/shop?category=sale-clearance" className="hover:text-[#6B1D2F] transition-colors font-medium text-[#6B1D2F]">Top Sale &amp; Clearance</Link></li>
-          </ul>
-        </div>
-
-        {/* Customer Care */}
-        <div>
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
-            Customer Care
-          </h4>
-          <ul className="space-y-2 text-xs text-stone-600">
-            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Track Your Order</Link></li>
-            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Custom Stitching Guide</Link></li>
-            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Shipping &amp; Delivery Policy</Link></li>
-            <li><Link href="/shop" className="hover:text-[#6B1D2F] transition-colors">Returns &amp; Exchange Policy</Link></li>
-            <li><Link href="/admin" className="hover:text-[#6B1D2F] transition-colors text-stone-400 text-[11px]">Staff Access</Link></li>
-          </ul>
-        </div>
-
-        {/* Contact Info */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3.5 border-b border-stone-200 pb-2">
-            Contact Support
-          </h4>
-          <div className="text-xs space-y-2.5 text-stone-600 font-medium">
-            <div className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-[#6B1D2F]" />
-              <a href="tel:+923094329812" className="hover:text-[#6B1D2F] transition-colors">
-                WhatsApp: 0309 43 29 812
+            <div className="flex items-center gap-3 pt-2">
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-8 h-8 rounded-full bg-[#171717] border border-[#262626] flex items-center justify-center text-neutral-400 hover:text-[#B08A4A] hover:border-[#B08A4A] transition-all"
+                title="Instagram"
+              >
+                <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.5]" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-8 h-8 rounded-full bg-[#171717] border border-[#262626] flex items-center justify-center text-neutral-400 hover:text-[#B08A4A] hover:border-[#B08A4A] transition-all"
+                title="Facebook"
+              >
+                <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.5]" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a 
+                href="https://pinterest.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-8 h-8 rounded-full bg-[#171717] border border-[#262626] flex items-center justify-center text-neutral-400 hover:text-[#B08A4A] hover:border-[#B08A4A] transition-all text-xs font-serif font-bold"
+                title="Pinterest"
+              >
+                P
+              </a>
+              <a 
+                href="https://tiktok.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-8 h-8 rounded-full bg-[#171717] border border-[#262626] flex items-center justify-center text-neutral-400 hover:text-[#B08A4A] hover:border-[#B08A4A] transition-all text-[11px] font-bold"
+                title="TikTok"
+              >
+                ♪
               </a>
             </div>
-            <div className="flex items-center gap-2">
-              <Mail className="w-3.5 h-3.5 text-[#6B1D2F]" />
-              <a href="mailto:zehrastudioofficial@gmail.com" className="hover:text-[#6B1D2F] transition-colors">
-                zehrastudioofficial@gmail.com
-              </a>
-            </div>
-            <div className="flex items-start gap-2">
-              <MapPin className="w-3.5 h-3.5 text-[#6B1D2F] flex-shrink-0 mt-0.5" />
-              <span>Faisalabad, Pakistan &bull; Express Delivery</span>
-            </div>
+          </div>
+
+          {/* COLUMN 2: SHOP */}
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
+              SHOP
+            </h4>
+            <ul className="space-y-2 text-xs text-neutral-400 font-light">
+              <li><Link href="/shop?category=women" className="hover:text-[#B08A4A] transition-colors">Women</Link></li>
+              <li><Link href="/shop?category=men" className="hover:text-[#B08A4A] transition-colors">Men</Link></li>
+              <li><Link href="/shop?sort=newest" className="hover:text-[#B08A4A] transition-colors">New In</Link></li>
+              <li><Link href="/shop" className="hover:text-[#B08A4A] transition-colors">Collections</Link></li>
+              <li><Link href="/shop?category=sale" className="hover:text-[#B08A4A] transition-colors">Sale</Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 3: CUSTOMER CARE */}
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
+              CUSTOMER CARE
+            </h4>
+            <ul className="space-y-2 text-xs text-neutral-400 font-light">
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Contact Us</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Shipping &amp; Delivery</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Returns &amp; Refunds</Link></li>
+              <li><Link href="/shop" className="hover:text-[#B08A4A] transition-colors">Size Guide</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">FAQ</Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 4: POLICIES */}
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
+              POLICIES
+            </h4>
+            <ul className="space-y-2 text-xs text-neutral-400 font-light">
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Terms &amp; Conditions</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Return Policy</Link></li>
+              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Shipping Policy</Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 5: NEWSLETTER */}
+          <div className="space-y-3 lg:col-span-1">
+            <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
+              NEWSLETTER
+            </h4>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.
+            </p>
+
+            {subscribed ? (
+              <div className="p-3 bg-[#171717] border border-[#B08A4A]/40 text-[#C9A86A] text-xs flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#B08A4A]" />
+                <span>Thank you for subscribing!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex items-stretch mt-2">
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email" 
+                  className="w-full bg-[#171717] border border-[#262626] text-white text-xs px-3.5 py-2.5 focus:outline-none focus:border-[#B08A4A] placeholder:text-neutral-500 rounded-none"
+                />
+                <button 
+                  type="submit"
+                  className="bg-[#B08A4A] hover:bg-[#C9A86A] text-[#0A0A0A] px-4 flex items-center justify-center transition-colors rounded-none flex-shrink-0"
+                  title="Subscribe"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+            )}
+          </div>
+
+        </div>
+
+        {/* Bottom Bar: Copyright & Payment Badges */}
+        <div className="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-neutral-400 font-light">
+          <div>
+            &copy; 2026 ETHNIVA. All Rights Reserved.
+          </div>
+
+          {/* Payment Method Badges */}
+          <div className="flex items-center gap-2 text-[9.5px] font-mono">
+            <span className="bg-[#171717] border border-[#262626] px-2.5 py-1 text-white font-bold tracking-wider">VISA</span>
+            <span className="bg-[#171717] border border-[#262626] px-2.5 py-1 text-white font-bold tracking-wider">MASTERCARD</span>
+            <span className="bg-[#171717] border border-[#262626] px-2.5 py-1 text-white font-bold tracking-wider">EASYPAISA</span>
+            <span className="bg-[#171717] border border-[#262626] px-2.5 py-1 text-white font-bold tracking-wider">JAZZCASH</span>
+            <span className="bg-[#171717] border border-[#262626] px-2.5 py-1 text-white font-bold tracking-wider">COD</span>
           </div>
         </div>
-      </div>
 
-      {/* Copyright */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-xs text-stone-500 gap-4">
-        <div>&copy; {new Date().getFullYear()} ZEHRA STUDIO. All rights reserved.</div>
-        <div className="flex gap-2 font-semibold text-[10px] text-stone-700">
-          <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">CASH ON DELIVERY</span>
-          <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">JAZZCASH</span>
-          <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">EASYPAISA</span>
-          <span className="bg-[#FAF7F2] px-2.5 py-1 rounded border border-stone-200">BANK TRANSFER</span>
-        </div>
       </div>
     </footer>
   );
 };
+

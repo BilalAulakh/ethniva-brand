@@ -48,18 +48,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <>
       <div 
-        className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200 hover:border-[#C7A76C] transition-all duration-500 shadow-xs hover:shadow-xl flex flex-col justify-between"
+        className="group relative bg-transparent flex flex-col justify-between transition-all duration-300"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        
       >
-        {/* Product Image Box with React Shimmer placeholder */}
-        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FAF9F6]">
-          {!imageLoaded && (
-            <div className="absolute inset-0 shimmer-card z-0" />
-          )}
-
-          <Link href={`/product/${product.slug}`} className="block w-full h-full relative z-1">
+        {/* Product Image Box */}
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#EEEAE2] mb-3">
+          <Link href={`/product/${product.slug}`} className="block w-full h-full relative">
             {(() => {
               const currentSrc = (isHovered && product.images?.[1]) ? product.images[1] : (product.images?.[0] || '');
               const isBase64 = currentSrc.startsWith('data:');
@@ -68,63 +63,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   src={currentSrc}
                   alt={product.title}
                   fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 50vw, 25vw"
                   unoptimized={isBase64}
                   loading="lazy"
-                  onLoad={() => setImageLoaded(true)}
-                  className={`object-cover object-top group-hover:scale-105 transition-all duration-500 ease-out ${
-                    imageLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
               );
             })()}
           </Link>
 
-          {/* Top Badges */}
-          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
-            {product.is_new && (
-              <span className="bg-[#6B1D2F] text-white text-[8.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-xs">
+          {/* Optional Subtle Badge */}
+          {product.is_new && (
+            <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+              <span className="bg-[#0A0A0A] text-white text-[9px] font-sans font-medium uppercase tracking-[1.5px] px-2 py-0.5">
                 NEW
               </span>
-            )}
-            {product.is_top_sale && (
-              <span className="bg-[#C5A880] text-stone-900 text-[8.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-xs">
-                TOP SALE
-              </span>
-            )}
-            {discountPercent > 0 && !product.is_top_sale && (
-              <span className="bg-[#C5A880] text-stone-900 text-[8.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-xs">
-                -{discountPercent}% OFF
-              </span>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Top Right Wishlist Heart Toggle */}
+          {/* Top Right Wishlist Minimal Outline Heart */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all ${
-              inWishlist 
-                ? 'bg-rose-50 text-[#6B1D2F] border border-rose-200 shadow-xs' 
-                : 'bg-white/90 backdrop-blur-md text-stone-700 hover:text-[#6B1D2F] hover:bg-white shadow-2xs'
-            }`}
+            className={`absolute top-2.5 right-2.5 z-10 p-1.5 transition-all text-[#0A0A0A] hover:text-[#B08A4A]`}
             title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
           >
-            <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-[#B08A4A] text-[#B08A4A]' : 'stroke-[1.5]'}`} />
           </button>
 
-          {/* Hover Quick Action Buttons */}
-          <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-            <button
-              onClick={() => setQuickViewOpen(true)}
-              className="flex-1 bg-white/95 backdrop-blur-md hover:bg-[#6B1D2F] hover:text-white text-stone-900 font-bold text-[9.5px] uppercase tracking-wider py-2 rounded-xl shadow-md flex items-center justify-center gap-1 transition-all"
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>QUICK VIEW</span>
-            </button>
+          {/* Quick Add Overlay on Hover */}
+          <div className="absolute bottom-0 left-0 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               onClick={handleQuickBuy}
               disabled={isAddingToCart}
-              className="flex-1 bg-[#C5A880] hover:bg-[#6B1D2F] text-white font-bold text-[9.5px] uppercase tracking-wider py-2 rounded-xl shadow-md flex items-center justify-center gap-1 transition-all disabled:opacity-75"
+              className="w-full bg-[#0A0A0A]/90 backdrop-blur-sm hover:bg-[#B08A4A] text-white hover:text-[#0A0A0A] font-sans font-medium text-[10px] uppercase tracking-[2px] py-3 transition-colors flex items-center justify-center gap-1.5"
             >
               {isAddingToCart ? (
                 <>
@@ -132,81 +103,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   <span>ADDING...</span>
                 </>
               ) : (
-                <>
-                  <Zap className="w-3.5 h-3.5 fill-current" />
-                  <span>BUY NOW</span>
-                </>
+                <span>QUICK ADD</span>
               )}
             </button>
           </div>
         </div>
 
         {/* Product Information */}
-        <div className="p-3.5 space-y-1.5 bg-white flex-1 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between text-[9.5px] text-stone-500 font-bold uppercase tracking-wider mb-1">
-              <span>{product.fabric || product.category || 'LUXURY PRET'}</span>
-              <div className="flex items-center gap-1 text-amber-500">
-                <Star className="w-3 h-3 fill-current" />
-                <span>{product.rating || 5.0}</span>
-              </div>
-            </div>
+        <div className="space-y-1 text-left font-sans">
+          <Link href={`/product/${product.slug}`} className="block group-hover:text-[#B08A4A] transition-colors">
+            <h3 className="text-xs sm:text-[13px] font-medium text-[#171717] tracking-[0.5px] uppercase line-clamp-1">
+              {product.title}
+            </h3>
+          </Link>
 
-            <Link href={`/product/${product.slug}`} className="block group-hover:text-[#6B1D2F] transition-colors">
-              <h3 className="text-xs font-bold text-[#18181B] line-clamp-1 leading-snug">
-                {product.title}
-              </h3>
-            </Link>
-          </div>
-
-          {/* Size Pill Selector */}
-          <div className="flex items-center gap-1 pt-0.5">
-            {['S', 'M', 'L', 'XL'].map((sz) => (
-              <button
-                key={sz}
-                onClick={(e) => { e.preventDefault(); setSelectedSize(sz); }}
-                className={`text-[8.5px] font-bold w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                  selectedSize === sz
-                    ? 'bg-[#6B1D2F] text-white border-[#6B1D2F] shadow-2xs'
-                    : 'bg-stone-50 text-stone-700 border-stone-200 hover:border-[#C5A880]'
-                }`}
-              >
-                {sz}
-              </button>
-            ))}
-          </div>
-
-          {/* Price Box & Instant Order Trigger */}
-          <div className="flex items-center justify-between pt-1.5 border-t border-stone-100">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xs sm:text-sm font-bold text-[#18181B]">
-                PKR {product.price.toLocaleString()}
+          {/* Price */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs sm:text-[13px] font-medium text-[#171717]">
+              PKR {product.price.toLocaleString()}
+            </span>
+            {product.compare_at_price && (
+              <span className="text-[11px] text-neutral-400 line-through">
+                PKR {product.compare_at_price.toLocaleString()}
               </span>
-              {product.compare_at_price && (
-                <span className="text-[10.5px] text-stone-400 line-through">
-                  PKR {product.compare_at_price.toLocaleString()}
-                </span>
-              )}
-            </div>
+            )}
+          </div>
 
-            <button
-              onClick={handleQuickBuy}
-              disabled={isAddingToCart}
-              className="bg-[#FAF7F2] text-[#6B1D2F] border border-[#C5A880]/50 hover:bg-[#6B1D2F] hover:text-white px-2.5 py-1 rounded-full text-[9.5px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all shadow-2xs disabled:opacity-75"
-              title="Buy Now - Instant Checkout"
-            >
-              {isAddingToCart ? (
-                <>
-                  <Loader2 className="w-3 h-3 text-[#6B1D2F] animate-spin" />
-                  <span>ADDING...</span>
-                </>
-              ) : (
-                <>
-                  <Zap className="w-3 h-3 text-[#C5A880]" />
-                  <span>BUY NOW</span>
-                </>
-              )}
-            </button>
+          {/* Color Swatches */}
+          <div className="flex items-center gap-1.5 pt-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0A0A0A] border border-neutral-300 inline-block cursor-pointer" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#EEEAE2] border border-neutral-300 inline-block cursor-pointer" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#B08A4A] border border-neutral-300 inline-block cursor-pointer" />
           </div>
         </div>
       </div>
@@ -221,14 +148,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             >
               ✕
             </button>
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-stone-100">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-stone-100 border border-stone-200">
               <Image src={product.images[0]} alt={product.title} fill className="object-cover" />
             </div>
             <div className="space-y-4 flex flex-col justify-between">
               <div>
-                <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest">{product.fabric}</span>
-                <h3 className="text-lg font-extrabold text-[#18181B]">{product.title}</h3>
-                <div className="text-base font-black text-[#881337] mt-1">PKR {product.price.toLocaleString()}</div>
+                <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest">{product.fabric}</span>
+                <h3 className="font-brand-serif text-lg font-extrabold text-[#111111]">{product.title}</h3>
+                <div className="text-base font-black text-[#111111] mt-1">PKR {product.price.toLocaleString()}</div>
                 <p className="text-xs text-stone-600 mt-2 line-clamp-3 leading-relaxed">{product.description}</p>
               </div>
 
@@ -240,7 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                       key={sz}
                       onClick={() => setSelectedSize(sz)}
                       className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
-                        selectedSize === sz ? 'bg-[#881337] text-white border-[#881337] shadow-xs' : 'bg-white text-stone-700 border-stone-200 hover:border-[#C7A76C]'
+                        selectedSize === sz ? 'bg-[#111111] text-[#C5A059] border-[#111111] shadow-xs font-bold' : 'bg-white text-stone-700 border-stone-200 hover:border-[#C5A059]'
                       }`}
                     >
                       {sz}

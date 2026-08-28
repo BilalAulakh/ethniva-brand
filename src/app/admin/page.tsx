@@ -19,9 +19,9 @@ import { TableSkeleton, OrderSkeleton, ShimmerBox } from '@/components/Shimmer';
 
 // Admin Official Credentials
 const ADMIN_CREDENTIALS = {
-  email: 'zehrastudio3322@gmail.com',
-  altEmail: 'admin@zehrastudio.pk',
-  password: 'zehra2026',
+  email: 'ethnivabrand@gmail.com',
+  altEmail: 'admin@ethniva.com',
+  password: 'ethniva2026',
   altPassword: 'admin12345',
   pin: '7860'
 };
@@ -226,8 +226,8 @@ export default function AdminDashboardPage() {
     const cleanPass = loginPassword.trim();
 
     if (
-      (cleanEmail === ADMIN_CREDENTIALS.email || cleanEmail === ADMIN_CREDENTIALS.altEmail || cleanEmail === 'admin' || cleanEmail === 'zehra' || cleanEmail === 'admin@zehra.com') &&
-      (cleanPass === ADMIN_CREDENTIALS.password || cleanPass === ADMIN_CREDENTIALS.altPassword || cleanPass === ADMIN_CREDENTIALS.pin)
+      (cleanEmail === ADMIN_CREDENTIALS.email || cleanEmail === ADMIN_CREDENTIALS.altEmail || cleanEmail === 'admin' || cleanEmail === 'ethniva' || cleanEmail === 'admin@ethniva.com' || cleanEmail === 'zehra' || cleanEmail === 'zehrastudio3322@gmail.com') &&
+      (cleanPass === ADMIN_CREDENTIALS.password || cleanPass === ADMIN_CREDENTIALS.altPassword || cleanPass === ADMIN_CREDENTIALS.pin || cleanPass === 'zehra2026')
     ) {
       setIsAuthenticated(true);
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
@@ -646,8 +646,8 @@ export default function AdminDashboardPage() {
                 required
                 value={loginEmail}
                 onChange={e => setLoginEmail(e.target.value)}
-                placeholder="zehrastudio3322@gmail.com"
-                className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                placeholder="ethnivabrand@gmail.com"
+                className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
               />
             </div>
 
@@ -763,11 +763,11 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-[#6B1D2F] text-white font-bold text-xs flex items-center justify-center shadow-2xs">
-                ZS
+              <div className="w-8 h-8 rounded-lg bg-[#111111] border border-[#C5A059]/40 text-[#C5A059] font-bold text-xs flex items-center justify-center shadow-2xs">
+                E
               </div>
-              <span className="font-bold text-base tracking-wider text-[#18181B] hidden sm:inline">
-                ZEHRA STUDIO &bull; ADMIN
+              <span className="font-bold text-base tracking-wider text-[#111111] hidden sm:inline font-brand-serif">
+                ETHNIVA &bull; ADMIN
               </span>
             </Link>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">

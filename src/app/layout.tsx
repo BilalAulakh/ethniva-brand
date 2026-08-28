@@ -1,23 +1,32 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { QuickViewModal } from '@/components/QuickViewModal';
-import { WhatsAppWidget } from '@/components/WhatsAppWidget';
 
-const plusJakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 });
 
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-serif',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'ZEHRA STUDIO | Pakistani Luxury Women’s Clothing Online',
-  description: 'Shop premium Pakistani women’s clothing at ZEHRA STUDIO. Explore handmade stitched dresses, velvet formals, chiffon ensembles, and elegant pret collections with free delivery across Pakistan.',
+  title: 'ETHNIVA | Luxury Fashion & Modern Clothing Brand',
+  description: 'ETHNIVA is a luxury and modern fashion clothing brand focused on elegance, confidence, timeless style, and premium quality.',
+  icons: {
+    icon: '/logo.jpg',
+  },
 };
 
 export default function RootLayout({
@@ -26,8 +35,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={plusJakarta.variable}>
-      <body className="min-h-screen flex flex-col antialiased bg-[#FCFAF7] text-[#18181B] selection:bg-[#C5A880] selection:text-white text-[13px] sm:text-[14px] overflow-x-hidden font-sans">
+    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+      <body className="min-h-screen flex flex-col antialiased bg-[#F7F5F0] text-[#171717] selection:bg-[#B08A4A] selection:text-white text-[13px] sm:text-[14px] overflow-x-hidden">
         <CartProvider>
           <Navbar />
           <main className="flex-1 w-full overflow-x-hidden">
@@ -36,7 +45,6 @@ export default function RootLayout({
           <Footer />
           <CartDrawer />
           <QuickViewModal />
-          <WhatsAppWidget />
         </CartProvider>
       </body>
     </html>

@@ -45,10 +45,10 @@ export const QuickViewModal: React.FC = () => {
           {/* Details */}
           <div className="p-6 md:p-8 flex flex-col justify-between space-y-4">
             <div>
-              <div className="text-[9.5px] font-bold text-[#6B1D2F] uppercase tracking-widest mb-1">
+              <div className="text-[9.5px] font-bold text-[#C5A059] uppercase tracking-widest mb-1">
                 {quickViewProduct.category}
               </div>
-              <h2 className="text-xl font-serif font-bold text-[#18181B] mb-2 leading-snug">
+              <h2 className="text-xl font-brand-serif font-bold text-[#111111] mb-2 leading-snug">
                 {quickViewProduct.title}
               </h2>
 
@@ -62,7 +62,7 @@ export const QuickViewModal: React.FC = () => {
                 <span className="text-stone-400 text-[11px]">({quickViewProduct.reviews_count || 12} reviews)</span>
               </div>
 
-              <div className="text-2xl font-serif font-bold text-[#6B1D2F] mb-3">
+              <div className="text-2xl font-brand-serif font-bold text-[#111111] mb-3">
                 PKR {quickViewProduct.price.toLocaleString()}
                 {quickViewProduct.compare_at_price && (
                   <span className="text-xs text-stone-400 line-through ml-2 font-normal font-sans">
@@ -78,7 +78,7 @@ export const QuickViewModal: React.FC = () => {
               {/* Size Selector */}
               <div className="mb-4 space-y-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">
-                  Select Size: <span className="text-[#6B1D2F]">{selectedSize}</span>
+                  Select Size: <span className="text-[#C5A059]">{selectedSize}</span>
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {quickViewProduct.sizes.map(size => (
@@ -87,8 +87,8 @@ export const QuickViewModal: React.FC = () => {
                       onClick={() => setSelectedSize(size)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                         selectedSize === size
-                          ? 'border-[#6B1D2F] bg-[#6B1D2F] text-white shadow-2xs'
-                          : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-[#C5A880]'
+                          ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs font-extrabold'
+                          : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-[#C5A059]'
                       }`}
                     >
                       {size}
@@ -107,12 +107,12 @@ export const QuickViewModal: React.FC = () => {
               >
                 {isAdding ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#fef08a]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" />
                     <span>Adding To Bag...</span>
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-4 h-4 text-[#fef08a]" />
+                    <ShoppingBag className="w-4 h-4 text-[#C5A059]" />
                     <span>Add To Shopping Bag</span>
                   </>
                 )}

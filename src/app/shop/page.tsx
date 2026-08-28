@@ -103,15 +103,15 @@ function ShopContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8 bg-[#FCFAF7] text-[#18181B]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8 bg-[#FAF7F2] text-[#111111]">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F5EFEB] to-[#FAF7F2] rounded-3xl p-6 sm:p-10 text-stone-900 relative overflow-hidden shadow-2xs border border-[#E8DFC8]">
+      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F6F1E7] to-[#FAF7F2] rounded-3xl p-6 sm:p-10 text-stone-900 relative overflow-hidden shadow-2xs border border-[#E8E2D5]">
         <div className="max-w-xl space-y-2 z-10 relative">
-          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#6B1D2F] uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
-            <span>ZEHRA STUDIO CATALOG</span>
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#C5A059] uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+            <span>ETHNIVA CATALOG</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-[#18181B] tracking-tight">
+          <h1 className="font-brand-serif text-2xl sm:text-4xl font-bold text-[#111111] tracking-tight">
             {selectedCategory ? selectedCategory.replace(/-/g, ' ').toUpperCase() : 'ALL DRESS DESIGNS'}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-normal">
@@ -125,8 +125,8 @@ function ShopContent() {
         {/* Left Filter Sidebar */}
         <div className="space-y-6 lg:col-span-1">
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-3 sm:space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#18181B] uppercase tracking-wider pb-3 border-b border-stone-100">
-              <Filter className="w-4 h-4 text-[#6B1D2F]" />
+            <div className="flex items-center gap-2 text-xs font-bold text-[#111111] uppercase tracking-wider pb-3 border-b border-stone-100">
+              <Filter className="w-4 h-4 text-[#C5A059]" />
               <span>Filter By Category</span>
             </div>
 
@@ -135,7 +135,7 @@ function ShopContent() {
                 href="/shop"
                 className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                   !selectedCategory 
-                    ? 'bg-rose-50 text-[#6B1D2F] font-bold' 
+                    ? 'bg-[#FAF7F2] text-[#C5A059] font-bold border border-[#C5A059]/40' 
                     : 'text-stone-700 hover:bg-stone-50'
                 }`}
               >
@@ -147,7 +147,7 @@ function ShopContent() {
                   href={`/shop?category=${cat.slug}`}
                   className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                     selectedCategory === cat.slug 
-                      ? 'bg-rose-50 text-[#6B1D2F] font-bold' 
+                      ? 'bg-[#FAF7F2] text-[#C5A059] font-bold border border-[#C5A059]/40' 
                       : 'text-stone-700 hover:bg-stone-50'
                   }`}
                 >
