@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
 import { X, Trash2, Plus, Minus, Truck, ArrowRight, ShoppingCart, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
