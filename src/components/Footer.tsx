@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin, ShieldCheck, Truck, RefreshCw, Globe, Share2 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  
   const pathname = usePathname();
 
   // Hide storefront Footer on /admin routes
