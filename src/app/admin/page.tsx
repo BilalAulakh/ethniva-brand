@@ -584,6 +584,7 @@ export default function AdminDashboardPage() {
 
   // Categories list
   const categoryOptions = [
+    'VEZ APPARELS',
     'Chiffon',
     'Luxury Pret',
     'Ready To Wear',

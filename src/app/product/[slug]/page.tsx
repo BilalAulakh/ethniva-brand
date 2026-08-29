@@ -12,6 +12,7 @@ import {
 import { getProductBySlug, Product } from '@/lib/supabase';
 import { useCart } from '@/context/CartContext';
 import { ProductDetailSkeleton } from '@/components/Shimmer';
+import { SizeChartModal } from '@/components/SizeChartModal';
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -31,6 +32,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   
   const [stitchingType, setStitchingType] = useState<'stitched' | 'unstitched' | 'custom'>('stitched');
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -415,7 +417,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               <div className="space-y-2 pt-1">
                 <div className="flex justify-between items-center text-xs font-bold text-[#111111]">
                   <span className="uppercase tracking-wider">SELECT SIZE</span>
-                  <span className="text-[#C5A059] text-[11px] font-bold cursor-pointer hover:underline">Size Guide</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSizeChartOpen(true)}
+                    className="text-[#B08A4A] hover:text-black text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline transition-colors"
+                  >
+                    <span>📏 Size Chart</span>
+                  </button>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -666,6 +674,12 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
           )}
         </div>
       )}
+
+      {/* Interactive Sizing Guide Modal */}
+      <SizeChartModal 
+        isOpen={isSizeChartOpen} 
+        onClose={() => setIsSizeChartOpen(false)} 
+      />
     </div>
   );
 }

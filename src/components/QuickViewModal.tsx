@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { X, ShoppingBag, Star, Check, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { SizeChartModal } from '@/components/SizeChartModal';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, setQuickViewProduct, addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState('M');
   const [isAdding, setIsAdding] = useState(false);
+  const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
   if (!quickViewProduct) return null;
 
@@ -81,9 +83,18 @@ export const QuickViewModal: React.FC = () => {
 
               {/* Size Selector */}
               <div className="mb-4 space-y-2">
-                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">
-                  Select Size: <span className="text-[#C5A059]">{selectedSize}</span>
-                </label>
+                <div className="flex justify-between items-center text-xs font-bold text-stone-700">
+                  <span className="uppercase tracking-wider">
+                    Select Size: <strong className="text-[#C5A059]">{selectedSize}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSizeChartOpen(true)}
+                    className="text-[#B08A4A] hover:text-black text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline"
+                  >
+                    <span>📏 Size Chart</span>
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {quickViewProduct.sizes.map(size => (
                     <button
@@ -130,6 +141,11 @@ export const QuickViewModal: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <SizeChartModal
+        isOpen={isSizeChartOpen}
+        onClose={() => setIsSizeChartOpen(false)}
+      />
     </div>
   );
 };
