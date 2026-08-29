@@ -97,12 +97,18 @@ export const CartDrawer: React.FC = () => {
               cart.map((item, idx) => (
                 <div key={`${item.product.id}-${item.selectedSize}-${idx}`} className="flex gap-4 p-3 bg-white border border-[#D8D2C7] shadow-none">
                   <div className="relative w-20 h-24 overflow-hidden bg-[#EEEAE2] flex-shrink-0">
-                    <Image
-                      src={item.product.images[0] || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400'}
-                      alt={item.product.title}
-                      fill
-                      className="object-cover"
-                    />
+                    {item.product.images && item.product.images[0] ? (
+                      <Image
+                        src={item.product.images[0]}
+                        alt={item.product.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400 font-serif">
+                        ETHNIVA
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 flex flex-col justify-between font-sans">

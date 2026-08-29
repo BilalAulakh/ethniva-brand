@@ -83,130 +83,9 @@ export interface Order {
   notes?: string;
 }
 
-export const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 'eth-1',
-    title: 'PREMIUM LINEN SHIRT',
-    slug: 'premium-linen-shirt',
-    price: 4490,
-    compare_at_price: 8490,
-    category: 'Men',
-    fabric: 'Pure Italian Linen',
-    images: [
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=900&auto=format&fit=crop&q=85',
-      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=900&auto=format&fit=crop&q=85'
-    ],
-    description: 'Tailored from breathable 100% pure linen with mother-of-pearl buttons. Features a structured point collar and modern slim luxury silhouette.',
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Black', 'Cream', 'Navy'],
-    is_featured: true,
-    is_new: true,
-    rating: 5.0,
-    reviews_count: 18,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'eth-2',
-    title: 'BELTED BLAZER DRESS',
-    slug: 'belted-blazer-dress',
-    price: 8990,
-    compare_at_price: 12990,
-    category: 'Women',
-    fabric: 'Structured Crepe Blend',
-    images: [
-      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=900&auto=format&fit=crop&q=85',
-      'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=900&auto=format&fit=crop&q=85'
-    ],
-    description: 'A sharp, double-breasted silhouette with a cinched tonal waist belt and peaked lapels. An epitome of timeless modern tailoring.',
-    sizes: ['XS', 'S', 'M', 'L'],
-    colors: ['Ivory', 'Onyx Black', 'Camel'],
-    is_featured: true,
-    is_new: true,
-    rating: 4.9,
-    reviews_count: 24,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'eth-3',
-    title: 'KNIT POLO SHIRT',
-    slug: 'knit-polo-shirt',
-    price: 3990,
-    compare_at_price: 6990,
-    category: 'Men',
-    fabric: 'Fine Mercerized Cotton Knit',
-    images: [
-      'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=900&auto=format&fit=crop&q=85',
-      'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=900&auto=format&fit=crop&q=85'
-    ],
-    description: 'Knitted from ultra-fine long-staple cotton yarn. Offers a ribbed collar, horn buttons, and an effortlessly sophisticated drape.',
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Obsidian Black', 'Sand Cream', 'Slate Gray'],
-    is_featured: true,
-    is_new: false,
-    rating: 5.0,
-    reviews_count: 14,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'eth-4',
-    title: 'SATIN SLIP DRESS',
-    slug: 'satin-slip-dress',
-    price: 6990,
-    compare_at_price: 9990,
-    category: 'Women',
-    fabric: 'Heavyweight Silk Satin',
-    images: [
-      'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=900&auto=format&fit=crop&q=85',
-      'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=900&auto=format&fit=crop&q=85'
-    ],
-    description: 'Cut on the bias for a fluid, liquid-like silhouette that gently grazes the figure. Finished with delicate shoulder straps and a refined neckline.',
-    sizes: ['XS', 'S', 'M', 'L'],
-    colors: ['Midnight Black', 'Champagne Gold', 'Emerald'],
-    is_featured: true,
-    is_new: false,
-    rating: 4.8,
-    reviews_count: 32,
-    created_at: new Date().toISOString()
-  }
-];
+export const MOCK_PRODUCTS: Product[] = [];
 
-export const MOCK_CATEGORIES: Category[] = [
-  { 
-    id: '1', 
-    name: 'Women', 
-    slug: 'women', 
-    image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=900&auto=format&fit=crop&q=85', 
-    item_count: 12 
-  },
-  { 
-    id: '2', 
-    name: 'Men', 
-    slug: 'men', 
-    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=900&auto=format&fit=crop&q=85', 
-    item_count: 8 
-  },
-  { 
-    id: '3', 
-    name: 'Bags', 
-    slug: 'bags', 
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=900&auto=format&fit=crop&q=85', 
-    item_count: 6 
-  },
-  { 
-    id: '4', 
-    name: 'Shoes', 
-    slug: 'shoes', 
-    image: 'https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=900&auto=format&fit=crop&q=85', 
-    item_count: 5 
-  },
-  { 
-    id: '5', 
-    name: 'Accessories', 
-    slug: 'accessories', 
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&auto=format&fit=crop&q=85', 
-    item_count: 9 
-  }
-];
+export const MOCK_CATEGORIES: Category[] = [];
 
 // In-memory runtime cache for high performance
 let memoryProductsCache: Product[] | null = null;
@@ -378,6 +257,27 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   return found || null;
 }
 
+// Helper to sanitize and send only valid database columns to Supabase
+function toDatabaseProduct(product: Product) {
+  return {
+    id: product.id,
+    title: product.title,
+    slug: product.slug,
+    price: Number(product.price) || 0,
+    compare_at_price: product.compare_at_price ? Number(product.compare_at_price) : null,
+    category: product.category || 'Luxury Pret',
+    fabric: product.fabric || '',
+    images: Array.isArray(product.images) ? product.images : [],
+    description: product.description || '',
+    sizes: Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['XS', 'S', 'M', 'L', 'XL'],
+    is_featured: Boolean(product.is_featured),
+    is_new: product.is_new ?? true,
+    rating: Number(product.rating) || 5.0,
+    reviews_count: Number(product.reviews_count) || 1,
+    created_at: product.created_at || new Date().toISOString()
+  };
+}
+
 export async function addProduct(product: Product): Promise<{ success: boolean; product: Product; error?: string }> {
   const newProduct: Product = {
     ...product,
@@ -389,17 +289,19 @@ export async function addProduct(product: Product): Promise<{ success: boolean; 
     created_at: product.created_at || new Date().toISOString()
   };
 
+  const dbPayload = toDatabaseProduct(newProduct);
+
   // 1. Save directly to Supabase
   try {
-    const { data, error } = await supabase.from('products').upsert([newProduct], { onConflict: 'id' }).select().single();
+    const { data, error } = await supabase.from('products').upsert([dbPayload], { onConflict: 'id' }).select().single();
     if (error) {
-      console.error('Supabase product save error:', error.message);
+      console.warn('Supabase product save notice:', error.message);
     } else if (data) {
       memoryProductsCache = null;
-      return { success: true, product: data as Product };
+      return { success: true, product: { ...newProduct, ...(data as Product) } };
     }
   } catch (err: any) {
-    console.error('Supabase addProduct exception:', err);
+    console.warn('Supabase addProduct exception:', err);
   }
 
   // 2. LocalStorage sync backup
@@ -419,11 +321,13 @@ export async function addProduct(product: Product): Promise<{ success: boolean; 
 }
 
 export async function updateProduct(product: Product): Promise<{ success: boolean; product: Product }> {
+  const dbPayload = toDatabaseProduct(product);
+
   // 1. Update in Supabase
   try {
     const { error } = await supabase
       .from('products')
-      .update(product)
+      .update(dbPayload)
       .eq('id', product.id);
     
     if (error) {

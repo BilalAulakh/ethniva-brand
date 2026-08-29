@@ -1298,7 +1298,7 @@ export default function AdminDashboardPage() {
 
                       <div className="md:text-right">
                         <div className="text-stone-400 font-extrabold text-[10px] uppercase tracking-wider mb-1">Total Payable Amount</div>
-                        <div className="text-2xl font-serif font-black text-[#881337]">
+                        <div className="text-2xl font-sans font-black text-[#18181B]">
                           RS. {order.total_amount.toLocaleString()}
                         </div>
                         <div className="text-[10px] text-stone-500 font-black uppercase tracking-wider mt-0.5">
@@ -1357,7 +1357,7 @@ export default function AdminDashboardPage() {
                 <span className="text-[10px] font-black text-[#C7A76C] uppercase tracking-widest block">
                   {editingProduct ? 'EDIT ARTICLE' : 'NEW PRODUCT CREATION'}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B]">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-[#18181B]">
                   {editingProduct ? `Edit "${editingProduct.title}"` : 'Add New Couture Article'}
                 </h2>
               </div>
@@ -1694,7 +1694,7 @@ export default function AdminDashboardPage() {
                 <span className="text-[10px] font-black tracking-[0.25em] text-rose-700 uppercase block">
                   CONFIRM PERMANENT REMOVAL
                 </span>
-                <h3 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B] mt-0.5">
+                <h3 className="text-xl sm:text-2xl font-sans font-bold text-[#18181B] mt-0.5">
                   {deleteConfirmTarget.type === 'all_products' 
                     ? 'Delete All Products?' 
                     : deleteConfirmTarget.type === 'all_orders'
@@ -1812,7 +1812,7 @@ export default function AdminDashboardPage() {
                 <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest block">
                   ORDER DOSSIER &bull; {selectedOrderDetails.payment_method === 'cod' ? 'CASH ON DELIVERY' : 'BANK TRANSFER'}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B] flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold tracking-tight text-[#18181B] flex items-center gap-2">
                   <span>ORDER #{selectedOrderDetails.id}</span>
                 </h2>
                 <div className="text-xs text-stone-400 mt-0.5">
@@ -1946,7 +1946,7 @@ export default function AdminDashboardPage() {
 
               <div className="text-right">
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Grand Total Payable</span>
-                <span className="text-2xl sm:text-3xl font-serif font-black text-[#881337]">
+                <span className="text-2xl sm:text-3xl font-sans font-black text-[#18181B]">
                   RS. {selectedOrderDetails.total_amount.toLocaleString()}
                 </span>
               </div>
@@ -1992,7 +1992,7 @@ export default function AdminDashboardPage() {
                 <span className="text-[10px] font-black text-[#881337] uppercase tracking-widest block">
                   {selectedProductPreview.category} &bull; ARTICLE PREVIEW
                 </span>
-                <h2 className="text-xl sm:text-2xl font-serif italic font-bold text-[#18181B]">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-[#18181B]">
                   {selectedProductPreview.title}
                 </h2>
               </div>
@@ -2048,7 +2048,7 @@ export default function AdminDashboardPage() {
             <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFC8] grid grid-cols-2 gap-4">
               <div>
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Selling Price</span>
-                <div className="text-2xl font-serif font-black text-[#881337]">
+                <div className="text-2xl font-sans font-black text-[#18181B]">
                   PKR {selectedProductPreview.price.toLocaleString()}
                 </div>
                 {selectedProductPreview.compare_at_price && (
@@ -2130,7 +2130,7 @@ export default function AdminDashboardPage() {
                   <Database className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-serif font-black text-[#18181B]">
+                  <h3 className="text-lg font-sans font-bold text-[#18181B]">
                     Supabase PostgreSQL Setup
                   </h3>
                   <p className="text-[11px] text-stone-500">

@@ -33,14 +33,18 @@ export const QuickViewModal: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image */}
-          <div className="relative aspect-[3/4] bg-stone-100">
-            <Image
-              src={quickViewProduct.images[0] || 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600'}
-              alt={quickViewProduct.title}
-              fill
-              className="object-cover"
-            />
-          </div>
+            {quickViewProduct.images && quickViewProduct.images[0] ? (
+              <Image
+                src={quickViewProduct.images[0]}
+                alt={quickViewProduct.title}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-[#EEEAE2] text-stone-400 font-serif text-sm">
+                ETHNIVA
+              </div>
+            )}
 
           {/* Details */}
           <div className="p-6 md:p-8 flex flex-col justify-between space-y-4">

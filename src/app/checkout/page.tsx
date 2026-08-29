@@ -258,16 +258,16 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full btn-luxury-gold py-4.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed"
+              className="w-full bg-[#0A0A0A] hover:bg-[#B08A4A] text-white hover:text-[#0A0A0A] border-2 border-[#B08A4A] py-4.5 px-6 font-semibold text-xs sm:text-sm tracking-[2px] uppercase shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed group mt-6"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                  <Loader2 className="w-5 h-5 animate-spin text-white group-hover:text-[#0A0A0A]" />
                   <span>RECORDING ORDER &amp; DISPATCHING...</span>
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4 fill-current" />
+                  <ShieldCheck className="w-5 h-5 text-[#B08A4A] group-hover:text-[#0A0A0A] transition-colors" />
                   <span>COMPLETE ORDER NOW &bull; RS. {finalGrandTotal.toLocaleString()}</span>
                 </>
               )}
