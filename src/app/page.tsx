@@ -89,47 +89,82 @@ export default function HomePage() {
     <div className="bg-[#F7F5F0] text-[#171717] font-sans selection:bg-[#B08A4A] selection:text-white overflow-x-hidden">
       
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION (100% DYNAMIC FROM DATABASE PRODUCTS)                     */}
+      {/* 1. FULL-WIDTH LUXURY BACKGROUND SLIDER HERO                               */}
       {/* ========================================================================= */}
       <section 
-        className="relative w-full bg-[#F7F5F0] border-b border-[#D8D2C7] overflow-hidden"
+        className="relative w-full min-h-[75vh] lg:min-h-[85vh] flex items-center border-b border-[#D8D2C7] overflow-hidden bg-[#0A0A0A]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[72vh]">
+        {/* Full-Bleed Background Images with Smooth Crossfade */}
+        {heroProducts.length > 0 ? (
+          heroProducts.map((prod, idx) => (
+            <div 
+              key={prod.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                activeSlide === idx ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none z-0'
+              }`}
+            >
+              {prod.images && prod.images[0] ? (
+                <Image
+                  src={prod.images[0]}
+                  alt={prod.title}
+                  fill
+                  priority={idx === 0}
+                  sizes="100vw"
+                  className="object-cover object-center transition-transform duration-1000"
+                />
+              ) : null}
+            </div>
+          ))
+        ) : (
+          <div className="absolute inset-0 bg-[#171717] z-0" />
+        )}
+
+        {/* Subtle Gradient only on far left for clean text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10 pointer-events-none" />
+
+        {/* Foreground Content Overlay */}
+        <div className="relative z-20 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
           
-          {/* Left Column: Brand Typography & Real Product Details */}
-          <div className="lg:col-span-6 space-y-6 lg:space-y-7 z-10 animate-fade-in">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#EEEAE2] border border-[#D8D2C7]">
+          <div className="max-w-2xl space-y-6 animate-fade-in text-white">
+            <div className="space-y-3.5">
+              
+              {/* Category / Collection Tag */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/50 backdrop-blur-md border border-[#B08A4A]/40 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B08A4A] animate-pulse" />
-                <span className="text-[10px] font-sans font-medium tracking-[2.5px] text-[#B08A4A] uppercase">
+                <span className="text-[10px] font-sans font-semibold tracking-[2.5px] text-[#C9A86A] uppercase">
                   {currentHeroProduct?.category ? `${currentHeroProduct.category} Collection` : 'ETHNIVA ATELIER ’26'}
                 </span>
               </div>
               
-              <h1 className="font-serif text-3xl sm:text-5xl lg:text-[50px] xl:text-[56px] font-normal tracking-[0.03em] text-[#0A0A0A] leading-[1.08] uppercase whitespace-pre-line">
+              {/* Hero Title */}
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal tracking-[0.03em] text-white leading-[1.08] uppercase whitespace-pre-line drop-shadow-md">
                 {currentHeroProduct ? currentHeroProduct.title : 'ELEVATE\nYOUR STYLE'}
               </h1>
 
               {/* Gold Diamond Ornament */}
               <div className="flex items-center gap-3 pt-1 pb-1">
-                <span className="w-10 h-[1px] bg-[#B08A4A]/50" />
-                <span className="text-[#B08A4A] text-[11px]">◆</span>
-                <span className="w-10 h-[1px] bg-[#B08A4A]/50" />
+                <span className="w-12 h-[1px] bg-[#B08A4A]/60" />
+                <span className="text-[#C9A86A] text-xs">◆</span>
+                <span className="w-12 h-[1px] bg-[#B08A4A]/60" />
               </div>
 
-              <p className="text-xs sm:text-sm text-neutral-600 font-light max-w-md leading-relaxed line-clamp-3">
+              {/* Description */}
+              <p className="text-xs sm:text-sm text-stone-200 font-light max-w-lg leading-relaxed line-clamp-3 drop-shadow-sm">
                 {currentHeroProduct?.description 
                   ? currentHeroProduct.description 
                   : 'Timeless fashion crafted for confidence, elegance, and international sophistication. Discover bespoke tailoring and luxury pret.'}
               </p>
 
+              {/* Price Display */}
               {currentHeroProduct && (
-                <div className="pt-1 text-lg font-serif font-medium text-[#0A0A0A]">
-                  PKR {currentHeroProduct.price.toLocaleString()}
+                <div className="pt-2 flex items-baseline gap-3">
+                  <span className="text-xl sm:text-2xl font-serif font-bold text-[#C9A86A] tracking-wide">
+                    PKR {currentHeroProduct.price.toLocaleString()}
+                  </span>
                   {currentHeroProduct.compare_at_price && (
-                    <span className="ml-3 text-xs line-through text-neutral-400 font-sans">
+                    <span className="text-xs sm:text-sm line-through text-stone-400 font-sans">
                       PKR {currentHeroProduct.compare_at_price.toLocaleString()}
                     </span>
                   )}
@@ -138,11 +173,11 @@ export default function HomePage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-1">
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               {currentHeroProduct ? (
                 <Link 
                   href={`/product/${currentHeroProduct.slug}`} 
-                  className="btn-primary-luxury group flex items-center gap-2"
+                  className="px-7 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl hover:shadow-2xl flex items-center gap-2 group cursor-pointer"
                 >
                   <span>SHOP THIS PIECE</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -150,7 +185,7 @@ export default function HomePage() {
               ) : (
                 <Link 
                   href="/shop" 
-                  className="btn-primary-luxury group flex items-center gap-2"
+                  className="px-7 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl hover:shadow-2xl flex items-center gap-2 group cursor-pointer"
                 >
                   <span>EXPLORE SHOP</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -159,26 +194,26 @@ export default function HomePage() {
               
               <Link 
                 href="/shop" 
-                className="btn-secondary-luxury"
+                className="px-7 py-3.5 bg-black/40 hover:bg-white/15 text-white border border-white/40 hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase backdrop-blur-md transition-all cursor-pointer"
               >
-                VIEW ALL PIECES
+                VIEW COLLECTIONS
               </Link>
             </div>
 
-            {/* Slider Navigation Controls (Only if multiple live products exist) */}
+            {/* Slider Navigation Controls & Indicators */}
             {heroProducts.length > 1 && (
-              <div className="flex items-center gap-6 pt-4 border-t border-[#D8D2C7]/70">
-                <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-6 pt-6 border-t border-white/20">
+                <div className="flex items-center gap-2">
                   <button 
                     onClick={prevSlide}
-                    className="w-8 h-8 border border-[#D8D2C7] bg-white hover:bg-[#0A0A0A] hover:text-[#B08A4A] hover:border-[#0A0A0A] flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-9 h-9 border border-white/30 bg-black/40 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
                     aria-label="Previous Slide"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={nextSlide}
-                    className="w-8 h-8 border border-[#D8D2C7] bg-white hover:bg-[#0A0A0A] hover:text-[#B08A4A] hover:border-[#0A0A0A] flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-9 h-9 border border-white/30 bg-black/40 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
                     aria-label="Next Slide"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -190,62 +225,17 @@ export default function HomePage() {
                     <button
                       key={idx}
                       onClick={() => setActiveSlide(idx)}
-                      className={`h-[3px] transition-all duration-500 ${
-                        activeSlide === idx ? 'w-8 bg-[#B08A4A]' : 'w-3 bg-[#D8D2C7] hover:bg-neutral-400'
+                      className={`h-[3px] transition-all duration-500 cursor-pointer ${
+                        activeSlide === idx ? 'w-10 bg-[#B08A4A]' : 'w-4 bg-white/40 hover:bg-white/70'
                       }`}
                       aria-label={`Go to slide ${idx + 1}`}
                     />
                   ))}
                 </div>
 
-                <span className="font-mono text-xs text-neutral-400 tracking-wider">
+                <span className="font-mono text-xs text-stone-300 tracking-wider">
                   0{activeSlide + 1} / 0{heroProducts.length}
                 </span>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Real Product Photography from Database */}
-          <div className="lg:col-span-6 relative w-full aspect-[4/5] sm:aspect-[4/5] lg:h-[560px] overflow-hidden bg-[#EEEAE2] border border-[#D8D2C7]">
-            {currentHeroProduct && currentHeroProduct.images && currentHeroProduct.images[0] ? (
-              <Link href={`/product/${currentHeroProduct.slug}`} className="block w-full h-full relative group">
-                <Image
-                  src={currentHeroProduct.images[0]}
-                  alt={currentHeroProduct.title}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-xs p-3.5 border border-[#D8D2C7] flex items-center justify-between">
-                  <div>
-                    <span className="text-[9px] font-sans font-medium tracking-[1.5px] uppercase text-[#B08A4A] block">
-                      {currentHeroProduct.category || 'Featured Piece'}
-                    </span>
-                    <h4 className="font-serif text-xs uppercase text-[#0A0A0A] font-medium line-clamp-1">
-                      {currentHeroProduct.title}
-                    </h4>
-                  </div>
-                  <div className="text-xs font-serif font-semibold text-[#0A0A0A]">
-                    PKR {currentHeroProduct.price.toLocaleString()}
-                  </div>
-                </div>
-              </Link>
-            ) : (
-              /* Minimal High-Fashion Placeholder when no database products exist yet */
-              <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#EEEAE2]">
-                <div className="w-16 h-16 rounded-full border border-[#B08A4A] flex items-center justify-center mb-4">
-                  <Sparkles className="w-7 h-7 text-[#B08A4A] stroke-1" />
-                </div>
-                <h3 className="font-serif text-2xl uppercase tracking-widest text-[#0A0A0A] mb-2">
-                  ETHNIVA
-                </h3>
-                <p className="text-xs text-neutral-500 font-light max-w-xs uppercase tracking-wider mb-6">
-                  Atelier Luxury Pret &amp; Couture Collection
-                </p>
-                <Link href="/admin" className="text-[11px] font-medium tracking-[2px] text-[#B08A4A] uppercase border-b border-[#B08A4A] pb-1 hover:text-[#0A0A0A] transition-colors">
-                  Add Products via Admin Panel →
-                </Link>
               </div>
             )}
           </div>

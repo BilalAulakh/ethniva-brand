@@ -584,6 +584,7 @@ export default function AdminDashboardPage() {
 
   // Categories list
   const categoryOptions = [
+    'Chiffon',
     'Luxury Pret',
     'Ready To Wear',
     'Raw Silk & Chiffon',
@@ -694,38 +695,6 @@ export default function AdminDashboardPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Credentials Info Box */}
-          <div className="bg-[#FAF7F2] border border-[#E8DFC8] rounded-2xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-[10px] font-black text-[#881337] uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-[#C7A76C]" />
-                <span>Admin Login Credentials</span>
-              </div>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="text-[10px] font-bold text-[#881337] bg-white border border-[#C7A76C]/40 px-2 py-0.5 rounded-md hover:bg-[#881337] hover:text-white transition-all shadow-2xs"
-              >
-                1-Click Auto Fill
-              </button>
-            </div>
-
-            <div className="text-[11px] space-y-1 font-mono text-stone-700 bg-white/70 p-2.5 rounded-lg border border-stone-200/60">
-              <div className="flex justify-between">
-                <span className="text-stone-400">Email:</span>
-                <span className="font-bold text-[#18181B]">{ADMIN_CREDENTIALS.email}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-stone-400">Password:</span>
-                <span className="font-bold text-[#18181B]">{ADMIN_CREDENTIALS.password}</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-stone-100 text-[10px]">
-                <span className="text-stone-400">Quick PIN:</span>
-                <span className="font-bold text-[#881337]">{ADMIN_CREDENTIALS.pin}</span>
-              </div>
-            </div>
-          </div>
 
           <div className="text-center pt-2">
             <Link href="/" className="text-xs text-stone-500 hover:text-[#881337] font-medium transition-colors">

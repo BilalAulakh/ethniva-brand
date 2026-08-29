@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
       router.push('/admin');
     } else {
       setIsAdminLoggingIn(false);
-      setAdminLoginError('Invalid credentials. Please enter valid email & password or click 1-Click Auto Fill.');
+      setAdminLoginError('Invalid credentials. Please enter valid email & password.');
     }
   };
 
