@@ -8,7 +8,8 @@ import {
   Plus, Edit, Trash2, Image as ImageIcon, Lock, LogOut, CheckCircle, 
   AlertCircle, ChevronRight, Eye, Tag, DollarSign, Layers, Check, 
   UploadCloud, X, ArrowUpRight, ArrowRight, BarChart3, Filter, Copy, KeyRound, Sparkles,
-  Loader2, AlertTriangle, Printer, MessageCircle, ExternalLink, Database, Server, Download
+  Loader2, AlertTriangle, Printer, MessageCircle, ExternalLink, Database, Server, Download,
+  ZoomIn, Minus
 } from 'lucide-react';
 import { 
   getProducts, getOrders, addProduct, updateProduct, deleteProduct, deleteAllProducts,
@@ -89,6 +90,8 @@ export default function AdminDashboardPage() {
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<Order | null>(null);
   const [selectedProductPreview, setSelectedProductPreview] = useState<Product | null>(null);
   const [previewActiveImageIdx, setPreviewActiveImageIdx] = useState(0);
+  const [adminZoomOpen, setAdminZoomOpen] = useState(false);
+  const [adminZoomLevel, setAdminZoomLevel] = useState(1);
 
   // Supabase Database Connection & Seeding States
   const [dbHealth, setDbHealth] = useState<{
@@ -582,17 +585,21 @@ export default function AdminDashboardPage() {
   const pendingOrdersCount = orders.filter(o => !o.status || o.status === 'pending').length;
   const completedOrdersCount = orders.filter(o => o.status === 'delivered').length;
 
-  // Categories list
-  const categoryOptions = [
-    'VEZ APPARELS',
-    'Chiffon',
-    'Luxury Pret',
-    'Ready To Wear',
-    'Raw Silk & Chiffon',
-    'Velvet Festive',
-    'Bridal & Couture',
-    'Top Sale & Clearance'
-  ];
+  // Dynamic active categories list matching storefront (removing categories with 0 products)
+  const categoryOptions = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    products.forEach(p => {
+      if (p.category && p.category.trim()) {
+        const cat = p.category.trim();
+        counts[cat] = (counts[cat] || 0) + 1;
+      }
+    });
+
+    const activeList = Object.keys(counts).filter(cat => counts[cat] > 0);
+    return activeList.length > 0 
+      ? activeList 
+      : ['VEZ APPARELS', 'Chiffon', 'Luxury Pret', 'Ready To Wear', 'Raw Silk & Chiffon'];
+  }, [products]);
 
   // -------------------------------------------------------------
   // 1. LOGIN SCREEN (If not authenticated)
@@ -935,9 +942,12 @@ export default function AdminDashboardPage() {
               className="bg-white border border-stone-200 rounded-2xl px-4 py-3 text-xs font-bold text-[#18181B] focus:outline-none focus:border-[#881337] shadow-xs"
             >
               <option value="all">All Categories ({products.length})</option>
-              {categoryOptions.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
+              {categoryOptions.map(cat => {
+                const catCount = products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
+                return (
+                  <option key={cat} value={cat}>{cat} ({catCount})</option>
+                );
+              })}
             </select>
           )}
 
@@ -1966,20 +1976,33 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {/* Product Image Gallery Preview */}
+            {/* Product Image Gallery Preview (Full Width & Interactive Zoom) */}
             <div className="space-y-3">
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] border border-stone-200 shadow-xs">
+              <div 
+                className="relative w-full aspect-[4/5] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] border border-stone-200 shadow-xs flex items-center justify-center cursor-zoom-in group select-none"
+                onClick={() => {
+                  setAdminZoomLevel(1);
+                  setAdminZoomOpen(true);
+                }}
+              >
                 {selectedProductPreview.images && selectedProductPreview.images[previewActiveImageIdx] ? (
                   <img
                     src={selectedProductPreview.images[previewActiveImageIdx]}
                     alt={selectedProductPreview.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-stone-400">
                     <ImageIcon className="w-8 h-8" />
                   </div>
                 )}
+
+                {/* Floating Tap to Zoom Badge */}
+                <div className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-md border border-[#C5A059]/40 text-[#111111] px-2.5 py-1 rounded-full text-[9.5px] font-bold flex items-center gap-1 shadow-sm transition-transform group-hover:scale-105">
+                  <ZoomIn className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>Tap to Zoom</span>
+                </div>
+
                 {selectedProductPreview.is_featured && (
                   <span className="absolute top-3 left-3 bg-[#881337] text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-md shadow">
                     FEATURED COUTURE
@@ -1994,11 +2017,11 @@ export default function AdminDashboardPage() {
                     <button
                       key={idx}
                       onClick={() => setPreviewActiveImageIdx(idx)}
-                      className={`w-14 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
-                        previewActiveImageIdx === idx ? 'border-[#881337] shadow-sm' : 'border-stone-200 opacity-70 hover:opacity-100'
+                      className={`w-14 aspect-[3/4] rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                        previewActiveImageIdx === idx ? 'border-[#881337] shadow-sm scale-105' : 'border-stone-200 opacity-70 hover:opacity-100'
                       }`}
                     >
-                      <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                      <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover object-top" />
                     </button>
                   ))}
                 </div>
@@ -2030,14 +2053,69 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Description */}
+            {/* Description & Package Inclusions (Bullet Format) */}
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider block">
                 Description &amp; Package Inclusions
               </label>
-              <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3.5 rounded-xl border border-stone-200 font-light">
-                {selectedProductPreview.description || 'Pure handcrafted couture ensemble designed with signature craftsmanship.'}
-              </p>
+              <div className="bg-[#FAF7F2] p-3.5 rounded-xl border border-stone-200 space-y-1.5 text-xs text-stone-700">
+                {(() => {
+                  const desc = selectedProductPreview.description || 'Pure handcrafted couture ensemble designed with signature craftsmanship.';
+                  const raw = desc
+                    .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
+                    .replace(/\r\n/g, '\n');
+                  const lines = raw.split('\n').map(l => l.trim()).filter(l => l && l !== '.');
+                  const isHeaderRegex = /^(package includes?|fabric details?|available in all sizes?|features?|details?|disclaimer):?$/i;
+                  const bullets: { isHeader: boolean; text: string }[] = [];
+
+                  lines.forEach(line => {
+                    if (isHeaderRegex.test(line) || (line.endsWith(':') && line.length < 35 && !line.includes('.'))) {
+                      bullets.push({ isHeader: true, text: line.replace(/:$/, '').toUpperCase() });
+                    } else {
+                      const sentences = line
+                        .split(/(?<=[.!?])\s+(?=[A-Z0-9✦•\-])/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 0 && s !== '.');
+
+                      if (sentences.length > 0) {
+                        sentences.forEach(s => {
+                          const cleanText = s.replace(/^[•\-\*✦\s]+/, '').trim();
+                          if (cleanText && cleanText !== '.') {
+                            bullets.push({ isHeader: false, text: cleanText });
+                          }
+                        });
+                      } else {
+                        const cleanText = line.replace(/^[•\-\*✦\s]+/, '').trim();
+                        if (cleanText && cleanText !== '.') {
+                          bullets.push({ isHeader: false, text: cleanText });
+                        }
+                      }
+                    }
+                  });
+
+                  if (bullets.length === 0) {
+                    return <p className="text-stone-600 font-light">{desc}</p>;
+                  }
+
+                  return bullets.map((b, idx) => {
+                    if (b.isHeader) {
+                      return (
+                        <div key={idx} className="pt-1.5 first:pt-0">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#9E7A36] bg-amber-100/60 border border-[#C5A059]/40 px-2 py-0.5 rounded-md inline-block">
+                            {b.text}
+                          </span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={idx} className="flex items-start gap-1.5 text-stone-700 leading-snug">
+                        <span className="text-[#C5A059] font-bold text-[9.5px] mt-0.5 flex-shrink-0">✦</span>
+                        <span className="font-normal text-stone-800">{b.text}</span>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </div>
 
             {/* Sizes */}
@@ -2078,6 +2156,77 @@ export default function AdminDashboardPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Admin High-Resolution Zoom Lightbox Modal */}
+      {adminZoomOpen && selectedProductPreview && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 animate-fade-in select-none overflow-hidden h-screen w-screen"
+          onClick={() => setAdminZoomOpen(false)}
+        >
+          <div className="flex items-center justify-between text-white z-30 px-2" onClick={e => e.stopPropagation()}>
+            <div>
+              <h3 className="text-base font-bold">{selectedProductPreview.title}</h3>
+              <span className="text-[11px] text-stone-400 font-mono">
+                Photo {previewActiveImageIdx + 1} of {selectedProductPreview.images.length} &bull; Zoom: {adminZoomLevel}x
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAdminZoomLevel(prev => prev === 1 ? 2 : prev === 2 ? 2.5 : 1)}
+                className="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/30 text-white text-xs font-bold flex items-center gap-1.5 backdrop-blur-md transition-all"
+              >
+                {adminZoomLevel > 1 ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                <span>{adminZoomLevel > 1 ? 'Zoom Out' : 'Zoom In (2x)'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAdminZoomOpen(false)}
+                className="w-9 h-9 rounded-full bg-white/20 hover:bg-rose-600 text-white flex items-center justify-center backdrop-blur-md transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div 
+            className="flex-1 relative flex items-center justify-center overflow-hidden my-2 p-2"
+            onClick={e => e.stopPropagation()}
+          >
+            <div 
+              className={`relative transition-transform duration-300 cursor-zoom-in w-full h-full max-w-2xl max-h-[75vh] flex items-center justify-center ${
+                adminZoomLevel === 2 ? 'scale-[1.8]' : adminZoomLevel === 2.5 ? 'scale-[2.4]' : 'scale-100'
+              }`}
+              onClick={() => setAdminZoomLevel(prev => prev === 1 ? 2 : prev === 2 ? 2.5 : 1)}
+            >
+              <img
+                src={selectedProductPreview.images[previewActiveImageIdx]}
+                alt={selectedProductPreview.title}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          </div>
+
+          {selectedProductPreview.images.length > 1 && (
+            <div className="flex items-center justify-center gap-2 overflow-x-auto py-1 z-30" onClick={e => e.stopPropagation()}>
+              {selectedProductPreview.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setPreviewActiveImageIdx(idx);
+                    setAdminZoomLevel(1);
+                  }}
+                  className={`relative w-12 sm:w-14 aspect-[3/4] rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${
+                    previewActiveImageIdx === idx ? 'border-[#C5A880] scale-110 shadow-lg' : 'border-white/30 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

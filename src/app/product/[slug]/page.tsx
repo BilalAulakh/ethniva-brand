@@ -201,6 +201,20 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
     setIsZoomModalOpen(true);
   };
 
+  // Prevent background scrolling when Zoom Lightbox or Size Chart is open
+  useEffect(() => {
+    if (isZoomModalOpen || isSizeChartOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalHtmlOverflow = document.documentElement.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+      };
+    }
+  }, [isZoomModalOpen, isSizeChartOpen]);
+
   const toggleZoomLevel = () => {
     setZoomLevel(prev => prev === 1 ? 2 : prev === 2 ? 2.5 : 1);
   };
@@ -636,7 +650,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       {/* ------------------------------------------------------------- */}
       {isZoomModalOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-6 animate-fade-in select-none"
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-6 animate-fade-in select-none overflow-hidden h-screen w-screen max-h-screen max-w-[100vw]"
           onClick={() => setIsZoomModalOpen(false)}
         >
           {/* Top Bar with Controls */}
@@ -672,15 +686,15 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
           {/* Center Zoom Viewport */}
           <div 
-            className="flex-1 relative flex items-center justify-center overflow-auto my-2 p-2"
+            className="flex-1 relative flex items-center justify-center overflow-hidden my-2 p-2"
             onClick={e => e.stopPropagation()}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             <div 
-              className={`relative transition-all duration-300 cursor-zoom-in ${
-                zoomLevel === 1 ? 'w-full h-full max-w-2xl max-h-[75vh]' : zoomLevel === 2 ? 'w-[140vw] sm:w-[90vw] h-[120vh]' : 'w-[180vw] sm:w-[120vw] h-[150vh]'
+              className={`relative transition-transform duration-300 cursor-zoom-in w-full h-full max-w-2xl max-h-[75vh] flex items-center justify-center ${
+                zoomLevel === 2 ? 'scale-[1.8]' : zoomLevel === 2.5 ? 'scale-[2.4]' : 'scale-100'
               }`}
               onClick={toggleZoomLevel}
             >
