@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# backups
+# keep latest backup in repo
+!/backups/
+!/backups/*.json
+

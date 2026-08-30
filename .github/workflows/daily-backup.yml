@@ -1,0 +1,55 @@
+name: Daily Automated Database Backup
+
+on:
+  schedule:
+    # Runs every day at 12:00 AM Pakistan Standard Time (PKT is UTC+5, so 19:00 UTC)
+    - cron: '0 19 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions dashboard anytime
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    name: Run Supabase Backup & Commit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🚀 Run Backup Script
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://zeysbwhgakissozuyspw.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpleXNid2hnYWtpc3NvenV5c3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4OTc3NTUsImV4cCI6MjEwMzQ3Mzc1NX0.BmPbf2RL1RXOrH1BpULoVRb2TGy7JvTcy9rBCRvLVQQ' }}
+        run: node scripts/backup-db.js
+
+      - name: 💾 Commit & Push Backup to Repository
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add backups/
+          if git diff --staged --quiet; then
+            echo "No new backup changes to commit."
+          else
+            git commit -m "chore(backup): automated daily database backup [skip ci]"
+            git push
+          fi
+
+      - name: 📤 Upload Backup as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ethniva-daily-backup
+          path: backups/
+          retention-days: 30
