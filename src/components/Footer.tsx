@@ -28,8 +28,8 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#0A0A0A] text-white pt-16 sm:pt-20 pb-10 border-t border-[#171717]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         
-        {/* Main 5-Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-14 border-b border-[#262626]">
+        {/* Main 4-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-14 border-b border-[#262626]">
           
           {/* COLUMN 1: Brand Info & Socials */}
           <div className="space-y-4 lg:col-span-1">
@@ -81,15 +81,6 @@ export const Footer: React.FC = () => {
               >
                 <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.5]" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
-              <a 
-                href="https://tiktok.com" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-8 h-8 rounded-full bg-[#171717] border border-[#262626] flex items-center justify-center text-neutral-400 hover:text-[#B08A4A] hover:border-[#B08A4A] transition-all text-[11px] font-bold"
-                title="TikTok"
-              >
-                ♪
-              </a>
             </div>
           </div>
 
@@ -99,10 +90,9 @@ export const Footer: React.FC = () => {
               SHOP
             </h4>
             <ul className="space-y-2 text-xs text-neutral-400 font-light">
-              <li><Link href="/shop?category=women" className="hover:text-[#B08A4A] transition-colors">Women</Link></li>
-              <li><Link href="/shop?category=men" className="hover:text-[#B08A4A] transition-colors">Men</Link></li>
               <li><Link href="/shop?sort=newest" className="hover:text-[#B08A4A] transition-colors">New In</Link></li>
               <li><Link href="/shop" className="hover:text-[#B08A4A] transition-colors">Collections</Link></li>
+              <li><Link href="/shop?category=ready-to-wear" className="hover:text-[#B08A4A] transition-colors">Ready to Wear</Link></li>
               <li><Link href="/shop?category=sale" className="hover:text-[#B08A4A] transition-colors">Sale</Link></li>
             </ul>
           </div>
@@ -121,20 +111,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* COLUMN 4: POLICIES */}
-          <div className="space-y-3">
-            <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
-              POLICIES
-            </h4>
-            <ul className="space-y-2 text-xs text-neutral-400 font-light">
-              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Terms &amp; Conditions</Link></li>
-              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Return Policy</Link></li>
-              <li><Link href="/contact" className="hover:text-[#B08A4A] transition-colors">Shipping Policy</Link></li>
-            </ul>
-          </div>
-
-          {/* COLUMN 5: NEWSLETTER */}
+          {/* COLUMN 4: NEWSLETTER */}
           <div className="space-y-3 lg:col-span-1">
             <h4 className="text-[11px] font-medium tracking-[2px] uppercase text-white font-sans">
               NEWSLETTER
