@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Star, Truck, ShieldCheck, RefreshCw, ShoppingBag, Check, 
   Scissors, Zap, Loader2, MessageCircle, MapPin, ChevronLeft, 
-  ChevronRight, ZoomIn, Maximize2, X, Plus, Minus 
+  ChevronRight, ZoomIn, Maximize2, X, Plus, Minus, Sparkles 
 } from 'lucide-react';
 import { getProductBySlug, Product } from '@/lib/supabase';
 import { useCart } from '@/context/CartContext';
@@ -61,6 +61,38 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const packageIncludesText = product?.package_includes 
     || (product?.description?.match(/package includes?:?\s*([^.\n]+)/i)?.[1]?.trim())
     || '3-Piece Set (Shirt, Bottom / Shalwar, Dupatta)';
+
+  // Helper to convert product description into short, readable bullet points
+  const descriptionBullets = React.useMemo(() => {
+    if (!product?.description) return [];
+
+    // Remove stray dot spacers like `\n.\n`
+    const raw = product.description
+      .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
+      .replace(/\r\n/g, '\n');
+
+    const lines = raw.split('\n').map(l => l.trim()).filter(l => l && l !== '.');
+    const result: { isHeader: boolean; text: string }[] = [];
+
+    for (const line of lines) {
+      // Check if it's a section title (e.g., FABRIC DETAILS:, Package Includes:, AVAILABLE IN ALL SIZES)
+      const isHeader = /^(package includes|fabric details|details|specifications|includes|features|care instructions|available in all sizes):?$/i.test(line);
+
+      if (isHeader) {
+        result.push({ isHeader: true, text: line.replace(/:$/, '').trim() });
+      } else if (line.length > 90 && line.includes('.')) {
+        // Split long wall of text into short, readable 1-sentence bullet points
+        const sentences = line.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 3 && s.trim() !== '.');
+        for (const sentence of sentences) {
+          result.push({ isHeader: false, text: sentence.trim() });
+        }
+      } else {
+        result.push({ isHeader: false, text: line });
+      }
+    }
+
+    return result;
+  }, [product?.description]);
 
   // Handle Buy Now & Add to Cart with updated options
   const handleBuyNow = () => {
@@ -462,26 +494,36 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </div>
             )}
 
-            {/* Quantity Controls */}
-            <div className="flex items-center gap-4 pt-1">
-              <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">QUANTITY:</span>
-              <div className="flex items-center border border-stone-300 rounded-xl bg-[#FAF7F2] px-3 py-1">
-                <button
-                  type="button"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1"
-                >
-                  -
-                </button>
-                <span className="text-xs font-bold text-[#111111] px-3">{quantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1"
-                >
-                  +
-                </button>
+            {/* Quantity Controls & Dynamic Total */}
+            <div className="flex items-center flex-wrap gap-x-4 gap-y-2 pt-1">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">QUANTITY:</span>
+                <div className="flex items-center border border-stone-300 rounded-xl bg-[#FAF7F2] px-3 py-1 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1.5 transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="text-xs font-bold text-[#111111] px-3 min-w-[20px] text-center">{quantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="text-stone-600 hover:text-stone-900 font-bold text-sm px-1.5 transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
+
+              {quantity > 1 && (
+                <div className="inline-flex items-center gap-1.5 bg-[#FAF7F2] px-3 py-1.5 rounded-xl border border-[#C5A059]/40 animate-fade-in text-xs">
+                  <span className="text-stone-500 font-medium">Total:</span>
+                  <span className="font-bold text-[#111111] text-sm">PKR {(activePrice * quantity).toLocaleString()}</span>
+                  <span className="text-[10px] text-stone-500 font-normal">({quantity} items)</span>
+                </div>
+              )}
             </div>
 
             {/* Main Action Buttons */}
@@ -533,13 +575,33 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </a>
             </div>
 
-            {/* 1. PRODUCT DESCRIPTION & DETAILS (COMES FIRST) */}
-            <div className="pt-4 border-t border-stone-200/80 space-y-2">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-                Product Description &amp; Details
-              </h3>
-              <div className="text-xs text-stone-700 leading-relaxed font-normal whitespace-pre-line bg-[#FAF7F2] p-3.5 rounded-2xl border border-stone-200/60">
-                {product.description}
+            {/* 1. PRODUCT DESCRIPTION & DETAILS (BULLETS FORMAT) */}
+            <div className="pt-4 border-t border-stone-200/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>Product Details &amp; Highlights</span>
+                </h3>
+              </div>
+
+              <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-stone-200/70 space-y-2">
+                {descriptionBullets.map((item, idx) => {
+                  if (item.isHeader) {
+                    return (
+                      <div key={idx} className="pt-2 first:pt-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#9E7A36] bg-amber-100/60 border border-[#C5A059]/40 px-2.5 py-0.5 rounded-md inline-block">
+                          {item.text}
+                        </span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={idx} className="flex items-start gap-2 text-xs text-stone-700 leading-relaxed">
+                      <span className="text-[#C5A059] font-bold text-xs mt-0.5 flex-shrink-0">✦</span>
+                      <span className="font-normal text-stone-800">{item.text}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

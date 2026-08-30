@@ -77,9 +77,20 @@ export const QuickViewModal: React.FC = () => {
                 )}
               </div>
 
-              <p className="text-xs text-stone-600 mb-4 leading-relaxed font-normal">
-                {quickViewProduct.description}
-              </p>
+              {/* Short Bullet Highlights */}
+              <div className="space-y-1.5 mb-4 bg-[#FAF7F2] p-3 rounded-xl border border-stone-200/70 max-h-36 overflow-y-auto">
+                {quickViewProduct.description
+                  .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
+                  .split('\n')
+                  .map(l => l.trim())
+                  .filter(l => l && l !== '.')
+                  .map((line, idx) => (
+                    <div key={idx} className="flex items-start gap-1.5 text-xs text-stone-700 leading-snug">
+                      <span className="text-[#C5A059] font-bold text-[10px] mt-0.5 flex-shrink-0">✦</span>
+                      <span>{line.replace(/^[-•*]\s*/, '')}</span>
+                    </div>
+                  ))}
+              </div>
 
               {/* Size Selector */}
               <div className="mb-4 space-y-2">

@@ -324,7 +324,7 @@ export default function HomePage() {
               <Link 
                 key={cat.slug} 
                 href={`/shop?category=${encodeURIComponent(cat.slug)}`}
-                className="group relative block overflow-hidden bg-white border border-[#D8D2C7] transition-all hover:border-[#0A0A0A]"
+                className="group relative block overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-[#D8D2C7] hover:border-[#B08A4A] transition-all duration-500 ease-out hover:-translate-y-2.5 hover:shadow-[0_20px_40px_-15px_rgba(176,138,74,0.28)]"
               >
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#EEEAE2]">
                   {cat.image ? (
@@ -333,7 +333,7 @@ export default function HomePage() {
                       alt={cat.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 20vw"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
@@ -345,18 +345,31 @@ export default function HomePage() {
                       </span>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-colors duration-500" />
+                  
+                  {/* Subtle Dark Vignette on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Floating Glassmorphic 'Explore' Badge on Hover */}
+                  <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none z-10">
+                    <span className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md text-[#0A0A0A] px-3 py-1 rounded-full text-[9.5px] font-sans font-bold tracking-[1.5px] uppercase shadow-lg border border-white/60 whitespace-nowrap">
+                      <span>EXPLORE</span>
+                      <ArrowRight className="w-3 h-3 text-[#B08A4A]" />
+                    </span>
+                  </div>
                 </div>
 
-                <div className="bg-[#EEEAE2] group-hover:bg-[#0A0A0A] group-hover:text-white transition-colors duration-300 py-3 px-2 text-center border-t border-[#D8D2C7]">
-                  <span className="font-serif text-xs sm:text-sm tracking-[1.5px] font-normal uppercase block">
+                <div className="bg-[#EEEAE2] group-hover:bg-[#0A0A0A] group-hover:text-white transition-all duration-400 py-3.5 px-2.5 text-center border-t border-[#D8D2C7] group-hover:border-[#0A0A0A] relative overflow-hidden">
+                  <span className="font-serif text-xs sm:text-sm tracking-[1.5px] font-normal uppercase block transition-all duration-300 group-hover:tracking-[2px]">
                     {cat.name}
                   </span>
                   {cat.item_count > 0 && (
-                    <span className="text-[9px] tracking-[1.5px] text-neutral-400 group-hover:text-[#B08A4A] uppercase font-sans mt-0.5 block">
+                    <span className="text-[9px] tracking-[1.5px] text-neutral-400 group-hover:text-[#B08A4A] uppercase font-sans mt-0.5 block transition-colors duration-300">
                       {cat.item_count} {cat.item_count === 1 ? 'PIECE' : 'PIECES'}
                     </span>
                   )}
+                  
+                  {/* Animated Gold Bottom Accent Line */}
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-20 h-[2px] bg-gradient-to-r from-transparent via-[#B08A4A] to-transparent transition-all duration-500 rounded-full" />
                 </div>
               </Link>
             ))}
