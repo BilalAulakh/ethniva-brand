@@ -11,7 +11,7 @@ import { useCart } from '@/context/CartContext';
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart();
   const [isProceeding, setIsProceeding] = useState(false);
 
   const FREE_DELIVERY_THRESHOLD = 5000;

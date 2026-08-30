@@ -47,26 +47,28 @@ export default function ContactPage() {
           </p>
         </div>
 
-        {/* 3 Main Contact Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* 4 Main Contact Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Card 1: Official WhatsApp Support */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#25D366] transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#25D366] flex items-center justify-center mx-auto shadow-2xs">
-              <MessageCircle className="w-6 h-6" />
+          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#25D366] transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#25D366] flex items-center justify-center mx-auto shadow-2xs">
+                <MessageCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase text-[#25D366] tracking-widest">WHATSAPP CONCIERGE</div>
+                <h3 className="text-base font-bold text-[#111111] mt-1">0320-1803537</h3>
+              </div>
+              <p className="text-xs text-stone-500 font-normal">
+                Instant assistance for custom sizes, styling queries &amp; order tracking.
+              </p>
             </div>
-            <div>
-              <div className="text-[10px] font-bold uppercase text-[#25D366] tracking-widest">WHATSAPP CONCIERGE</div>
-              <h3 className="text-base font-bold text-[#111111] mt-1">0320-1803537</h3>
-            </div>
-            <p className="text-xs text-stone-500 font-normal">
-              Instant assistance for custom sizes, styling queries &amp; order tracking.
-            </p>
             <a
               href="https://wa.me/923201803537?text=Hi%20ETHNIVA%2C%20I%20need%20assistance%20with%20my%20order"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2.5 px-5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2.5 px-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
             >
               <MessageCircle className="w-4 h-4" />
               <span>CHAT ON WHATSAPP</span>
@@ -74,46 +76,74 @@ export default function ContactPage() {
           </div>
 
           {/* Card 2: Official Email */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#C5A059] transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-[#FAF7F2] border border-[#C5A059]/50 text-[#C5A059] flex items-center justify-center mx-auto shadow-2xs">
-              <Mail className="w-6 h-6" />
+          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#C5A059] transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#FAF7F2] border border-[#C5A059]/50 text-[#C5A059] flex items-center justify-center mx-auto shadow-2xs">
+                <Mail className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase text-[#C5A059] tracking-widest">OFFICIAL EMAIL</div>
+                <a href="mailto:ethnivabrand@gmail.com" className="text-xs font-bold text-[#111111] hover:text-[#C5A059] transition-colors mt-1 block break-all">
+                  ethnivabrand@gmail.com
+                </a>
+              </div>
+              <p className="text-xs text-stone-500 font-normal">
+                Formal inquiries, bespoke quotes, and customer support.
+              </p>
             </div>
-            <div>
-              <div className="text-[10px] font-bold uppercase text-[#C5A059] tracking-widest">OFFICIAL EMAIL</div>
-              <a href="mailto:ethnivabrand@gmail.com" className="text-xs font-bold text-[#111111] hover:text-[#C5A059] transition-colors mt-1 block">
-                ethnivabrand@gmail.com
-              </a>
-            </div>
-            <p className="text-xs text-stone-500 font-normal">
-              Formal inquiries, bespoke quotes, and customer support.
-            </p>
-            <div className="text-[11px] text-stone-500 space-y-1">
+            <div className="text-[11px] text-stone-500 space-y-1 pt-1">
               <div className="flex items-center justify-center gap-1.5 font-medium">
                 <Clock className="w-3.5 h-3.5 text-[#C5A059]" />
-                <span>Mon - Sat: 10:00 AM - 9:00 PM</span>
+                <span>Mon - Sat: 10AM - 9PM</span>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Official Facebook Community */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#1877F2] transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-[#1877F2] flex items-center justify-center mx-auto shadow-2xs">
-              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          {/* Card 3: Official Instagram */}
+          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#E4405F] transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-pink-50 border border-pink-200 text-[#E4405F] flex items-center justify-center mx-auto shadow-2xs">
+                <svg className="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase text-[#E4405F] tracking-widest">INSTAGRAM</div>
+                <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
+              </div>
+              <p className="text-xs text-stone-500 font-normal">
+                Watch our latest collection showcases, reels &amp; styling stories.
+              </p>
             </div>
-            <div>
-              <div className="text-[10px] font-bold uppercase text-[#1877F2] tracking-widest">FACEBOOK COMMUNITY</div>
-              <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
+            <a
+              href="https://www.instagram.com/ethnivaonline/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] hover:opacity-95 text-white py-2.5 px-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
+            >
+              <span>FOLLOW INSTAGRAM</span>
+            </a>
+          </div>
+
+          {/* Card 4: Official Facebook Community */}
+          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#1877F2] transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-[#1877F2] flex items-center justify-center mx-auto shadow-2xs">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase text-[#1877F2] tracking-widest">FACEBOOK COMMUNITY</div>
+                <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
+              </div>
+              <p className="text-xs text-stone-500 font-normal">
+                Join our Facebook page for community updates &amp; customer reviews.
+              </p>
             </div>
-            <p className="text-xs text-stone-500 font-normal">
-              Follow our official Facebook page for latest arrivals &amp; real customer reviews.
-            </p>
             <a
               href="https://www.facebook.com/ethnivaonline"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white py-2.5 px-5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white py-2.5 px-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
             >
-              <span>VISIT FACEBOOK PAGE</span>
+              <span>VISIT FACEBOOK</span>
             </a>
           </div>
 
