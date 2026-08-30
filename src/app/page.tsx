@@ -320,7 +320,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-            {categories.map((cat) => (
+            {categories.filter(cat => (cat.item_count || 0) > 0).map((cat) => (
               <Link 
                 key={cat.slug} 
                 href={`/shop?category=${encodeURIComponent(cat.slug)}`}

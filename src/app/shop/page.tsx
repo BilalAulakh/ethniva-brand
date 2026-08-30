@@ -141,7 +141,9 @@ function ShopContent() {
               >
                 All Categories ({products.length})
               </Link>
-              {categories.map(cat => (
+              {categories
+                .filter(cat => (cat.item_count || 0) > 0)
+                .map(cat => (
                 <Link
                   key={cat.id}
                   href={`/shop?category=${cat.slug}`}

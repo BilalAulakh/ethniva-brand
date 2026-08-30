@@ -202,16 +202,10 @@ export const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Center Navigation Links (NEW IN, WOMEN, MEN, READY TO WEAR, COLLECTIONS, SALE) */}
+          {/* Center Navigation Links (NEW IN, READY TO WEAR, COLLECTIONS, SALE) */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             <Link href="/shop?sort=newest" className="nav-link-luxury">
               NEW IN
-            </Link>
-            <Link href="/shop?category=women" className="nav-link-luxury">
-              WOMEN
-            </Link>
-            <Link href="/shop?category=men" className="nav-link-luxury">
-              MEN
             </Link>
             <Link href="/shop?category=ready-to-wear" className="nav-link-luxury">
               READY TO WEAR
@@ -224,25 +218,8 @@ export const Navbar: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Right Action Icons (Search, Account, Wishlist, Bag, Admin) */}
+          {/* Right Action Icons (Wishlist, Bag, Admin) */}
           <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-shrink-0">
-            {/* Search */}
-            <button 
-              onClick={() => setSearchOpen(true)}
-              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1"
-              title="Search Catalog"
-            >
-              <Search className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
-            </button>
-
-            {/* Account */}
-            <button 
-              onClick={() => setAccountModalOpen(true)}
-              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 hidden sm:block"
-              title="Customer Account"
-            >
-              <User className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
-            </button>
 
             {/* Wishlist */}
             <Link 

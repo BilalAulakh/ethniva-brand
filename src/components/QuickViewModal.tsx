@@ -134,12 +134,12 @@ export const QuickViewModal: React.FC = () => {
                 {isAdding ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" />
-                    <span>Adding To Bag...</span>
+                    <span>Adding To Cart...</span>
                   </>
                 ) : (
                   <>
                     <ShoppingBag className="w-4 h-4 text-[#C5A059]" />
-                    <span>Add To Shopping Bag</span>
+                    <span>Add To Cart</span>
                   </>
                 )}
               </button>
