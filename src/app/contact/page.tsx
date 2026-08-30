@@ -50,23 +50,26 @@ export default function ContactPage() {
         {/* 3 Main Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Card 1: Client Concierge & Support */}
-          <div className="bg-white p-6 sm:p-8 border border-[#D8D2C7] space-y-4 text-center hover:border-[#B08A4A] transition-all">
-            <div className="w-14 h-14 bg-[#EEEAE2] border border-[#B08A4A]/50 text-[#B08A4A] flex items-center justify-center mx-auto">
-              <Mail className="w-6 h-6" />
+          {/* Card 1: Official WhatsApp Support */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#25D366] transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#25D366] flex items-center justify-center mx-auto shadow-2xs">
+              <MessageCircle className="w-6 h-6" />
             </div>
             <div>
-              <div className="text-[10px] font-sans font-medium uppercase text-[#B08A4A] tracking-widest">CLIENT CONCIERGE</div>
-              <h3 className="text-base font-serif font-normal text-[#0A0A0A] mt-1">ethnivabrand@gmail.com</h3>
+              <div className="text-[10px] font-bold uppercase text-[#25D366] tracking-widest">WHATSAPP CONCIERGE</div>
+              <h3 className="text-base font-bold text-[#111111] mt-1">0320-1803537</h3>
             </div>
-            <p className="text-xs text-neutral-500 font-light">
-              Bespoke orders, sizing guidance, and international inquiries.
+            <p className="text-xs text-stone-500 font-normal">
+              Instant assistance for custom sizes, styling queries &amp; order tracking.
             </p>
             <a
-              href="mailto:ethnivabrand@gmail.com"
-              className="inline-flex items-center gap-2 btn-primary-luxury py-2.5 px-5 text-[10px] tracking-[2px]"
+              href="https://wa.me/923201803537?text=Hi%20ETHNIVA%2C%20I%20need%20assistance%20with%20my%20order"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2.5 px-5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
             >
-              <span>SEND EMAIL</span>
+              <MessageCircle className="w-4 h-4" />
+              <span>CHAT ON WHATSAPP</span>
             </a>
           </div>
 
@@ -82,7 +85,7 @@ export default function ContactPage() {
               </a>
             </div>
             <p className="text-xs text-stone-500 font-normal">
-              Formal inquiries, bespoke quotes, and verified order queries.
+              Formal inquiries, bespoke quotes, and customer support.
             </p>
             <div className="text-[11px] text-stone-500 space-y-1">
               <div className="flex items-center justify-center gap-1.5 font-medium">
@@ -92,22 +95,26 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Card 3: Atelier Location */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#C5A059] transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-[#FAF7F2] border border-[#C5A059]/50 text-[#C5A059] flex items-center justify-center mx-auto shadow-2xs">
-              <MapPin className="w-6 h-6" />
+          {/* Card 3: Official Facebook Community */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#1877F2] transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-[#1877F2] flex items-center justify-center mx-auto shadow-2xs">
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase text-[#C5A059] tracking-widest">ATELIER &amp; DISPATCH</div>
-              <h3 className="text-base font-bold text-[#111111] mt-1">Faisalabad, Pakistan</h3>
+              <div className="text-[10px] font-bold uppercase text-[#1877F2] tracking-widest">FACEBOOK COMMUNITY</div>
+              <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
             </div>
             <p className="text-xs text-stone-500 font-normal">
-              Bespoke craftsmanship and express nationwide delivery across Pakistan.
+              Follow our official Facebook page for latest arrivals &amp; real customer reviews.
             </p>
-            <div className="text-[11px] font-bold text-[#C5A059] flex items-center justify-center gap-1">
-              <Truck className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span>Free Delivery on all orders</span>
-            </div>
+            <a
+              href="https://www.facebook.com/ethnivaonline"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white py-2.5 px-5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105"
+            >
+              <span>VISIT FACEBOOK PAGE</span>
+            </a>
           </div>
 
         </div>

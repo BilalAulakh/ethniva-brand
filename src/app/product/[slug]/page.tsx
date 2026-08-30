@@ -523,13 +523,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </button>
 
               <a
-                href={`https://wa.me/?text=Hello%20ETHNIVA!%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(product.title)}%20(Option:%20${stitchingType.toUpperCase()}${selectedColor ? `%20Color:%20${encodeURIComponent(selectedColor)}` : ''},%20Size:%20${selectedSize},%20Price:%20PKR%20${activePrice.toLocaleString()})`}
+                href={`https://wa.me/923201803537?text=${encodeURIComponent(`Hi ETHNIVA! I would like to order: ${product.title} (Option: ${stitchingType.toUpperCase()}${selectedColor ? `, Color: ${selectedColor}` : ''}, Size: ${selectedSize}, Price: PKR ${activePrice.toLocaleString()})`)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full bg-[#EEEAE2] hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#B08A4A] border border-[#D8D2C7] py-3.5 font-sans font-medium text-[11px] uppercase tracking-[2px] flex items-center justify-center gap-2 transition-colors group"
+                className="w-full bg-[#25D366]/10 hover:bg-[#25D366] text-[#128C7E] hover:text-white border border-[#25D366]/40 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-2xs hover:shadow-md"
               >
-                <MessageCircle className="w-4 h-4 text-[#B08A4A]" />
-                <span>INQUIRE &bull; ORDER ASSISTANCE</span>
+                <MessageCircle className="w-4 h-4" />
+                <span>ORDER VIA WHATSAPP (0320-1803537)</span>
               </a>
             </div>
 

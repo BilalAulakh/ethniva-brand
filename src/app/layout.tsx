@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { QuickViewModal } from '@/components/QuickViewModal';
+import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -50,6 +51,7 @@ export default function RootLayout({
           <Footer />
           <CartDrawer />
           <QuickViewModal />
+          <FloatingWhatsApp />
         </CartProvider>
       </body>
     </html>

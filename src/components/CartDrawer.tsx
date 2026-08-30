@@ -45,7 +45,9 @@ export const CartDrawer: React.FC = () => {
           <div className="p-6 border-b border-stone-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-5 h-5 text-[#881337]" />
-              <h2 className="text-base font-bold text-[#18181B] tracking-wide">Shopping Bag ({cart.length})</h2>
+              <h2 className="text-base font-bold text-[#18181B] tracking-wide">
+                Shopping Bag ({cartCount} {cartCount === 1 ? 'Item' : 'Items'})
+              </h2>
             </div>
             <button 
               onClick={() => setIsCartOpen(false)}

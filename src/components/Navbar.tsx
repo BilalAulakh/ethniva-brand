@@ -210,9 +210,7 @@ export const Navbar: React.FC = () => {
             <Link href="/shop?category=women" className="nav-link-luxury">
               WOMEN
             </Link>
-            <Link href="/shop?category=men" className="nav-link-luxury">
-              MEN
-            </Link>
+      
             <Link href="/shop?category=ready-to-wear" className="nav-link-luxury">
               READY TO WEAR
             </Link>
