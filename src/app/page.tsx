@@ -92,46 +92,55 @@ export default function HomePage() {
       {/* 1. FULL-WIDTH LUXURY BACKGROUND SLIDER HERO                               */}
       {/* ========================================================================= */}
       <section 
-        className="relative w-full min-h-[75vh] lg:min-h-[85vh] flex items-center border-b border-[#D8D2C7] overflow-hidden bg-[#0A0A0A]"
+        className="relative w-full h-screen min-h-[700px] flex items-center border-b border-[#D8D2C7] overflow-hidden bg-[#0A0A0A]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Full-Bleed Background Images with Smooth Crossfade */}
         {heroProducts.length > 0 ? (
-          heroProducts.map((prod, idx) => (
-            <div 
-              key={prod.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                activeSlide === idx ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none z-0'
-              }`}
-            >
-              {prod.images && prod.images[0] ? (
-                <Image
-                  src={prod.images[0]}
-                  alt={prod.title}
-                  fill
-                  priority={idx === 0}
-                  sizes="100vw"
-                  className="object-cover object-center transition-transform duration-1000"
-                />
-              ) : null}
-            </div>
-          ))
+          heroProducts.map((prod, idx) => {
+            const heroPos = (prod as any).heroPosition || 
+              (idx === 0 ? "center top" : idx === 1 ? "center 20%" : idx === 2 ? "center 35%" : "center top");
+
+            return (
+              <div 
+                key={prod.id}
+                className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                  activeSlide === idx ? 'opacity-100 z-0' : 'opacity-0 pointer-events-none z-0'
+                }`}
+              >
+                {prod.images?.[0] && (
+                  <Image
+                    src={prod.images[0]}
+                    alt={prod.title}
+                    fill
+                    priority={idx === 0}
+                    sizes="100vw"
+                    style={{
+                      objectFit: 'cover',
+                      objectPosition: heroPos,
+                    }}
+                    className="transition-transform duration-1000"
+                  />
+                )}
+              </div>
+            );
+          })
         ) : (
-          <div className="absolute inset-0 bg-[#171717] z-0" />
+          <div className="absolute inset-0 bg-[#171717]" />
         )}
 
-        {/* Subtle Gradient only on far left for clean text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10 pointer-events-none" />
+        {/* Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 z-10 pointer-events-none" />
 
-        {/* Foreground Content Overlay */}
-        <div className="relative z-20 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
+        {/* Content */}
+        <div className="relative z-20 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-12 h-full flex items-end pb-16 lg:pb-24 pointer-events-none pt-32">
           
-          <div className="max-w-2xl space-y-6 animate-fade-in text-white">
-            <div className="space-y-3.5">
+          <div className="max-w-xl space-y-4 animate-fade-in text-white pointer-events-auto">
+            <div className="space-y-2.5">
               
               {/* Category / Collection Tag */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/50 backdrop-blur-md border border-[#B08A4A]/40 rounded-full">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/50 backdrop-blur-sm border border-[#B08A4A]/50 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B08A4A] animate-pulse" />
                 <span className="text-[10px] font-sans font-semibold tracking-[2.5px] text-[#C9A86A] uppercase">
                   {currentHeroProduct?.category ? `${currentHeroProduct.category} Collection` : 'ETHNIVA ATELIER ’26'}
@@ -139,32 +148,18 @@ export default function HomePage() {
               </div>
               
               {/* Hero Title */}
-              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal tracking-[0.03em] text-white leading-[1.08] uppercase whitespace-pre-line drop-shadow-md">
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[0.03em] text-white leading-[1.08] uppercase whitespace-pre-line drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]">
                 {currentHeroProduct ? currentHeroProduct.title : 'ELEVATE\nYOUR STYLE'}
               </h1>
 
-              {/* Gold Diamond Ornament */}
-              <div className="flex items-center gap-3 pt-1 pb-1">
-                <span className="w-12 h-[1px] bg-[#B08A4A]/60" />
-                <span className="text-[#C9A86A] text-xs">◆</span>
-                <span className="w-12 h-[1px] bg-[#B08A4A]/60" />
-              </div>
-
-              {/* Description */}
-              <p className="text-xs sm:text-sm text-stone-200 font-light max-w-lg leading-relaxed line-clamp-3 drop-shadow-sm">
-                {currentHeroProduct?.description 
-                  ? currentHeroProduct.description 
-                  : 'Timeless fashion crafted for confidence, elegance, and international sophistication. Discover bespoke tailoring and luxury pret.'}
-              </p>
-
               {/* Price Display */}
               {currentHeroProduct && (
-                <div className="pt-2 flex items-baseline gap-3">
-                  <span className="text-xl sm:text-2xl font-serif font-bold text-[#C9A86A] tracking-wide">
+                <div className="pt-0.5 flex items-baseline gap-3">
+                  <span className="text-xl sm:text-2xl font-serif font-bold text-[#C9A86A] tracking-wide drop-shadow-md">
                     PKR {currentHeroProduct.price.toLocaleString()}
                   </span>
                   {currentHeroProduct.compare_at_price && (
-                    <span className="text-xs sm:text-sm line-through text-stone-400 font-sans">
+                    <span className="text-xs sm:text-sm line-through text-stone-300 font-sans drop-shadow-sm">
                       PKR {currentHeroProduct.compare_at_price.toLocaleString()}
                     </span>
                   )}
@@ -173,11 +168,11 @@ export default function HomePage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               {currentHeroProduct ? (
                 <Link 
                   href={`/product/${currentHeroProduct.slug}`} 
-                  className="px-7 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl hover:shadow-2xl flex items-center gap-2 group cursor-pointer"
+                  className="px-6 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl flex items-center gap-2 group cursor-pointer"
                 >
                   <span>SHOP THIS PIECE</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -185,7 +180,7 @@ export default function HomePage() {
               ) : (
                 <Link 
                   href="/shop" 
-                  className="px-7 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl hover:shadow-2xl flex items-center gap-2 group cursor-pointer"
+                  className="px-6 py-3.5 bg-[#B08A4A] hover:bg-white text-[#0A0A0A] hover:text-[#0A0A0A] border border-[#B08A4A] hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase transition-all shadow-xl flex items-center gap-2 group cursor-pointer"
                 >
                   <span>EXPLORE SHOP</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -194,7 +189,7 @@ export default function HomePage() {
               
               <Link 
                 href="/shop" 
-                className="px-7 py-3.5 bg-black/40 hover:bg-white/15 text-white border border-white/40 hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase backdrop-blur-md transition-all cursor-pointer"
+                className="px-6 py-3.5 bg-black/40 hover:bg-white/15 text-white border border-white/40 hover:border-white font-sans font-semibold text-xs tracking-[2px] uppercase backdrop-blur-md transition-all cursor-pointer shadow-lg"
               >
                 VIEW COLLECTIONS
               </Link>
@@ -202,38 +197,38 @@ export default function HomePage() {
 
             {/* Slider Navigation Controls & Indicators */}
             {heroProducts.length > 1 && (
-              <div className="flex items-center gap-6 pt-6 border-t border-white/20">
+              <div className="flex items-center gap-5 pt-3">
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={prevSlide}
-                    className="w-9 h-9 border border-white/30 bg-black/40 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
+                    className="w-8 h-8 border border-white/40 bg-black/50 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
                     aria-label="Previous Slide"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={nextSlide}
-                    className="w-9 h-9 border border-white/30 bg-black/40 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
+                    className="w-8 h-8 border border-white/40 bg-black/50 hover:bg-[#B08A4A] hover:text-black hover:border-[#B08A4A] text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md cursor-pointer"
                     aria-label="Next Slide"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   {heroProducts.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveSlide(idx)}
                       className={`h-[3px] transition-all duration-500 cursor-pointer ${
-                        activeSlide === idx ? 'w-10 bg-[#B08A4A]' : 'w-4 bg-white/40 hover:bg-white/70'
+                        activeSlide === idx ? 'w-8 bg-[#B08A4A]' : 'w-3.5 bg-white/40 hover:bg-white/70'
                       }`}
                       aria-label={`Go to slide ${idx + 1}`}
                     />
                   ))}
                 </div>
 
-                <span className="font-mono text-xs text-stone-300 tracking-wider">
+                <span className="font-mono text-xs text-stone-200 tracking-wider drop-shadow-md">
                   0{activeSlide + 1} / 0{heroProducts.length}
                 </span>
               </div>
@@ -359,11 +354,11 @@ export default function HomePage() {
                 </div>
 
                 <div className="bg-[#EEEAE2] group-hover:bg-[#0A0A0A] group-hover:text-white transition-all duration-400 py-3.5 px-2.5 text-center border-t border-[#D8D2C7] group-hover:border-[#0A0A0A] relative overflow-hidden">
-                  <span className="font-serif text-xs sm:text-sm tracking-[1.5px] font-normal uppercase block transition-all duration-300 group-hover:tracking-[2px]">
+                  <span className="font-sans text-[11px] sm:text-xs tracking-[2px] font-bold text-[#0A0A0A] uppercase block transition-all duration-300 group-hover:tracking-[2.5px]">
                     {cat.name}
                   </span>
                   {cat.item_count > 0 && (
-                    <span className="text-[9px] tracking-[1.5px] text-neutral-400 group-hover:text-[#B08A4A] uppercase font-sans mt-0.5 block transition-colors duration-300">
+                    <span className="text-[10px] sm:text-[10.5px] tracking-[1.5px] font-bold text-stone-700 group-hover:text-[#C9A86A] uppercase font-sans mt-0.5 block transition-colors duration-300">
                       {cat.item_count} {cat.item_count === 1 ? 'PIECE' : 'PIECES'}
                     </span>
                   )}

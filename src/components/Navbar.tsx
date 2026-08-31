@@ -131,14 +131,17 @@ export const Navbar: React.FC = () => {
     return null;
   }
 
+  const isHome = pathname === '/';
+  const isTransparent = isHome && !isScrolled;
+
   return (
     <>
-      {/* 1. Header Announcement Bar (Black background, luxury gold text with chevron arrows) */}
+      {/* 1. Header Announcement Bar (Warm Gold / Tan luxury bar matching reference) */}
       {showTicker && (
-        <div className="h-[34px] bg-[#0A0A0A] text-[#B08A4A] px-4 text-[10.5px] sm:text-xs font-medium flex items-center justify-between border-b border-[#171717] relative z-50 overflow-hidden">
+        <div className="h-[34px] bg-[#C5A059] text-[#111111] px-4 text-[10.5px] sm:text-xs font-semibold flex items-center justify-between border-b border-[#B08A4A]/30 relative z-50 overflow-hidden">
           <button 
             onClick={() => setTickerIndex((prev) => (prev - 1 + tickerMessages.length) % tickerMessages.length)} 
-            className="hover:text-[#C9A86A] transition-colors p-1"
+            className="hover:text-white transition-colors p-1"
             aria-label="Previous announcement"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
@@ -146,12 +149,12 @@ export const Navbar: React.FC = () => {
 
           {/* Centered Announcement Message */}
           <div className="flex-1 text-center font-medium tracking-[2px] uppercase text-[10px] sm:text-[11px] truncate px-2">
-            <span>FREE SHIPPING ON ORDERS OVER PKR 5,000</span>
+            <span>{tickerMessages[tickerIndex]}</span>
           </div>
 
           <button 
             onClick={() => setTickerIndex((prev) => (prev + 1) % tickerMessages.length)} 
-            className="hover:text-[#C9A86A] transition-colors p-1"
+            className="hover:text-white transition-colors p-1"
             aria-label="Next announcement"
           >
             <ChevronRight className="w-3.5 h-3.5" />
@@ -159,21 +162,25 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Main Luxury Sticky Header (Warm Cream / White background) */}
+      {/* 2. Main Luxury Header (Transparent on Hero, Sticky/Solid on scroll & inner pages) */}
       <header 
-        className={`sticky top-0 z-40 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-xs border-b border-[#D8D2C7] py-2 sm:py-2.5' 
-            : 'bg-white border-b border-[#D8D2C7] py-3 sm:py-3.5'
+        className={`w-full transition-all duration-300 ${
+          isTransparent
+            ? 'absolute top-[34px] left-0 right-0 z-40 bg-gradient-to-b from-black/70 via-black/25 to-transparent border-none text-white py-3.5 sm:py-4'
+            : isScrolled
+              ? 'fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-xs border-b border-[#D8D2C7] py-2 sm:py-2.5 text-[#171717] animate-fade-in'
+              : 'sticky top-0 z-40 bg-white border-b border-[#D8D2C7] py-3 sm:py-3.5 text-[#171717]'
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4 lg:gap-6">
           
           {/* Mobile Hamburger & Left Brand Logo */}
           <div className="flex items-center gap-3.5 sm:gap-4">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 text-[#171717] hover:text-[#B08A4A]"
+              className={`lg:hidden p-1.5 transition-colors ${
+                isTransparent ? 'text-white hover:text-[#C9A86A]' : 'text-[#171717] hover:text-[#B08A4A]'
+              }`}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -181,7 +188,7 @@ export const Navbar: React.FC = () => {
 
             {/* Left Brand Logo (ETHNIVA) */}
             <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0">
-              <div className="relative w-8 h-8 sm:w-9 sm:h-9 overflow-hidden flex items-center justify-center">
+              <div className="relative w-8 h-8 sm:w-9 sm:h-9 overflow-hidden flex items-center justify-center rounded-sm bg-white/10 p-0.5 border border-white/20">
                 <Image 
                   src="/logo.jpg" 
                   alt="ETHNIVA Logo" 
@@ -192,44 +199,57 @@ export const Navbar: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif tracking-[0.25em] text-xl sm:text-2xl xl:text-[26px] font-normal text-[#0A0A0A] group-hover:text-[#B08A4A] transition-colors leading-none">
+                <span className={`font-serif tracking-[0.25em] text-xl sm:text-2xl xl:text-[26px] font-normal transition-colors leading-none ${
+                  isTransparent 
+                    ? 'text-white drop-shadow-md group-hover:text-[#C9A86A]' 
+                    : 'text-[#0A0A0A] group-hover:text-[#B08A4A]'
+                }`}>
                   ETHNIVA
                 </span>
-                <span className="text-[7.5px] tracking-[0.3em] text-[#B08A4A] uppercase font-sans font-medium mt-0.5">
+                <span className={`text-[7.5px] tracking-[0.3em] uppercase font-sans font-medium mt-0.5 ${
+                  isTransparent ? 'text-[#C9A86A]' : 'text-[#B08A4A]'
+                }`}>
                   CLOTHING BRAND
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Center Navigation Links (NEW IN, READY TO WEAR, COLLECTIONS, SALE) */}
+          {/* Center Navigation Links (Clean Luxury Style) */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-            <Link href="/shop?sort=newest" className="nav-link-luxury">
+            <Link href="/" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+              HOME
+            </Link>
+            <Link href="/shop?sort=newest" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
               NEW IN
             </Link>
-            <Link href="/shop?category=ready-to-wear" className="nav-link-luxury">
+            <Link href="/shop?category=ready-to-wear" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
               READY TO WEAR
             </Link>
-            <Link href="/shop" className="nav-link-luxury">
+            <Link href="/shop" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
               COLLECTIONS
             </Link>
-            <Link href="/shop?category=sale" className="nav-link-luxury text-[#B08A4A]">
+            <Link href="/shop?category=sale" className={`nav-link-luxury font-semibold ${
+              isTransparent ? 'text-[#F5D59A] drop-shadow-sm' : 'text-[#B08A4A]'
+            }`}>
               SALE
             </Link>
           </nav>
 
           {/* Right Action Icons (Wishlist, Bag, Admin) */}
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 lg:gap-4 flex-shrink-0">
 
             {/* Wishlist */}
             <Link 
               href="/shop?view=wishlist" 
-              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 relative hidden sm:block"
+              className={`transition-colors p-1.5 relative hidden sm:block ${
+                isTransparent ? 'text-white hover:text-[#C9A86A] drop-shadow-sm' : 'text-[#171717] hover:text-[#B08A4A]'
+              }`}
               title="Wishlist"
             >
               <Heart className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#B08A4A] text-white text-[8.5px] font-mono font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#B08A4A] text-white text-[8.5px] font-mono font-bold rounded-full flex items-center justify-center">
                   {wishlist.length}
                 </span>
               )}
@@ -238,11 +258,13 @@ export const Navbar: React.FC = () => {
             {/* Shopping Bag */}
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="text-[#171717] hover:text-[#B08A4A] transition-colors p-1 relative"
+              className={`transition-colors p-1.5 relative ${
+                isTransparent ? 'text-white hover:text-[#C9A86A] drop-shadow-sm' : 'text-[#171717] hover:text-[#B08A4A]'
+              }`}
               title="Shopping Bag"
             >
               <ShoppingBag className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
-              <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#B08A4A] text-white text-[9px] font-mono font-medium rounded-full flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-[#B08A4A] text-white text-[9px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs">
                 {cartCount}
               </span>
             </button>
@@ -250,7 +272,9 @@ export const Navbar: React.FC = () => {
             {/* Discreet Admin Lock */}
             <button 
               onClick={handleAdminLinkClick}
-              className="text-stone-400 hover:text-[#B08A4A] transition-colors p-1"
+              className={`transition-colors p-1.5 ${
+                isTransparent ? 'text-white/60 hover:text-[#C9A86A]' : 'text-stone-400 hover:text-[#B08A4A]'
+              }`}
               title="Admin Portal"
             >
               <Lock className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -260,15 +284,14 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
+          <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down text-[#171717]">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
+            <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">SHOP ALL</Link>
             <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
-            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
             <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
-            <Link href="/shop?category=raw-silk-chiffon" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">RAW SILK &amp; CHIFFON</Link>
-            <Link href="/shop?category=velvet-festive" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">VELVET FESTIVE</Link>
-            <Link href="/shop?category=sale-clearance" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">TOP SALE &amp; CLEARANCE</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#171717] hover:text-[#B08A4A] py-2.5 border-b border-stone-100 uppercase tracking-wider">CONTACT US</Link>
+            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=sale" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">SALE 2026 (50% OFF)</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#171717] hover:text-[#B08A4A] py-2.5 border-b border-stone-100 uppercase tracking-wider">TRACK ORDER / CONTACT</Link>
             <button 
               onClick={(e) => {
                 setMobileMenuOpen(false);
