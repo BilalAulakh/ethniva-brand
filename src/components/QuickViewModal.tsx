@@ -81,6 +81,7 @@ export const QuickViewModal: React.FC = () => {
               <div className="space-y-1.5 mb-4 bg-[#FAF7F2] p-3 rounded-xl border border-stone-200/70 max-h-36 overflow-y-auto">
                 {quickViewProduct.description
                   .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
+                  .replace(/0309[-\s]?4292220/gi, '0320-1803537')
                   .split('\n')
                   .map(l => l.trim())
                   .filter(l => l && l !== '.')

@@ -41,7 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 # backups
-# keep latest backup in repo
-!/backups/
-!/backups/*.json
+/backups/
+backups/
 

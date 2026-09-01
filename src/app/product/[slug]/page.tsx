@@ -68,10 +68,11 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const descriptionBullets = React.useMemo(() => {
     if (!product?.description) return [];
 
-    // Remove stray dot spacers like `\n.\n`
+    // Remove stray dot spacers like `\n.\n` and normalize old phone numbers to 0320-1803537
     const raw = product.description
       .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
-      .replace(/\r\n/g, '\n');
+      .replace(/\r\n/g, '\n')
+      .replace(/0309[-\s]?4292220/gi, '0320-1803537');
 
     const lines = raw.split('\n').map(l => l.trim()).filter(l => l && l !== '.');
     const result: { isHeader: boolean; text: string }[] = [];
@@ -584,7 +585,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </div>
 
               <a
-                href={`https://wa.me/?text=Hello%20ETHNIVA!%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(product.title)}%20(Option:%20${stitchingType.toUpperCase()}${selectedColor ? `%20Color:%20${encodeURIComponent(selectedColor)}` : ''},%20Size:%20${selectedSize},%20Price:%20PKR%20${activePrice.toLocaleString()})`}
+                href={`https://wa.me/923201803537?text=Hello%20ETHNIVA!%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(product.title)}%20(Option:%20${stitchingType.toUpperCase()}${selectedColor ? `%20Color:%20${encodeURIComponent(selectedColor)}` : ''},%20Size:%20${selectedSize},%20Price:%20PKR%20${activePrice.toLocaleString()})`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full bg-[#EEEAE2] hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#B08A4A] border border-[#D8D2C7] py-2 font-sans font-medium text-[10px] uppercase tracking-[1.5px] flex items-center justify-center gap-1.5 transition-colors rounded-xl group"
