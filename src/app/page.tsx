@@ -354,11 +354,11 @@ export default function HomePage() {
                 </div>
 
                 <div className="bg-[#EEEAE2] group-hover:bg-[#0A0A0A] group-hover:text-white transition-all duration-400 py-3.5 px-2.5 text-center border-t border-[#D8D2C7] group-hover:border-[#0A0A0A] relative overflow-hidden">
-                  <span className="font-sans text-[11px] sm:text-xs tracking-[2px] font-bold text-[#0A0A0A] uppercase block transition-all duration-300 group-hover:tracking-[2.5px]">
+                  <span className="font-serif text-base sm:text-lg tracking-[0.05em] font-normal text-[#0A0A0A] group-hover:text-white uppercase block transition-all duration-300">
                     {cat.name}
                   </span>
                   {cat.item_count > 0 && (
-                    <span className="text-[10px] sm:text-[10.5px] tracking-[1.5px] font-bold text-stone-700 group-hover:text-[#C9A86A] uppercase font-sans mt-0.5 block transition-colors duration-300">
+                    <span className="text-[10px] tracking-[2px] font-sans font-medium text-[#B08A4A] group-hover:text-[#C9A86A] uppercase mt-0.5 block transition-colors duration-300">
                       {cat.item_count} {cat.item_count === 1 ? 'PIECE' : 'PIECES'}
                     </span>
                   )}
