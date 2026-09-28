@@ -54,8 +54,15 @@ export default function HomePage() {
     };
   }, []);
 
-  // Filter hero products from real database
-  const heroProducts = products.filter(p => p.images && p.images.length > 0).slice(0, 4);
+  // Flagship editorial hero products specifically tailored for the full-width luxury banner
+  const preferredHeroSlugs = ['heena', 'elva', 'senroa-white', 'moon-light'];
+  const preferredHeroes = preferredHeroSlugs
+    .map(slug => products.find(p => p.slug === slug))
+    .filter((p): p is Product => !!p && !!p.images?.length);
+
+  const heroProducts = preferredHeroes.length >= 3 
+    ? preferredHeroes 
+    : products.filter(p => p.images && p.images.length > 0).slice(0, 4);
 
   // Auto-advance slides if hero products exist
   useEffect(() => {
