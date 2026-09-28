@@ -747,9 +747,6 @@ export default function AdminDashboardPage() {
                 ETHNIVA &bull; ADMIN
               </span>
             </Link>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-              Live Portal
-            </span>
           </div>
 
           <div className="flex items-center gap-3">
