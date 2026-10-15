@@ -26,7 +26,7 @@ loadEnv();
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const BUCKET = 'ethniva-images';
 
-const DESCRIPTION = `BRAND NAME : MIX BRANDS (PREMIUM DHANAK)
+const DESCRIPTION = `BRAND NAME : ETHNIVA PREMIUM (DHANAK)
 
 SHIRT : Dhanak
 SHAWL : Dhanak / Twill Pashmina
@@ -64,7 +64,7 @@ async function main() {
 
     const product = {
       id: `prod-replica-${item.key}`,
-      title: `MIX BRANDS (PREMIUM DHANAK) - ${item.color}`,
+      title: `ETHNIVA PREMIUM (DHANAK) - ${item.color}`,
       slug: `mix-brands-premium-dhanak-${item.key}-replica`,
       price: 4699,
       compare_at_price: null,
