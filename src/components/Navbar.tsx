@@ -229,6 +229,9 @@ export const Navbar: React.FC = () => {
             <Link href="/shop" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
               COLLECTIONS
             </Link>
+            <Link href="/shop?category=replica" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+              REPLICA
+            </Link>
             <Link href="/shop?category=sale" className={`nav-link-luxury font-semibold ${
               isTransparent ? 'text-[#F5D59A] drop-shadow-sm' : 'text-[#B08A4A]'
             }`}>
@@ -290,6 +293,7 @@ export const Navbar: React.FC = () => {
             <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
             <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
             <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=replica" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">REPLICA</Link>
             <Link href="/shop?category=sale" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">SALE 2026 (50% OFF)</Link>
             <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#171717] hover:text-[#B08A4A] py-2.5 border-b border-stone-100 uppercase tracking-wider">TRACK ORDER / CONTACT</Link>
             <button 
