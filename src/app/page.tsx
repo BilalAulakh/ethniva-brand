@@ -54,10 +54,8 @@ export default function HomePage() {
     };
   }, []);
 
-  // New Arrivals shows the Replica articles; handmade pieces get their own section
-  const isReplica = (p: Product) => (p.category || '').trim().toLowerCase() === 'replica';
-  const replicaProducts = products.filter(isReplica);
-  const handmadeProducts = products.filter(p => !isReplica(p));
+  // New Arrivals shows the Replica articles (4 on home, rest via VIEW ALL)
+  const replicaProducts = products.filter(p => (p.category || '').trim().toLowerCase() === 'replica');
 
   // Flagship editorial hero products specifically tailored for the full-width luxury banner
   const preferredHeroSlugs = ['heena', 'elva', 'senroa-white', 'moon-light'];
@@ -449,32 +447,6 @@ export default function HomePage() {
 
         </div>
       </section>
-
-      {/* ========================================================================= */}
-      {/* 4b. HANDMADE COLLECTION (ALL NON-REPLICA ARTICLES)                         */}
-      {/* ========================================================================= */}
-      {!loading && handmadeProducts.length > 0 && (
-        <section className="py-16 sm:py-24 border-t border-[#D8D2C7] bg-[#F7F5F0]">
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-
-            <div className="flex items-center justify-end mb-8 sm:mb-10">
-              <Link 
-                href="/shop" 
-                className="text-xs font-medium tracking-[2px] uppercase text-[#171717] hover:text-[#B08A4A] transition-colors border-b border-[#171717] hover:border-[#B08A4A] pb-0.5"
-              >
-                VIEW ALL
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
-              {handmadeProducts.slice(0, 8).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-          </div>
-        </section>
-      )}
 
       {/* ========================================================================= */}
       {/* 5. FEATURED PIECES SPOTLIGHT (ONLY SHOWN IF PRODUCTS EXIST)               */}
