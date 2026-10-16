@@ -54,6 +54,11 @@ export default function HomePage() {
     };
   }, []);
 
+  // New Arrivals shows the Replica articles; handmade pieces get their own section
+  const isReplica = (p: Product) => (p.category || '').trim().toLowerCase() === 'replica';
+  const replicaProducts = products.filter(isReplica);
+  const handmadeProducts = products.filter(p => !isReplica(p));
+
   // Flagship editorial hero products specifically tailored for the full-width luxury banner
   const preferredHeroSlugs = ['heena', 'elva', 'senroa-white', 'moon-light'];
   const preferredHeroes = preferredHeroSlugs
@@ -404,10 +409,10 @@ export default function HomePage() {
             </div>
 
             <Link 
-              href="/shop?sort=newest" 
+              href="/shop?category=replica" 
               className="text-xs font-medium tracking-[2px] uppercase text-[#171717] hover:text-[#B08A4A] transition-colors border-b border-[#171717] hover:border-[#B08A4A] pb-0.5"
             >
-              VIEW ALL
+              VIEW ALL{replicaProducts.length > 4 ? ` (${replicaProducts.length})` : ''}
             </Link>
           </div>
 
@@ -417,9 +422,9 @@ export default function HomePage() {
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
-          ) : products.length > 0 ? (
+          ) : replicaProducts.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
-              {products.slice(0, 8).map((product) => (
+              {replicaProducts.slice(0, 4).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -444,6 +449,32 @@ export default function HomePage() {
 
         </div>
       </section>
+
+      {/* ========================================================================= */}
+      {/* 4b. HANDMADE COLLECTION (ALL NON-REPLICA ARTICLES)                         */}
+      {/* ========================================================================= */}
+      {!loading && handmadeProducts.length > 0 && (
+        <section className="py-16 sm:py-24 border-t border-[#D8D2C7] bg-[#F7F5F0]">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+
+            <div className="flex items-center justify-end mb-8 sm:mb-10">
+              <Link 
+                href="/shop" 
+                className="text-xs font-medium tracking-[2px] uppercase text-[#171717] hover:text-[#B08A4A] transition-colors border-b border-[#171717] hover:border-[#B08A4A] pb-0.5"
+              >
+                VIEW ALL
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
+              {handmadeProducts.slice(0, 8).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 5. FEATURED PIECES SPOTLIGHT (ONLY SHOWN IF PRODUCTS EXIST)               */}
