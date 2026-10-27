@@ -131,14 +131,14 @@ export const Navbar: React.FC = () => {
     return null;
   }
 
-  const isHome = pathname === '/';
-  const isTransparent = isHome && !isScrolled;
+  // Solid white header everywhere (hero is no longer full-bleed behind it)
+  const isTransparent = false;
 
   return (
     <>
       {/* 1. Header Announcement Bar (Warm Gold / Tan luxury bar matching reference) */}
       {showTicker && (
-        <div className="h-[34px] bg-[#C5A059] text-[#111111] px-4 text-[10.5px] sm:text-xs font-semibold flex items-center justify-between border-b border-[#B08A4A]/30 relative z-50 overflow-hidden">
+        <div className="h-[34px] bg-[#CE967E] text-white px-4 text-[10.5px] sm:text-xs font-semibold flex items-center justify-between border-b border-[#CE967E]/30 relative z-50 overflow-hidden">
           <button 
             onClick={() => setTickerIndex((prev) => (prev - 1 + tickerMessages.length) % tickerMessages.length)} 
             className="hover:text-white transition-colors p-1"
@@ -168,8 +168,8 @@ export const Navbar: React.FC = () => {
           isTransparent
             ? 'absolute top-[34px] left-0 right-0 z-40 bg-gradient-to-b from-black/70 via-black/25 to-transparent border-none text-white py-3.5 sm:py-4'
             : isScrolled
-              ? 'fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-xs border-b border-[#D8D2C7] py-2 sm:py-2.5 text-[#171717] animate-fade-in'
-              : 'sticky top-0 z-40 bg-white border-b border-[#D8D2C7] py-3 sm:py-3.5 text-[#171717]'
+              ? 'fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-xs border-b border-[#E6E6E6] py-2 sm:py-2.5 text-[#303030] animate-fade-in'
+              : 'sticky top-0 z-40 bg-white border-b border-[#E6E6E6] py-3 sm:py-3.5 text-[#303030]'
         }`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4 lg:gap-6">
@@ -179,7 +179,7 @@ export const Navbar: React.FC = () => {
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className={`lg:hidden p-1.5 transition-colors ${
-                isTransparent ? 'text-white hover:text-[#C9A86A]' : 'text-[#171717] hover:text-[#B08A4A]'
+                isTransparent ? 'text-white hover:text-[#DDB4A2]' : 'text-[#303030] hover:text-[#CE967E]'
               }`}
               aria-label="Toggle menu"
             >
@@ -199,15 +199,15 @@ export const Navbar: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className={`font-serif tracking-[0.25em] text-xl sm:text-2xl xl:text-[26px] font-normal transition-colors leading-none ${
+                <span className={`font-logo tracking-[0.25em] text-xl sm:text-2xl xl:text-[26px] font-normal transition-colors leading-none ${
                   isTransparent 
-                    ? 'text-white drop-shadow-md group-hover:text-[#C9A86A]' 
-                    : 'text-[#0A0A0A] group-hover:text-[#B08A4A]'
+                    ? 'text-white drop-shadow-md group-hover:text-[#DDB4A2]' 
+                    : 'text-[#222222] group-hover:text-[#CE967E]'
                 }`}>
                   ETHNIVA
                 </span>
                 <span className={`text-[7.5px] tracking-[0.3em] uppercase font-sans font-medium mt-0.5 ${
-                  isTransparent ? 'text-[#C9A86A]' : 'text-[#B08A4A]'
+                  isTransparent ? 'text-[#DDB4A2]' : 'text-[#CE967E]'
                 }`}>
                   CLOTHING BRAND
                 </span>
@@ -217,23 +217,23 @@ export const Navbar: React.FC = () => {
 
           {/* Center Navigation Links (Clean Luxury Style) */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-            <Link href="/" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+            <Link href="/" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#303030]'}`}>
               HOME
             </Link>
-            <Link href="/shop?sort=newest" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+            <Link href="/shop?sort=newest" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#303030]'}`}>
               NEW IN
             </Link>
-            <Link href="/shop?category=ready-to-wear" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+            <Link href="/shop?category=ready-to-wear" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#303030]'}`}>
               READY TO WEAR
             </Link>
-            <Link href="/shop" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+            <Link href="/shop" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#303030]'}`}>
               COLLECTIONS
             </Link>
-            <Link href="/shop?category=replica" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#171717]'}`}>
+            <Link href="/shop?category=replica" className={`nav-link-luxury ${isTransparent ? 'text-white drop-shadow-sm' : 'text-[#303030]'}`}>
               REPLICA
             </Link>
             <Link href="/shop?category=sale" className={`nav-link-luxury font-semibold ${
-              isTransparent ? 'text-[#F5D59A] drop-shadow-sm' : 'text-[#B08A4A]'
+              isTransparent ? 'text-[#F1D3C6] drop-shadow-sm' : 'text-[#CE967E]'
             }`}>
               SALE
             </Link>
@@ -246,13 +246,13 @@ export const Navbar: React.FC = () => {
             <Link 
               href="/shop?view=wishlist" 
               className={`transition-colors p-1.5 relative hidden sm:block ${
-                isTransparent ? 'text-white hover:text-[#C9A86A] drop-shadow-sm' : 'text-[#171717] hover:text-[#B08A4A]'
+                isTransparent ? 'text-white hover:text-[#DDB4A2] drop-shadow-sm' : 'text-[#303030] hover:text-[#CE967E]'
               }`}
               title="Wishlist"
             >
               <Heart className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#B08A4A] text-white text-[8.5px] font-mono font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#CE967E] text-white text-[8.5px] font-mono font-bold rounded-full flex items-center justify-center">
                   {wishlist.length}
                 </span>
               )}
@@ -262,12 +262,12 @@ export const Navbar: React.FC = () => {
             <button 
               onClick={() => setIsCartOpen(true)}
               className={`transition-colors p-1.5 relative ${
-                isTransparent ? 'text-white hover:text-[#C9A86A] drop-shadow-sm' : 'text-[#171717] hover:text-[#B08A4A]'
+                isTransparent ? 'text-white hover:text-[#DDB4A2] drop-shadow-sm' : 'text-[#303030] hover:text-[#CE967E]'
               }`}
               title="Shopping Bag"
             >
               <ShoppingBag className="w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[1.5]" />
-              <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-[#B08A4A] text-white text-[9px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-[#CE967E] text-white text-[9px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs">
                 {cartCount}
               </span>
             </button>
@@ -276,7 +276,7 @@ export const Navbar: React.FC = () => {
             <button 
               onClick={handleAdminLinkClick}
               className={`transition-colors p-1.5 ${
-                isTransparent ? 'text-white/60 hover:text-[#C9A86A]' : 'text-stone-400 hover:text-[#B08A4A]'
+                isTransparent ? 'text-white/60 hover:text-[#DDB4A2]' : 'text-stone-400 hover:text-[#CE967E]'
               }`}
               title="Admin Portal"
             >
@@ -287,24 +287,24 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down text-[#171717]">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
-            <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">SHOP ALL</Link>
-            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
-            <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
-            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
-            <Link href="/shop?category=replica" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">REPLICA</Link>
-            <Link href="/shop?category=sale" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#C5A059] py-2.5 border-b border-stone-100 uppercase tracking-wider">SALE 2026 (50% OFF)</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#171717] hover:text-[#B08A4A] py-2.5 border-b border-stone-100 uppercase tracking-wider">TRACK ORDER / CONTACT</Link>
+          <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down text-[#303030]">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">HOME</Link>
+            <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">SHOP ALL</Link>
+            <Link href="/shop?sort=newest" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">NEW ARRIVALS</Link>
+            <Link href="/shop?category=ready-to-wear" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">READY TO WEAR</Link>
+            <Link href="/shop?category=luxury-pret" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">LUXURY PRET</Link>
+            <Link href="/shop?category=replica" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-stone-800 hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">REPLICA</Link>
+            <Link href="/shop?category=sale" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">SALE 2026 (50% OFF)</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-medium text-[#303030] hover:text-[#CE967E] py-2.5 border-b border-stone-100 uppercase tracking-wider">TRACK ORDER / CONTACT</Link>
             <button 
               onClick={(e) => {
                 setMobileMenuOpen(false);
                 handleAdminLinkClick(e);
               }} 
-              className="w-full flex items-center justify-between text-xs font-bold text-stone-700 bg-stone-100 hover:bg-[#111111] hover:text-white px-4 py-3 rounded-2xl transition-all uppercase tracking-wider mt-2 border border-stone-200"
+              className="w-full flex items-center justify-between text-xs font-bold text-stone-700 bg-stone-100 hover:bg-[#222222] hover:text-white px-4 py-3 rounded-2xl transition-all uppercase tracking-wider mt-2 border border-stone-200"
             >
               <span className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-[#C5A059]" />
+                <Lock className="w-4 h-4 text-[#CE967E]" />
                 ADMIN PORTAL
               </span>
               <ArrowRight className="w-4 h-4 text-stone-400" />
@@ -316,10 +316,10 @@ export const Navbar: React.FC = () => {
       {/* Admin Pre-Authentication Modal */}
       {adminAuthModalOpen && (
         <div className="fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
-          <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border border-[#E8DFC8] shadow-2xl p-6 sm:p-8 space-y-6 animate-scale-in relative overflow-hidden">
+          <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border border-[#EAEAEA] shadow-2xl p-6 sm:p-8 space-y-6 animate-scale-in relative overflow-hidden">
             
             {/* Top Gold Ornament */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C5A059] via-[#111111] to-[#C5A059]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#CE967E] via-[#222222] to-[#CE967E]" />
 
             {/* Close Button */}
             <button 
@@ -332,13 +332,13 @@ export const Navbar: React.FC = () => {
 
             {/* Header */}
             <div className="text-center space-y-2 pt-2">
-              <div className="w-13 h-13 rounded-2xl bg-[#111111] text-[#C5A059] border border-[#C5A059]/40 flex items-center justify-center mx-auto shadow-lg shadow-black/20">
+              <div className="w-13 h-13 rounded-2xl bg-[#222222] text-[#CE967E] border border-[#CE967E]/40 flex items-center justify-center mx-auto shadow-lg shadow-black/20">
                 <Lock className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-[0.3em] block">
+              <span className="text-[10px] font-black text-[#CE967E] uppercase tracking-[0.3em] block">
                 ADMIN ACCESS REQUIRED
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold text-[#111111]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#222222]">
                 ETHNIVA Admin Portal
               </h3>
               <p className="text-xs text-stone-500 max-w-xs mx-auto">
@@ -357,7 +357,7 @@ export const Navbar: React.FC = () => {
             {/* Login Form */}
             <form onSubmit={handleAdminModalLogin} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-[#111111] uppercase tracking-wider">
+                <label className="text-[11px] font-bold text-[#222222] uppercase tracking-wider">
                   Admin Email / Username
                 </label>
                 <input
@@ -366,19 +366,19 @@ export const Navbar: React.FC = () => {
                   value={adminEmail}
                   onChange={e => setAdminEmail(e.target.value)}
                   placeholder="ethnivabrand@gmail.com"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#111111] focus:outline-none transition-all font-medium"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#CE967E] rounded-xl text-xs text-[#222222] focus:outline-none transition-all font-medium"
                 />
               </div>
 
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <label className="text-[11px] font-bold text-[#111111] uppercase tracking-wider">
+                  <label className="text-[11px] font-bold text-[#222222] uppercase tracking-wider">
                     Master Password / PIN
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowAdminPassword(!showAdminPassword)}
-                    className="text-[10px] text-[#C5A059] font-semibold hover:underline"
+                    className="text-[10px] text-[#CE967E] font-semibold hover:underline"
                   >
                     {showAdminPassword ? 'Hide' : 'Show'}
                   </button>
@@ -389,20 +389,20 @@ export const Navbar: React.FC = () => {
                   value={adminPassword}
                   onChange={e => setAdminPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#111111] focus:outline-none transition-all font-medium"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#CE967E] rounded-xl text-xs text-[#222222] focus:outline-none transition-all font-medium"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isAdminLoggingIn}
-                className={`w-full py-3.5 bg-[#111111] hover:bg-[#C5A059] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-black/20 flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 bg-[#222222] hover:bg-[#CE967E] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-black/20 flex items-center justify-center gap-2 ${
                   isAdminLoggingIn ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.01] active:scale-[0.99]'
                 }`}
               >
                 {isAdminLoggingIn ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#CE967E]" />
                     <span>Verifying Master Access...</span>
                   </>
                 ) : (
@@ -425,10 +425,10 @@ export const Navbar: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center space-y-1">
-              <div className="relative w-14 h-14 rounded-full overflow-hidden border border-[#C5A059] mx-auto mb-2">
+              <div className="relative w-14 h-14 rounded-full overflow-hidden border border-[#CE967E] mx-auto mb-2">
                 <Image src="/logo.jpg" alt="ETHNIVA" fill className="object-cover" />
               </div>
-              <h3 className="font-brand-serif text-lg font-bold text-[#111111]">ETHNIVA Account Login</h3>
+              <h3 className="font-brand-serif text-lg font-bold text-[#222222]">ETHNIVA Account Login</h3>
               <p className="text-xs text-stone-500">Sign in to track orders and save custom body measurements.</p>
             </div>
             <form onSubmit={handleCustomerLogin} className="space-y-3 pt-2">
@@ -438,7 +438,7 @@ export const Navbar: React.FC = () => {
                 value={customerEmail}
                 onChange={e => setCustomerEmail(e.target.value)}
                 placeholder="Phone Number or Email" 
-                className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]" 
+                className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]" 
               />
               <input 
                 type="password" 
@@ -446,7 +446,7 @@ export const Navbar: React.FC = () => {
                 value={customerPassword}
                 onChange={e => setCustomerPassword(e.target.value)}
                 placeholder="Password" 
-                className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]" 
+                className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]" 
               />
               <button 
                 type="submit"
@@ -477,8 +477,8 @@ export const Navbar: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-start justify-center pt-16 sm:pt-24 px-3 sm:px-4 animate-fade-in">
           <div className="bg-white border border-stone-200 rounded-3xl w-full max-w-xl p-5 sm:p-7 shadow-2xl relative space-y-4 animate-scale-in">
             <div className="flex items-center justify-between">
-              <h3 className="text-base sm:text-lg font-bold text-[#111111] flex items-center gap-2">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              <h3 className="text-base sm:text-lg font-bold text-[#222222] flex items-center gap-2">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#CE967E]" />
                 <span>Search Catalog</span>
               </h3>
               <button 
@@ -504,7 +504,7 @@ export const Navbar: React.FC = () => {
                 placeholder="Search by dress name, fabric, style..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 min-w-0 bg-[#FAF7F2] border border-stone-300 focus:border-[#C5A059] rounded-xl sm:rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+                className="flex-1 min-w-0 bg-[#FAFAFA] border border-stone-300 focus:border-[#CE967E] rounded-xl sm:rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
                 autoFocus
               />
               <button 

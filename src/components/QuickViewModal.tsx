@@ -43,7 +43,7 @@ export const QuickViewModal: React.FC = () => {
                 className="object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-[#EEEAE2] text-stone-400 font-serif text-sm">
+              <div className="w-full h-full flex items-center justify-center bg-[#F5F0ED] text-stone-400 font-serif text-sm">
                 ETHNIVA
               </div>
             )}
@@ -51,10 +51,10 @@ export const QuickViewModal: React.FC = () => {
           {/* Details */}
           <div className="p-6 md:p-8 flex flex-col justify-between space-y-4">
             <div>
-              <div className="text-[9.5px] font-bold text-[#C5A059] uppercase tracking-widest mb-1">
+              <div className="text-[9.5px] font-bold text-[#CE967E] uppercase tracking-widest mb-1">
                 {quickViewProduct.category}
               </div>
-              <h2 className="text-xl font-brand-serif font-bold text-[#111111] mb-2 leading-snug">
+              <h2 className="text-xl font-brand-serif font-bold text-[#222222] mb-2 leading-snug">
                 {quickViewProduct.title}
               </h2>
 
@@ -68,7 +68,7 @@ export const QuickViewModal: React.FC = () => {
                 <span className="text-stone-400 text-[11px]">({quickViewProduct.reviews_count || 12} reviews)</span>
               </div>
 
-              <div className="text-2xl font-brand-serif font-bold text-[#111111] mb-3">
+              <div className="text-2xl font-brand-serif font-bold text-[#222222] mb-3">
                 PKR {quickViewProduct.price.toLocaleString()}
                 {quickViewProduct.compare_at_price && (
                   <span className="text-xs text-stone-400 line-through ml-2 font-normal font-sans">
@@ -78,7 +78,7 @@ export const QuickViewModal: React.FC = () => {
               </div>
 
               {/* Short Bullet Highlights */}
-              <div className="space-y-1.5 mb-4 bg-[#FAF7F2] p-3 rounded-xl border border-stone-200/70 max-h-36 overflow-y-auto">
+              <div className="space-y-1.5 mb-4 bg-[#FAFAFA] p-3 rounded-xl border border-stone-200/70 max-h-36 overflow-y-auto">
                 {quickViewProduct.description
                   .replace(/(^|\n)\s*\.\s*($|\n)/g, '\n')
                   .replace(/0309[-\s]?4292220/gi, '0320-1803537')
@@ -87,7 +87,7 @@ export const QuickViewModal: React.FC = () => {
                   .filter(l => l && l !== '.')
                   .map((line, idx) => (
                     <div key={idx} className="flex items-start gap-1.5 text-xs text-stone-700 leading-snug">
-                      <span className="text-[#C5A059] font-bold text-[10px] mt-0.5 flex-shrink-0">✦</span>
+                      <span className="text-[#CE967E] font-bold text-[10px] mt-0.5 flex-shrink-0">✦</span>
                       <span>{line.replace(/^[-•*]\s*/, '')}</span>
                     </div>
                   ))}
@@ -97,12 +97,12 @@ export const QuickViewModal: React.FC = () => {
               <div className="mb-4 space-y-2">
                 <div className="flex justify-between items-center text-xs font-bold text-stone-700">
                   <span className="uppercase tracking-wider">
-                    Select Size: <strong className="text-[#C5A059]">{selectedSize}</strong>
+                    Select Size: <strong className="text-[#CE967E]">{selectedSize}</strong>
                   </span>
                   <button
                     type="button"
                     onClick={() => setIsSizeChartOpen(true)}
-                    className="text-[#B08A4A] hover:text-black text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline"
+                    className="text-[#CE967E] hover:text-black text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline"
                   >
                     <span>📏 Size Chart</span>
                   </button>
@@ -114,8 +114,8 @@ export const QuickViewModal: React.FC = () => {
                       onClick={() => setSelectedSize(size)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                         selectedSize === size
-                          ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs font-extrabold'
-                          : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-[#C5A059]'
+                          ? 'border-[#222222] bg-[#222222] text-[#CE967E] shadow-2xs font-extrabold'
+                          : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-[#CE967E]'
                       }`}
                     >
                       {size}
@@ -134,12 +134,12 @@ export const QuickViewModal: React.FC = () => {
               >
                 {isAdding ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#CE967E]" />
                     <span>Adding To Cart...</span>
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-4 h-4 text-[#C5A059]" />
+                    <ShoppingBag className="w-4 h-4 text-[#CE967E]" />
                     <span>Add To Cart</span>
                   </>
                 )}

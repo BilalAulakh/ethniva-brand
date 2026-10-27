@@ -7,6 +7,7 @@ import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { QuickViewModal } from '@/components/QuickViewModal';
 import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
+import { RecentPurchasePopup } from '@/components/RecentPurchasePopup';
 
 // Fonts are self-hosted (Fontsource, OFL-1.1) so builds don't depend on fetching Google Fonts
 const inter = localFont({
@@ -27,7 +28,7 @@ const cormorant = localFont({
     { path: './fonts/cormorant-garamond-latin-600-normal.woff2', weight: '600', style: 'normal' },
     { path: './fonts/cormorant-garamond-latin-700-normal.woff2', weight: '700', style: 'normal' },
   ],
-  variable: '--font-serif',
+  variable: '--font-cormorant',
   display: 'swap',
 });
 
@@ -51,7 +52,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased bg-[#F7F5F0] text-[#171717] selection:bg-[#B08A4A] selection:text-white text-[13px] sm:text-[14px] overflow-x-hidden">
+      <body className="min-h-screen flex flex-col antialiased bg-[#FFFFFF] text-[#303030] selection:bg-[#CE967E] selection:text-white text-[13px] sm:text-[14px] overflow-x-hidden">
         <CartProvider>
           <Navbar />
           <main className="flex-1 w-full overflow-x-hidden">
@@ -61,6 +62,7 @@ export default function RootLayout({
           <CartDrawer />
           <QuickViewModal />
           <FloatingWhatsApp />
+          <RecentPurchasePopup />
         </CartProvider>
       </body>
     </html>

@@ -10,14 +10,14 @@ export const metadata = {
 
 export default function SizeGuidePage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#0A0A0A]">
+    <div className="min-h-screen bg-[#FAFAFA] text-[#222222]">
       {/* Hero Header */}
-      <div className="bg-[#0A0A0A] text-white py-14 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-radial from-[#C5A059]/10 via-transparent to-transparent pointer-events-none" />
+      <div className="bg-[#222222] text-white py-14 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-radial from-[#CE967E]/10 via-transparent to-transparent pointer-events-none" />
         
         <div className="max-w-3xl mx-auto space-y-4 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#1A1A1A] border border-[#C5A059]/30 rounded-full text-[11px] font-sans font-semibold tracking-[2px] text-[#C5A059] uppercase">
-            <Ruler className="w-3.5 h-3.5 text-[#C5A059]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#222222] border border-[#CE967E]/30 rounded-full text-[11px] font-sans font-semibold tracking-[2px] text-[#CE967E] uppercase">
+            <Ruler className="w-3.5 h-3.5 text-[#CE967E]" />
             <span>ETHNIVA ATELIER SIZING</span>
           </div>
 
@@ -30,9 +30,9 @@ export default function SizeGuidePage() {
           </p>
 
           <nav className="flex items-center justify-center gap-2 text-xs text-stone-500 font-sans pt-2">
-            <Link href="/" className="hover:text-[#C5A059] transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#CE967E] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-[#C5A059]">Size Guide</span>
+            <span className="text-[#CE967E]">Size Guide</span>
           </nav>
         </div>
       </div>

@@ -23,23 +23,23 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="py-8 sm:py-12 bg-[#FAF7F2] text-[#111111]">
+    <div className="py-8 sm:py-12 bg-[#FAFAFA] text-[#222222]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Breadcrumb */}
         <div className="text-xs text-stone-500 flex items-center gap-2 font-medium">
-          <Link href="/" className="hover:text-[#C5A059]">Home</Link>
+          <Link href="/" className="hover:text-[#CE967E]">Home</Link>
           <span>/</span>
-          <span className="text-[#C5A059] font-bold">Contact &amp; Atelier Support</span>
+          <span className="text-[#CE967E] font-bold">Contact &amp; Atelier Support</span>
         </div>
 
         {/* Header Title */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#C5A059]/60 bg-white shadow-2xs text-[10px] font-bold text-[#C5A059] uppercase tracking-[0.25em]">
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#CE967E]/60 bg-white shadow-2xs text-[10px] font-bold text-[#CE967E] uppercase tracking-[0.25em]">
+            <Sparkles className="w-3.5 h-3.5 text-[#CE967E]" />
             <span>ETHNIVA ATELIER</span>
           </div>
-          <h1 className="font-brand-serif text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
+          <h1 className="font-brand-serif text-3xl sm:text-4xl font-bold text-[#222222] tracking-tight">
             Contact &amp; Customer Care
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
@@ -58,7 +58,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase text-[#25D366] tracking-widest">WHATSAPP CONCIERGE</div>
-                <h3 className="text-base font-bold text-[#111111] mt-1">0320-1803537</h3>
+                <h3 className="text-base font-bold text-[#222222] mt-1">0320-1803537</h3>
               </div>
               <p className="text-xs text-stone-500 font-normal">
                 Instant assistance for custom sizes, styling queries &amp; order tracking.
@@ -76,14 +76,14 @@ export default function ContactPage() {
           </div>
 
           {/* Card 2: Official Email */}
-          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#C5A059] transition-all flex flex-col justify-between">
+          <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 text-center hover:border-[#CE967E] transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-[#FAF7F2] border border-[#C5A059]/50 text-[#C5A059] flex items-center justify-center mx-auto shadow-2xs">
+              <div className="w-14 h-14 rounded-2xl bg-[#FAFAFA] border border-[#CE967E]/50 text-[#CE967E] flex items-center justify-center mx-auto shadow-2xs">
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase text-[#C5A059] tracking-widest">OFFICIAL EMAIL</div>
-                <a href="mailto:ethnivabrand@gmail.com" className="text-xs font-bold text-[#111111] hover:text-[#C5A059] transition-colors mt-1 block break-all">
+                <div className="text-[10px] font-bold uppercase text-[#CE967E] tracking-widest">OFFICIAL EMAIL</div>
+                <a href="mailto:ethnivabrand@gmail.com" className="text-xs font-bold text-[#222222] hover:text-[#CE967E] transition-colors mt-1 block break-all">
                   ethnivabrand@gmail.com
                 </a>
               </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
             </div>
             <div className="text-[11px] text-stone-500 space-y-1 pt-1">
               <div className="flex items-center justify-center gap-1.5 font-medium">
-                <Clock className="w-3.5 h-3.5 text-[#C5A059]" />
+                <Clock className="w-3.5 h-3.5 text-[#CE967E]" />
                 <span>Mon - Sat: 10AM - 9PM</span>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase text-[#E4405F] tracking-widest">INSTAGRAM</div>
-                <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
+                <h3 className="text-base font-bold text-[#222222] mt-1">@ethnivaonline</h3>
               </div>
               <p className="text-xs text-stone-500 font-normal">
                 Watch our latest collection showcases, reels &amp; styling stories.
@@ -131,7 +131,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase text-[#1877F2] tracking-widest">FACEBOOK COMMUNITY</div>
-                <h3 className="text-base font-bold text-[#111111] mt-1">@ethnivaonline</h3>
+                <h3 className="text-base font-bold text-[#222222] mt-1">@ethnivaonline</h3>
               </div>
               <p className="text-xs text-stone-500 font-normal">
                 Join our Facebook page for community updates &amp; customer reviews.
@@ -155,20 +155,20 @@ export default function ContactPage() {
           {/* Form */}
           <div className="lg:col-span-7 bg-white p-6 sm:p-10 rounded-3xl border border-stone-200/80 shadow-2xs space-y-6">
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">SEND A MESSAGE</span>
-              <h2 className="font-brand-serif text-xl sm:text-2xl font-bold text-[#111111]">Online Inquiry Form</h2>
+              <span className="text-[10px] font-bold text-[#CE967E] uppercase tracking-widest">SEND A MESSAGE</span>
+              <h2 className="font-brand-serif text-xl sm:text-2xl font-bold text-[#222222]">Online Inquiry Form</h2>
             </div>
 
             {formSubmitted ? (
-              <div className="p-6 bg-[#FAF7F2] rounded-2xl border border-[#C5A059]/60 text-center space-y-3 animate-fade-in">
-                <CheckCircle2 className="w-12 h-12 text-[#C5A059] mx-auto" />
-                <h3 className="text-base font-bold text-[#111111]">Thank you, {formData.name || 'valued customer'}!</h3>
+              <div className="p-6 bg-[#FAFAFA] rounded-2xl border border-[#CE967E]/60 text-center space-y-3 animate-fade-in">
+                <CheckCircle2 className="w-12 h-12 text-[#CE967E] mx-auto" />
+                <h3 className="text-base font-bold text-[#222222]">Thank you, {formData.name || 'valued customer'}!</h3>
                 <p className="text-xs text-stone-600 max-w-sm mx-auto font-normal">
                   Your message has been received. Our team will contact you shortly on <strong>{formData.phone || 'your phone number'}</strong>.
                 </p>
                 <button
                   onClick={() => setFormSubmitted(false)}
-                  className="text-xs text-[#C5A059] font-bold underline"
+                  className="text-xs text-[#CE967E] font-bold underline"
                 >
                   Send another inquiry
                 </button>
@@ -184,7 +184,7 @@ export default function ContactPage() {
                       placeholder="Your full name"
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                      className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -195,7 +195,7 @@ export default function ContactPage() {
                       placeholder="0300 1234567"
                       value={formData.phone}
                       onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                      className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]"
                     />
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function ContactPage() {
                     placeholder="yourname@gmail.com"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                    className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]"
                   />
                 </div>
 
@@ -216,7 +216,7 @@ export default function ContactPage() {
                   <select
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                    className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl px-4 py-3 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]"
                   >
                     <option value="Order & Custom Stitching Inquiry">Order &amp; Custom Stitching Inquiry</option>
                     <option value="Delivery Status & Tracking">Delivery Status &amp; Tracking</option>
@@ -233,7 +233,7 @@ export default function ContactPage() {
                     placeholder="Write your dress name, custom measurement notes, or questions..."
                     value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-stone-300 rounded-xl p-4 text-xs text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                    className="w-full bg-[#FAFAFA] border border-stone-300 rounded-xl p-4 text-xs text-stone-900 focus:outline-none focus:border-[#CE967E]"
                   />
                 </div>
 
@@ -250,23 +250,23 @@ export default function ContactPage() {
 
           {/* Side Info */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-gradient-to-br from-[#FAF7F2] via-[#F6F1E7] to-[#FAF7F2] p-6 sm:p-8 rounded-3xl border border-[#E8E2D5] shadow-2xs space-y-4">
-              <div className="text-[10px] font-bold uppercase text-[#C5A059] tracking-widest">ETHNIVA PROMISE</div>
-              <h3 className="font-brand-serif text-xl font-bold text-[#111111]">Bespoke Craftsmanship</h3>
+            <div className="bg-gradient-to-br from-[#FAFAFA] via-[#F7F7F7] to-[#FAFAFA] p-6 sm:p-8 rounded-3xl border border-[#EAEAEA] shadow-2xs space-y-4">
+              <div className="text-[10px] font-bold uppercase text-[#CE967E] tracking-widest">ETHNIVA PROMISE</div>
+              <h3 className="font-brand-serif text-xl font-bold text-[#222222]">Bespoke Craftsmanship</h3>
               <p className="text-xs text-stone-600 leading-relaxed font-normal">
                 Every ETHNIVA article is hand-tailored with premium threads, pure fabrics, and strict quality control before being dispatched from our Faisalabad atelier.
               </p>
-              <div className="pt-2 border-t border-[#E8E2D5] space-y-2 text-xs text-stone-700 font-medium">
+              <div className="pt-2 border-t border-[#EAEAEA] space-y-2 text-xs text-stone-700 font-medium">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
+                  <ShieldCheck className="w-4 h-4 text-[#CE967E]" />
                   <span>100% Handcrafted Guaranteed</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-[#B08A4A]" />
+                  <Truck className="w-4 h-4 text-[#CE967E]" />
                   <span>Nationwide Express Courier &bull; Cash On Delivery</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#B08A4A]" />
+                  <Mail className="w-4 h-4 text-[#CE967E]" />
                   <span>Client Care: ethnivabrand@gmail.com</span>
                 </div>
               </div>

@@ -44,8 +44,8 @@ export const CartDrawer: React.FC = () => {
           {/* Header */}
           <div className="p-6 border-b border-stone-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5 text-[#881337]" />
-              <h2 className="text-base font-bold text-[#18181B] tracking-wide">
+              <ShoppingCart className="w-5 h-5 text-[#CE967E]" />
+              <h2 className="text-base font-bold text-[#222222] tracking-wide">
                 Shopping Bag ({cartCount} {cartCount === 1 ? 'Item' : 'Items'})
               </h2>
             </div>
@@ -58,20 +58,20 @@ export const CartDrawer: React.FC = () => {
           </div>
 
           {/* Free Shipping Meter */}
-          <div className="bg-[#EEEAE2] p-4 border-b border-[#D8D2C7]">
+          <div className="bg-[#F5F0ED] p-4 border-b border-[#E6E6E6]">
             <div className="flex items-center gap-2 text-xs font-medium mb-2">
-              <Truck className="w-4 h-4 text-[#B08A4A]" />
+              <Truck className="w-4 h-4 text-[#CE967E]" />
               {cartTotal >= FREE_DELIVERY_THRESHOLD ? (
-                <span className="text-[#0A0A0A] font-medium">🎉 You unlocked FREE Delivery on orders over PKR 5,000!</span>
+                <span className="text-[#222222] font-medium">🎉 You unlocked FREE Delivery on orders over PKR 5,000!</span>
               ) : (
                 <span className="text-stone-700 text-[11.5px]">
-                  Add <strong className="text-[#B08A4A]">PKR {remainingForFreeDelivery.toLocaleString()}</strong> more for FREE Delivery!
+                  Add <strong className="text-[#CE967E]">PKR {remainingForFreeDelivery.toLocaleString()}</strong> more for FREE Delivery!
                 </span>
               )}
             </div>
-            <div className="w-full bg-[#D8D2C7] h-1.5 overflow-hidden">
+            <div className="w-full bg-[#E6E6E6] h-1.5 overflow-hidden">
               <div 
-                className="bg-[#B08A4A] h-full transition-all duration-500"
+                className="bg-[#CE967E] h-full transition-all duration-500"
                 style={{ width: `${deliveryProgress}%` }}
               />
             </div>
@@ -81,10 +81,10 @@ export const CartDrawer: React.FC = () => {
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {cart.length === 0 ? (
               <div className="text-center py-16 space-y-4">
-                <div className="w-16 h-16 bg-[#EEEAE2] flex items-center justify-center mx-auto text-stone-400 border border-[#D8D2C7]">
-                  <ShoppingCart className="w-6 h-6 text-[#B08A4A]" />
+                <div className="w-16 h-16 bg-[#F5F0ED] flex items-center justify-center mx-auto text-stone-400 border border-[#E6E6E6]">
+                  <ShoppingCart className="w-6 h-6 text-[#CE967E]" />
                 </div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-[#0A0A0A]">Your bag is currently empty</h3>
+                <h3 className="text-sm font-medium tracking-wider uppercase text-[#222222]">Your bag is currently empty</h3>
                 <p className="text-xs text-neutral-500 max-w-xs mx-auto font-light">
                   Explore ETHNIVA modern luxury fashion collections.
                 </p>
@@ -97,8 +97,8 @@ export const CartDrawer: React.FC = () => {
               </div>
             ) : (
               cart.map((item, idx) => (
-                <div key={`${item.product.id}-${item.selectedSize}-${idx}`} className="flex gap-4 p-3 bg-white border border-[#D8D2C7] shadow-none">
-                  <div className="relative w-20 h-24 overflow-hidden bg-[#EEEAE2] flex-shrink-0">
+                <div key={`${item.product.id}-${item.selectedSize}-${idx}`} className="flex gap-4 p-3 bg-white border border-[#E6E6E6] shadow-none">
+                  <div className="relative w-20 h-24 overflow-hidden bg-[#F5F0ED] flex-shrink-0">
                     {item.product.images && item.product.images[0] ? (
                       <Image
                         src={item.product.images[0]}
@@ -116,15 +116,15 @@ export const CartDrawer: React.FC = () => {
                   <div className="flex-1 flex flex-col justify-between font-sans">
                     <div>
                       <div className="flex justify-between items-start">
-                        <h4 className="text-xs font-medium uppercase text-[#0A0A0A] line-clamp-1 tracking-wide">{item.product.title}</h4>
+                        <h4 className="text-xs font-medium uppercase text-[#222222] line-clamp-1 tracking-wide">{item.product.title}</h4>
                         <button
                           onClick={() => removeFromCart(item.product.id, item.selectedSize)}
-                          className="text-neutral-400 hover:text-[#0A0A0A] p-1"
+                          className="text-neutral-400 hover:text-[#222222] p-1"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      <div className="text-[11px] text-[#B08A4A] font-medium mt-0.5">
+                      <div className="text-[11px] text-[#CE967E] font-medium mt-0.5">
                         Size: <span>{item.selectedSize}</span> {item.product.fabric ? `| ${item.product.fabric}` : ''}
                       </div>
                       {item.customMeasurements && (
@@ -135,7 +135,7 @@ export const CartDrawer: React.FC = () => {
                     </div>
 
                     <div className="flex justify-between items-center mt-2">
-                      <div className="flex items-center border border-[#D8D2C7] bg-white">
+                      <div className="flex items-center border border-[#E6E6E6] bg-white">
                         <button
                           onClick={() => updateQuantity(item.product.id, item.selectedSize, -1)}
                           className="p-1 text-neutral-600 hover:text-black"
@@ -151,7 +151,7 @@ export const CartDrawer: React.FC = () => {
                         </button>
                       </div>
 
-                      <div className="text-xs font-medium text-[#0A0A0A]">
+                      <div className="text-xs font-medium text-[#222222]">
                         PKR {(item.product.price * item.quantity).toLocaleString()}
                       </div>
                     </div>
@@ -163,19 +163,19 @@ export const CartDrawer: React.FC = () => {
 
           {/* Footer Checkout Summary */}
           {cart.length > 0 && (
-            <div className="p-6 bg-white border-t border-[#D8D2C7] space-y-3 font-sans">
+            <div className="p-6 bg-white border-t border-[#E6E6E6] space-y-3 font-sans">
               <div className="space-y-1.5 text-xs text-neutral-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium text-[#0A0A0A]">PKR {cartTotal.toLocaleString()}</span>
+                  <span className="font-medium text-[#222222]">PKR {cartTotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping (Pakistan)</span>
-                  <span className="font-medium text-[#0A0A0A]">
-                    {deliveryCharges === 0 ? <strong className="text-[#B08A4A]">FREE</strong> : `PKR ${deliveryCharges}`}
+                  <span className="font-medium text-[#222222]">
+                    {deliveryCharges === 0 ? <strong className="text-[#CE967E]">FREE</strong> : `PKR ${deliveryCharges}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-medium text-[#0A0A0A] pt-2 border-t border-[#D8D2C7]">
+                <div className="flex justify-between text-sm font-medium text-[#222222] pt-2 border-t border-[#E6E6E6]">
                   <span>Estimated Total</span>
                   <span className="font-medium">PKR {grandTotal.toLocaleString()}</span>
                 </div>
@@ -189,7 +189,7 @@ export const CartDrawer: React.FC = () => {
                 >
                   {isProceeding ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin text-[#B08A4A]" />
+                      <Loader2 className="w-4 h-4 animate-spin text-[#CE967E]" />
                       <span>PROCEEDING...</span>
                     </>
                   ) : (

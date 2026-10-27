@@ -227,7 +227,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-4">
-        <h1 className="text-2xl font-serif font-bold text-[#18181B]">Article Not Found</h1>
+        <h1 className="text-2xl font-serif font-bold text-[#222222]">Article Not Found</h1>
         <p className="text-xs text-stone-500">The article you are looking for is currently unavailable.</p>
         <Link href="/shop" className="inline-block btn-luxury-gold text-xs px-6 py-3 rounded-full">
           Return To Shop
@@ -237,24 +237,24 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   }
 
   return (
-    <div className="py-2.5 sm:py-4 bg-[#FCFAF7] text-[#18181B] selection:bg-[#C5A880] selection:text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-2.5 sm:space-y-3 text-[#111111]">
+    <div className="py-2.5 sm:py-4 bg-[#FFFFFF] text-[#222222] selection:bg-[#D9AE9B] selection:text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-2.5 sm:space-y-3 text-[#222222]">
         
         {/* Toast Notification */}
         {showToast && (
-          <div className="fixed bottom-6 left-6 z-50 bg-white border border-[#C5A059] text-[#111111] px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 animate-fade-in text-xs font-bold">
-            <Check className="w-4 h-4 text-[#C5A059]" />
+          <div className="fixed bottom-6 left-6 z-50 bg-white border border-[#CE967E] text-[#222222] px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 animate-fade-in text-xs font-bold">
+            <Check className="w-4 h-4 text-[#CE967E]" />
             <span>Added &ldquo;{product.title}&rdquo; to your shopping bag!</span>
           </div>
         )}
 
         {/* Compact Breadcrumb */}
         <div className="text-[10.5px] text-stone-500 flex items-center gap-1.5 font-medium">
-          <Link href="/" className="hover:text-[#C5A059]">Home</Link>
+          <Link href="/" className="hover:text-[#CE967E]">Home</Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-[#C5A059]">Shop</Link>
+          <Link href="/shop" className="hover:text-[#CE967E]">Shop</Link>
           <span>/</span>
-          <span className="text-[#C5A059] font-bold truncate max-w-xs">{product.title}</span>
+          <span className="text-[#CE967E] font-bold truncate max-w-xs">{product.title}</span>
         </div>
 
         {/* Product Showcase Grid Layout (Optimized for zero-scroll desktop fit) */}
@@ -280,8 +280,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               />
 
               {/* Floating Zoom Tooltip Badge */}
-              <div className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-md border border-[#C5A059]/40 text-[#111111] px-2.5 py-0.5 rounded-full text-[9.5px] font-bold flex items-center gap-1 shadow-2xs transition-transform group-hover:scale-105">
-                <ZoomIn className="w-3.5 h-3.5 text-[#C5A059]" />
+              <div className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-md border border-[#CE967E]/40 text-[#222222] px-2.5 py-0.5 rounded-full text-[9.5px] font-bold flex items-center gap-1 shadow-2xs transition-transform group-hover:scale-105">
+                <ZoomIn className="w-3.5 h-3.5 text-[#CE967E]" />
                 <span>Tap to Zoom</span>
               </div>
 
@@ -297,14 +297,14 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                 <>
                   <button
                     onClick={handlePrevImage}
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-[#111111] text-stone-800 hover:text-[#C5A059] border border-stone-200/80 flex items-center justify-center transition-all shadow-sm opacity-90 sm:opacity-0 group-hover:opacity-100 hover:scale-105"
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-[#222222] text-stone-800 hover:text-[#CE967E] border border-stone-200/80 flex items-center justify-center transition-all shadow-sm opacity-90 sm:opacity-0 group-hover:opacity-100 hover:scale-105"
                     title="Previous photo"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button
                     onClick={handleNextImage}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-[#111111] text-stone-800 hover:text-[#C5A059] border border-stone-200/80 flex items-center justify-center transition-all shadow-sm opacity-90 sm:opacity-0 group-hover:opacity-100 hover:scale-105"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-[#222222] text-stone-800 hover:text-[#CE967E] border border-stone-200/80 flex items-center justify-center transition-all shadow-sm opacity-90 sm:opacity-0 group-hover:opacity-100 hover:scale-105"
                     title="Next photo"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -321,7 +321,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
                     className={`relative w-14 sm:w-16 aspect-[3/4] rounded-xl overflow-hidden border transition-all flex-shrink-0 bg-white ${
-                      activeImageIndex === idx ? 'border-[#B08A4A] shadow-xs scale-105' : 'border-stone-200 opacity-70 hover:opacity-100'
+                      activeImageIndex === idx ? 'border-[#CE967E] shadow-xs scale-105' : 'border-stone-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`thumbnail-${idx + 1}`} fill className="object-cover object-top" />
@@ -334,11 +334,11 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
           {/* Right Column: Product Info & Order Form */}
           <div className="lg:col-span-6 space-y-2.5 sm:space-y-3 bg-white p-3.5 sm:p-5 rounded-2xl border border-stone-200/80 shadow-2xs">
             <div>
-              <div className="text-[8.5px] font-bold text-[#C5A059] uppercase tracking-[0.2em] mb-0.5">
+              <div className="text-[8.5px] font-bold text-[#CE967E] uppercase tracking-[0.2em] mb-0.5">
                 {product.category} &bull; {product.fabric}
               </div>
               
-              <h1 className="font-serif text-lg sm:text-xl font-bold text-[#111111] leading-tight mb-1">
+              <h1 className="font-serif text-lg sm:text-xl font-bold text-[#222222] leading-tight mb-1">
                 {product.title}
               </h1>
 
@@ -348,13 +348,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                     <Star key={i} className="w-2.5 h-2.5 fill-current" />
                   ))}
                 </div>
-                <span className="font-extrabold text-[#111111]">{product.rating || 5.0}</span>
+                <span className="font-extrabold text-[#222222]">{product.rating || 5.0}</span>
                 <span className="text-stone-400 text-[10px]">({product.reviews_count || 8} verified reviews)</span>
               </div>
 
               {/* Dynamic Price Display */}
               <div className="flex items-baseline gap-2">
-                <span className="text-lg sm:text-xl font-bold text-[#111111]">
+                <span className="text-lg sm:text-xl font-bold text-[#222222]">
                   PKR {activePrice.toLocaleString()}
                 </span>
                 {product.compare_at_price && (
@@ -363,7 +363,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   </span>
                 )}
                 {stitchingType === 'unstitched' && (
-                  <span className="text-[8.5px] font-bold uppercase tracking-wider bg-amber-50 text-[#C5A059] px-2 py-0.5 rounded-full border border-[#C5A059]/40">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider bg-amber-50 text-[#CE967E] px-2 py-0.5 rounded-full border border-[#CE967E]/40">
                     Unstitched Discount
                   </span>
                 )}
@@ -371,24 +371,24 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             </div>
 
             {/* Priority Specs: 2-Column Grid */}
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1 p-2.5 bg-[#FAF7F2] rounded-xl border border-stone-200/80 text-[11px] text-stone-700 font-medium">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 p-2.5 bg-[#FAFAFA] rounded-xl border border-stone-200/80 text-[11px] text-stone-700 font-medium">
               <div className="flex items-center gap-1.5 truncate">
-                <strong className="text-[#111111] text-[10px] uppercase min-w-[42px]">Fabric:</strong> 
+                <strong className="text-[#222222] text-[10px] uppercase min-w-[42px]">Fabric:</strong> 
                 <span className="text-stone-800 font-semibold truncate">{product.fabric}</span>
               </div>
               <div className="flex items-center gap-1.5 truncate">
-                <strong className="text-[#C5A059] text-[10px] uppercase min-w-[50px]">Package:</strong> 
-                <span className="text-[#111111] font-semibold truncate">{packageIncludesText}</span>
+                <strong className="text-[#CE967E] text-[10px] uppercase min-w-[50px]">Package:</strong> 
+                <span className="text-[#222222] font-semibold truncate">{packageIncludesText}</span>
               </div>
               <div className="col-span-2 flex items-center gap-1 text-[10px] text-stone-500 pt-1 border-t border-stone-200/60">
-                <Truck className="w-3 h-3 text-[#C5A059]" />
+                <Truck className="w-3 h-3 text-[#CE967E]" />
                 <span>2-3 Days Express Delivery Across Pakistan</span>
               </div>
             </div>
 
             {/* Stitching Type Selector */}
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-[#111111] uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-[#222222] uppercase tracking-wider block">
                 CHOOSE STITCHING OPTION:
               </span>
               <div className="grid grid-cols-3 gap-1.5">
@@ -397,8 +397,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   onClick={() => setStitchingType('stitched')}
                   className={`py-1.5 px-2 rounded-lg text-[10.5px] font-bold border transition-all text-center ${
                     stitchingType === 'stitched'
-                      ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                      ? 'border-[#222222] bg-[#222222] text-[#CE967E] shadow-2xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#D9AE9B]'
                   }`}
                 >
                   <div>Stitched Pret</div>
@@ -410,8 +410,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   onClick={() => setStitchingType('unstitched')}
                   className={`py-1.5 px-2 rounded-lg text-[10.5px] font-bold border transition-all text-center ${
                     stitchingType === 'unstitched'
-                      ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                      ? 'border-[#222222] bg-[#222222] text-[#CE967E] shadow-2xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#D9AE9B]'
                   }`}
                 >
                   <div>Unstitched</div>
@@ -425,8 +425,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   onClick={() => setStitchingType('custom')}
                   className={`py-1.5 px-2 rounded-lg text-[10.5px] font-bold border transition-all text-center ${
                     stitchingType === 'custom'
-                      ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                      ? 'border-[#222222] bg-[#222222] text-[#CE967E] shadow-2xs'
+                      : 'border-stone-200 bg-white text-stone-700 hover:border-[#D9AE9B]'
                   }`}
                 >
                   <div>Custom Size</div>
@@ -438,9 +438,9 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* Color Selector */}
             {availableColors.length > 0 && (
               <div className="space-y-1">
-                <div className="flex justify-between items-center text-[10.5px] font-bold text-[#111111]">
+                <div className="flex justify-between items-center text-[10.5px] font-bold text-[#222222]">
                   <span className="uppercase tracking-wider">SELECT COLOR:</span>
-                  <span className="text-[#C5A059] font-bold">{selectedColor}</span>
+                  <span className="text-[#CE967E] font-bold">{selectedColor}</span>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {availableColors.map((col) => (
@@ -450,8 +450,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                       onClick={() => setSelectedColor(col)}
                       className={`px-2 py-0.5 rounded-md text-[10.5px] font-bold border transition-all ${
                         selectedColor === col
-                          ? 'border-[#111111] bg-[#FAF7F2] text-[#C5A059] ring-1 ring-[#111111]'
-                          : 'border-stone-200 bg-white text-stone-700 hover:border-[#C5A880]'
+                          ? 'border-[#222222] bg-[#FAFAFA] text-[#CE967E] ring-1 ring-[#222222]'
+                          : 'border-stone-200 bg-white text-stone-700 hover:border-[#D9AE9B]'
                       }`}
                     >
                       {col}
@@ -464,12 +464,12 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* Size Selector */}
             {stitchingType === 'stitched' && (
               <div className="space-y-1">
-                <div className="flex justify-between items-center text-[10.5px] font-bold text-[#111111]">
+                <div className="flex justify-between items-center text-[10.5px] font-bold text-[#222222]">
                   <span className="uppercase tracking-wider">SELECT SIZE</span>
                   <button
                     type="button"
                     onClick={() => setIsSizeChartOpen(true)}
-                    className="text-[#B08A4A] hover:text-black text-[9.5px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline transition-colors"
+                    className="text-[#CE967E] hover:text-black text-[9.5px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer hover:underline transition-colors"
                   >
                     <span>📏 Size Chart</span>
                   </button>
@@ -483,8 +483,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                       onClick={() => setSelectedSize(size)}
                       className={`w-8 h-7.5 rounded-md text-[10.5px] font-bold border transition-all flex items-center justify-center ${
                         selectedSize === size
-                          ? 'border-[#111111] bg-[#111111] text-[#C5A059] shadow-2xs font-bold'
-                          : 'border-stone-200 bg-white text-stone-800 hover:border-[#C5A880]'
+                          ? 'border-[#222222] bg-[#222222] text-[#CE967E] shadow-2xs font-bold'
+                          : 'border-stone-200 bg-white text-stone-800 hover:border-[#D9AE9B]'
                       }`}
                     >
                       {size}
@@ -496,9 +496,9 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
             {/* Custom Measurements Input */}
             {(stitchingType === 'custom' || selectedSize === 'Custom Stitching') && (
-              <div className="p-2 bg-[#FAF7F2] rounded-lg border border-[#C5A059]/60 space-y-1 animate-fade-in">
-                <div className="text-[10px] font-bold text-[#111111] flex items-center gap-1">
-                  <Scissors className="w-3 h-3 text-[#C5A059]" />
+              <div className="p-2 bg-[#FAFAFA] rounded-lg border border-[#CE967E]/60 space-y-1 animate-fade-in">
+                <div className="text-[10px] font-bold text-[#222222] flex items-center gap-1">
+                  <Scissors className="w-3 h-3 text-[#CE967E]" />
                   <span>Custom Measurement (Inches)</span>
                 </div>
                 <textarea
@@ -506,7 +506,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   value={customMeasurements}
                   onChange={(e) => setCustomMeasurements(e.target.value)}
                   rows={2}
-                  className="w-full bg-white border border-stone-300 rounded-md p-1.5 text-[10px] text-stone-900 focus:outline-none focus:border-[#C5A059]"
+                  className="w-full bg-white border border-stone-300 rounded-md p-1.5 text-[10px] text-stone-900 focus:outline-none focus:border-[#CE967E]"
                 />
               </div>
             )}
@@ -514,8 +514,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* Quantity Controls & Dynamic Total */}
             <div className="flex items-center flex-wrap gap-x-3 gap-y-1 pt-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-[#111111] uppercase tracking-wider">QUANTITY:</span>
-                <div className="flex items-center border border-stone-300 rounded-md bg-[#FAF7F2] px-2 py-0.5 shadow-2xs">
+                <span className="text-[10px] font-bold text-[#222222] uppercase tracking-wider">QUANTITY:</span>
+                <div className="flex items-center border border-stone-300 rounded-md bg-[#FAFAFA] px-2 py-0.5 shadow-2xs">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -523,7 +523,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   >
                     -
                   </button>
-                  <span className="text-[10.5px] font-bold text-[#111111] px-2 min-w-[14px] text-center">{quantity}</span>
+                  <span className="text-[10.5px] font-bold text-[#222222] px-2 min-w-[14px] text-center">{quantity}</span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
@@ -535,9 +535,9 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </div>
 
               {quantity > 1 && (
-                <div className="inline-flex items-center gap-1 bg-[#FAF7F2] px-2 py-0.5 rounded-md border border-[#C5A059]/40 animate-fade-in text-[10px]">
+                <div className="inline-flex items-center gap-1 bg-[#FAFAFA] px-2 py-0.5 rounded-md border border-[#CE967E]/40 animate-fade-in text-[10px]">
                   <span className="text-stone-500 font-medium">Total:</span>
-                  <span className="font-bold text-[#111111]">PKR {(activePrice * quantity).toLocaleString()}</span>
+                  <span className="font-bold text-[#222222]">PKR {(activePrice * quantity).toLocaleString()}</span>
                 </div>
               )}
             </div>
@@ -549,7 +549,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   type="button"
                   onClick={handleBuyNow}
                   disabled={isBuyingNow || isAddingToCart}
-                  className="w-full bg-[#0A0A0A] hover:bg-[#B08A4A] text-white hover:text-[#0A0A0A] border border-[#B08A4A] py-2.5 sm:py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all duration-300 disabled:opacity-75 cursor-pointer"
+                  className="w-full bg-[#222222] hover:bg-[#CE967E] text-white hover:text-[#222222] border border-[#CE967E] py-2.5 sm:py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all duration-300 disabled:opacity-75 cursor-pointer"
                 >
                   {isBuyingNow ? (
                     <>
@@ -558,7 +558,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                     </>
                   ) : (
                     <>
-                      <Zap className="w-3.5 h-3.5 fill-[#B08A4A] text-[#B08A4A]" />
+                      <Zap className="w-3.5 h-3.5 fill-[#CE967E] text-[#CE967E]" />
                       <span>BUY NOW</span>
                     </>
                   )}
@@ -568,16 +568,16 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   type="button"
                   onClick={handleAddToCart}
                   disabled={isAddingToCart || isBuyingNow}
-                  className="w-full bg-[#FAF7F2] hover:bg-[#0A0A0A] text-[#111111] hover:text-white border border-stone-300 hover:border-[#0A0A0A] py-2.5 sm:py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-2xs transition-all duration-300 disabled:opacity-75 cursor-pointer"
+                  className="w-full bg-[#FAFAFA] hover:bg-[#222222] text-[#222222] hover:text-white border border-stone-300 hover:border-[#222222] py-2.5 sm:py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-2xs transition-all duration-300 disabled:opacity-75 cursor-pointer"
                 >
                   {isAddingToCart ? (
                     <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C5A059]" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#CE967E]" />
                       <span>ADDING...</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-3.5 h-3.5 text-[#C5A059]" />
+                      <ShoppingBag className="w-3.5 h-3.5 text-[#CE967E]" />
                       <span>ADD TO CART</span>
                     </>
                   )}
@@ -588,9 +588,9 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                 href={`https://wa.me/923201803537?text=Hello%20ETHNIVA!%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(product.title)}%20(Option:%20${stitchingType.toUpperCase()}${selectedColor ? `%20Color:%20${encodeURIComponent(selectedColor)}` : ''},%20Size:%20${selectedSize},%20Price:%20PKR%20${activePrice.toLocaleString()})`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full bg-[#EEEAE2] hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#B08A4A] border border-[#D8D2C7] py-2 font-sans font-medium text-[10px] uppercase tracking-[1.5px] flex items-center justify-center gap-1.5 transition-colors rounded-xl group"
+                className="w-full bg-[#F5F0ED] hover:bg-[#222222] text-[#222222] hover:text-[#CE967E] border border-[#E6E6E6] py-2 font-sans font-medium text-[10px] uppercase tracking-[1.5px] flex items-center justify-center gap-1.5 transition-colors rounded-xl group"
               >
-                <MessageCircle className="w-3.5 h-3.5 text-[#B08A4A]" />
+                <MessageCircle className="w-3.5 h-3.5 text-[#CE967E]" />
                 <span>INQUIRE &bull; ORDER ASSISTANCE</span>
               </a>
             </div>
@@ -598,18 +598,18 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* 1. PRODUCT DESCRIPTION & DETAILS */}
             <div className="pt-2 border-t border-stone-200/80 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h3 className="text-[10.5px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5 text-[#C5A059]" />
+                <h3 className="text-[10.5px] font-bold text-[#222222] uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-2.5 h-2.5 text-[#CE967E]" />
                   <span>Product Highlights</span>
                 </h3>
               </div>
 
-              <div className="bg-[#FAF7F2] p-3 rounded-xl border border-stone-200/70 space-y-1.5">
+              <div className="bg-[#FAFAFA] p-3 rounded-xl border border-stone-200/70 space-y-1.5">
                 {descriptionBullets.map((item, idx) => {
                   if (item.isHeader) {
                     return (
                       <div key={idx} className="pt-1 first:pt-0">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#9E7A36] bg-amber-100/60 border border-[#C5A059]/40 px-2 py-0.5 rounded-md inline-block">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#B07A63] bg-amber-100/60 border border-[#CE967E]/40 px-2 py-0.5 rounded-md inline-block">
                           {item.text}
                         </span>
                       </div>
@@ -617,7 +617,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   }
                   return (
                     <div key={idx} className="flex items-start gap-1.5 text-[10.5px] text-stone-700 leading-snug">
-                      <span className="text-[#C5A059] font-bold text-[9px] mt-0.5 flex-shrink-0">✦</span>
+                      <span className="text-[#CE967E] font-bold text-[9px] mt-0.5 flex-shrink-0">✦</span>
                       <span className="font-normal text-stone-800">{item.text}</span>
                     </div>
                   );
@@ -628,16 +628,16 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* 2. SATISFACTION BADGES */}
             <div className="space-y-1 pt-1 border-t border-stone-200/80">
               <div className="grid grid-cols-3 gap-1 text-[9.5px] text-stone-700 text-center font-medium">
-                <div className="p-1 bg-[#FAF7F2] rounded-md border border-stone-200/80">
-                  <Truck className="w-2.5 h-2.5 text-[#C5A059] mx-auto mb-0.5" />
+                <div className="p-1 bg-[#FAFAFA] rounded-md border border-stone-200/80">
+                  <Truck className="w-2.5 h-2.5 text-[#CE967E] mx-auto mb-0.5" />
                   <span>Free Delivery</span>
                 </div>
-                <div className="p-1 bg-[#FAF7F2] rounded-md border border-stone-200/80">
-                  <ShieldCheck className="w-2.5 h-2.5 text-[#C5A059] mx-auto mb-0.5" />
+                <div className="p-1 bg-[#FAFAFA] rounded-md border border-stone-200/80">
+                  <ShieldCheck className="w-2.5 h-2.5 text-[#CE967E] mx-auto mb-0.5" />
                   <span>100% Original</span>
                 </div>
-                <div className="p-1 bg-[#FAF7F2] rounded-md border border-stone-200/80">
-                  <RefreshCw className="w-2.5 h-2.5 text-[#C5A059] mx-auto mb-0.5" />
+                <div className="p-1 bg-[#FAFAFA] rounded-md border border-stone-200/80">
+                  <RefreshCw className="w-2.5 h-2.5 text-[#CE967E] mx-auto mb-0.5" />
                   <span>7-Day Exchange</span>
                 </div>
               </div>
@@ -741,7 +741,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                     setZoomLevel(1);
                   }}
                   className={`relative w-12 sm:w-14 aspect-[3/4] rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${
-                    activeImageIndex === idx ? 'border-[#C5A880] scale-110 shadow-lg' : 'border-white/30 opacity-60 hover:opacity-100'
+                    activeImageIndex === idx ? 'border-[#D9AE9B] scale-110 shadow-lg' : 'border-white/30 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <Image src={img} alt={`thumb-${idx}`} fill className="object-cover" />

@@ -33,7 +33,7 @@ export const ProductCardSkeleton: React.FC<{ count?: number }> = ({ count = 1 })
             {/* Price & Rating */}
             <div className="flex justify-between items-end pt-1">
               <div className="space-y-1">
-                <div className="h-4 w-24 rounded bg-[#881337]/20 shimmer-effect" />
+                <div className="h-4 w-24 rounded bg-[#CE967E]/20 shimmer-effect" />
                 <div className="h-2.5 w-16 rounded bg-stone-200/60 shimmer-effect" />
               </div>
               <div className="h-4 w-10 rounded bg-amber-100 shimmer-effect" />
@@ -42,7 +42,7 @@ export const ProductCardSkeleton: React.FC<{ count?: number }> = ({ count = 1 })
             {/* Buttons Shimmer */}
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-stone-100">
               <div className="h-8 rounded-xl bg-stone-100 shimmer-effect" />
-              <div className="h-8 rounded-xl bg-[#C7A76C]/30 shimmer-effect" />
+              <div className="h-8 rounded-xl bg-[#CE967E]/30 shimmer-effect" />
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export const TableSkeleton: React.FC<{ rows?: number }> = ({ rows = 5 }) => {
           </div>
 
           <div className="space-y-1.5 w-28 text-right">
-            <div className="h-4 w-20 rounded bg-[#881337]/30 shimmer-effect ml-auto" />
+            <div className="h-4 w-20 rounded bg-[#CE967E]/30 shimmer-effect ml-auto" />
             <div className="h-2.5 w-12 rounded bg-stone-200 shimmer-effect ml-auto" />
           </div>
 
@@ -93,7 +93,7 @@ export const OrderSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => {
         <div key={i} className="bg-white rounded-3xl border border-stone-200 p-6 space-y-4 shadow-xs">
           <div className="flex justify-between border-b border-stone-100 pb-3">
             <div className="h-4 w-36 rounded bg-stone-300 shimmer-effect" />
-            <div className="h-5 w-24 rounded-full bg-[#FAF7F2] shimmer-effect" />
+            <div className="h-5 w-24 rounded-full bg-[#FAFAFA] shimmer-effect" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
@@ -108,7 +108,7 @@ export const OrderSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => {
             </div>
             <div className="space-y-2 md:text-right">
               <div className="h-2.5 w-20 rounded bg-stone-200 shimmer-effect md:ml-auto" />
-              <div className="h-6 w-28 rounded bg-[#881337]/30 shimmer-effect md:ml-auto" />
+              <div className="h-6 w-28 rounded bg-[#CE967E]/30 shimmer-effect md:ml-auto" />
               <div className="h-3 w-16 rounded bg-stone-200 shimmer-effect md:ml-auto" />
             </div>
           </div>
@@ -139,7 +139,7 @@ export const ProductDetailSkeleton: React.FC = () => {
           <div className="space-y-3">
             <div className="h-4 w-28 rounded bg-stone-200 shimmer-effect" />
             <div className="h-8 w-3/4 rounded bg-stone-300 shimmer-effect" />
-            <div className="h-7 w-36 rounded bg-[#881337]/20 shimmer-effect" />
+            <div className="h-7 w-36 rounded bg-[#CE967E]/20 shimmer-effect" />
           </div>
 
           <div className="space-y-2 pt-4 border-t border-stone-200">
@@ -159,8 +159,8 @@ export const ProductDetailSkeleton: React.FC = () => {
           </div>
 
           <div className="space-y-3 pt-4">
-            <div className="h-12 w-full rounded-2xl bg-[#881337]/30 shimmer-effect" />
-            <div className="h-12 w-full rounded-2xl bg-[#C7A76C]/30 shimmer-effect" />
+            <div className="h-12 w-full rounded-2xl bg-[#CE967E]/30 shimmer-effect" />
+            <div className="h-12 w-full rounded-2xl bg-[#CE967E]/30 shimmer-effect" />
           </div>
         </div>
       </div>

@@ -38,13 +38,13 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fade-in">
       <div 
-        className="bg-white border border-[#D8D2C7] shadow-2xl rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 sm:p-8 space-y-6 relative"
+        className="bg-white border border-[#E6E6E6] shadow-2xl rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 sm:p-8 space-y-6 relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#FAF7F2] hover:bg-[#0A0A0A] hover:text-white text-stone-600 flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#FAFAFA] hover:bg-[#222222] hover:text-white text-stone-600 flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -52,11 +52,11 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
 
         {/* Modal Header */}
         <div className="text-center space-y-1.5 pt-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEEAE2] border border-[#D8D2C7] rounded-full text-[10px] font-sans font-semibold tracking-[2px] text-[#B08A4A] uppercase">
-            <Ruler className="w-3 h-3 text-[#B08A4A]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F0ED] border border-[#E6E6E6] rounded-full text-[10px] font-sans font-semibold tracking-[2px] text-[#CE967E] uppercase">
+            <Ruler className="w-3 h-3 text-[#CE967E]" />
             <span>ETHNIVA ATELIER SIZING GUIDE</span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-normal uppercase tracking-wider text-[#0A0A0A]">
+          <h2 className="font-serif text-2xl sm:text-3xl font-normal uppercase tracking-wider text-[#222222]">
             SIZE CHART
           </h2>
           <p className="text-[11px] text-stone-500 font-sans tracking-wide uppercase">
@@ -65,14 +65,14 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
         </div>
 
         {/* Unit & Tab Switcher Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#D8D2C7] pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E6E6E6] pb-4">
           <div className="flex gap-1.5">
             <button
               onClick={() => setActiveTab('all')}
               className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${
                 activeTab === 'all'
-                  ? 'bg-[#0A0A0A] text-white'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               All Specs
@@ -81,8 +81,8 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
               onClick={() => setActiveTab('shirt')}
               className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${
                 activeTab === 'shirt'
-                  ? 'bg-[#0A0A0A] text-white'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               Shirt / Top
@@ -91,20 +91,20 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
               onClick={() => setActiveTab('bottom')}
               className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${
                 activeTab === 'bottom'
-                  ? 'bg-[#0A0A0A] text-white'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               Bottom / Trouser
             </button>
           </div>
 
-          <div className="flex items-center gap-1 bg-[#FAF7F2] border border-[#D8D2C7] p-1 rounded-lg">
+          <div className="flex items-center gap-1 bg-[#FAFAFA] border border-[#E6E6E6] p-1 rounded-lg">
             <button
               onClick={() => setUnit('in')}
               className={`px-2.5 py-1 text-[11px] font-bold uppercase rounded-md transition-all ${
                 unit === 'in'
-                  ? 'bg-[#B08A4A] text-white shadow-xs'
+                  ? 'bg-[#CE967E] text-white shadow-xs'
                   : 'text-stone-600 hover:text-black'
               }`}
             >
@@ -114,7 +114,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
               onClick={() => setUnit('cm')}
               className={`px-2.5 py-1 text-[11px] font-bold uppercase rounded-md transition-all ${
                 unit === 'cm'
-                  ? 'bg-[#B08A4A] text-white shadow-xs'
+                  ? 'bg-[#CE967E] text-white shadow-xs'
                   : 'text-stone-600 hover:text-black'
               }`}
             >
@@ -126,30 +126,30 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
         {/* 1. SHIRT / TOP MEASUREMENTS TABLE */}
         {(activeTab === 'all' || activeTab === 'shirt') && (
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
+            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#222222]">
               <span>SHIRT / TOP SPECIFICATIONS</span>
               <span className="text-[10px] text-stone-400 font-normal">Unit: {unit.toUpperCase()}</span>
             </div>
 
-            <div className="overflow-x-auto border border-[#D8D2C7] rounded-xl shadow-2xs">
+            <div className="overflow-x-auto border border-[#E6E6E6] rounded-xl shadow-2xs">
               <table className="w-full text-left text-xs font-sans">
-                <thead className="bg-[#FAF7F2] text-[#0A0A0A] uppercase tracking-wider font-bold text-[11px] border-b border-[#D8D2C7]">
+                <thead className="bg-[#FAFAFA] text-[#222222] uppercase tracking-wider font-bold text-[11px] border-b border-[#E6E6E6]">
                   <tr>
                     <th className="py-3 px-3.5 sm:px-4">MEASUREMENT</th>
                     <th className="py-3 px-3 sm:px-4 text-center">XS</th>
                     <th className="py-3 px-3 sm:px-4 text-center">S</th>
-                    <th className="py-3 px-3 sm:px-4 text-center bg-[#B08A4A]/10 text-[#B08A4A]">M</th>
+                    <th className="py-3 px-3 sm:px-4 text-center bg-[#CE967E]/10 text-[#CE967E]">M</th>
                     <th className="py-3 px-3 sm:px-4 text-center">L</th>
                     <th className="py-3 px-3 sm:px-4 text-center">XL</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-700">
                   {shirtMeasurements.map((row, idx) => (
-                    <tr key={row.name} className={idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF7F2]/50'}>
-                      <td className="py-2.5 px-3.5 sm:px-4 font-semibold text-[#0A0A0A]">{row.name}</td>
+                    <tr key={row.name} className={idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]/50'}>
+                      <td className="py-2.5 px-3.5 sm:px-4 font-semibold text-[#222222]">{row.name}</td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.xs)}</td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.s)}</td>
-                      <td className="py-2.5 px-3 sm:px-4 text-center font-mono font-bold text-[#B08A4A] bg-[#B08A4A]/5">
+                      <td className="py-2.5 px-3 sm:px-4 text-center font-mono font-bold text-[#CE967E] bg-[#CE967E]/5">
                         {formatVal(row.m)}
                       </td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.l)}</td>
@@ -165,30 +165,30 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
         {/* 2. BOTTOM / TROUSER MEASUREMENTS TABLE */}
         {(activeTab === 'all' || activeTab === 'bottom') && (
           <div className="space-y-2.5 pt-2">
-            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
+            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#222222]">
               <span>BOTTOM / TROUSER SPECIFICATIONS</span>
               <span className="text-[10px] text-stone-400 font-normal">Unit: {unit.toUpperCase()}</span>
             </div>
 
-            <div className="overflow-x-auto border border-[#D8D2C7] rounded-xl shadow-2xs">
+            <div className="overflow-x-auto border border-[#E6E6E6] rounded-xl shadow-2xs">
               <table className="w-full text-left text-xs font-sans">
-                <thead className="bg-[#FAF7F2] text-[#0A0A0A] uppercase tracking-wider font-bold text-[11px] border-b border-[#D8D2C7]">
+                <thead className="bg-[#FAFAFA] text-[#222222] uppercase tracking-wider font-bold text-[11px] border-b border-[#E6E6E6]">
                   <tr>
                     <th className="py-3 px-3.5 sm:px-4">MEASUREMENT</th>
                     <th className="py-3 px-3 sm:px-4 text-center">XS</th>
                     <th className="py-3 px-3 sm:px-4 text-center">S</th>
-                    <th className="py-3 px-3 sm:px-4 text-center bg-[#B08A4A]/10 text-[#B08A4A]">M</th>
+                    <th className="py-3 px-3 sm:px-4 text-center bg-[#CE967E]/10 text-[#CE967E]">M</th>
                     <th className="py-3 px-3 sm:px-4 text-center">L</th>
                     <th className="py-3 px-3 sm:px-4 text-center">XL</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-700">
                   {bottomMeasurements.map((row, idx) => (
-                    <tr key={row.name} className={idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF7F2]/50'}>
-                      <td className="py-2.5 px-3.5 sm:px-4 font-semibold text-[#0A0A0A]">{row.name}</td>
+                    <tr key={row.name} className={idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]/50'}>
+                      <td className="py-2.5 px-3.5 sm:px-4 font-semibold text-[#222222]">{row.name}</td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.xs)}</td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.s)}</td>
-                      <td className="py-2.5 px-3 sm:px-4 text-center font-mono font-bold text-[#B08A4A] bg-[#B08A4A]/5">
+                      <td className="py-2.5 px-3 sm:px-4 text-center font-mono font-bold text-[#CE967E] bg-[#CE967E]/5">
                         {formatVal(row.m)}
                       </td>
                       <td className="py-2.5 px-3 sm:px-4 text-center font-mono">{formatVal(row.l)}</td>
@@ -202,10 +202,10 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
         )}
 
         {/* Helpful Measuring Advice Note */}
-        <div className="p-4 bg-[#FAF7F2] rounded-xl border border-[#D8D2C7] flex items-start gap-3 text-xs text-stone-600">
-          <Info className="w-4 h-4 text-[#B08A4A] flex-shrink-0 mt-0.5" />
+        <div className="p-4 bg-[#FAFAFA] rounded-xl border border-[#E6E6E6] flex items-start gap-3 text-xs text-stone-600">
+          <Info className="w-4 h-4 text-[#CE967E] flex-shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <p className="font-semibold text-[#0A0A0A]">Fitting &amp; Measurement Guide:</p>
+            <p className="font-semibold text-[#222222]">Fitting &amp; Measurement Guide:</p>
             <p className="text-[11px] leading-relaxed">
               All sizes are ready garment measurements. If your body measurements fall between sizes, we recommend selecting one size larger for a comfortable fit or choosing <strong>&ldquo;Custom Size&rdquo;</strong> during checkout.
             </p>
@@ -217,7 +217,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 bg-[#0A0A0A] hover:bg-[#B08A4A] text-white hover:text-black font-sans font-semibold text-xs uppercase tracking-[2px] transition-all rounded-xl cursor-pointer"
+            className="w-full py-3 bg-[#222222] hover:bg-[#CE967E] text-white hover:text-black font-sans font-semibold text-xs uppercase tracking-[2px] transition-all rounded-xl cursor-pointer"
           >
             Got It, Close Size Chart
           </button>

@@ -6,12 +6,12 @@ import { Filter, SlidersHorizontal, Sparkles } from 'lucide-react';
 
 export default function ShopLoading() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#FAF9F6] text-[#18181B]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#FCFCFC] text-[#222222]">
       {/* Header Banner Shimmer */}
-      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F6F1E7] to-[#FAF7F2] rounded-3xl p-8 sm:p-12 text-stone-900 relative overflow-hidden shadow-sm border border-[#E8E2D5]">
+      <div className="bg-gradient-to-r from-[#FAFAFA] via-[#F7F7F7] to-[#FAFAFA] rounded-3xl p-8 sm:p-12 text-stone-900 relative overflow-hidden shadow-sm border border-[#EAEAEA]">
         <div className="max-w-xl space-y-3 z-10 relative">
-          <div className="flex items-center gap-2 text-xs font-black text-[#C5A059] uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+          <div className="flex items-center gap-2 text-xs font-black text-[#CE967E] uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5 text-[#CE967E]" />
             <span>ETHNIVA CATALOG</span>
           </div>
           <div className="h-9 w-64 rounded-xl bg-stone-300/70 shimmer-effect" />
@@ -24,8 +24,8 @@ export default function ShopLoading() {
         {/* Left Filter Sidebar Shimmer */}
         <div className="space-y-6 lg:col-span-1">
           <div className="bg-white p-6 rounded-3xl border border-stone-200 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-xs font-extrabold text-[#111111] uppercase tracking-wider pb-3 border-b border-stone-100">
-              <Filter className="w-4 h-4 text-[#C5A059]" />
+            <div className="flex items-center gap-2 text-xs font-extrabold text-[#222222] uppercase tracking-wider pb-3 border-b border-stone-100">
+              <Filter className="w-4 h-4 text-[#CE967E]" />
               <span>Filter By Category</span>
             </div>
 

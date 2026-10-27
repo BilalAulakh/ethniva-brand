@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  /* Headings use the same clean sans as body text; the serif is kept only for the logo (.font-logo) */
+  --font-serif: var(--font-sans);
   --font-sans: 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 :root {
-  --color-black: #0A0A0A;
-  --color-dark: #171717;
-  --color-gold: #B08A4A;
-  --color-light-gold: #C9A86A;
-  --color-cream: #F7F5F0;
-  --color-secondary-cream: #EEEAE2;
+  --color-black: #222222;
+  --color-dark: #303030;
+  --color-gold: #CE967E;
+  --color-light-gold: #DDB4A2;
+  --color-cream: #FFFFFF;
+  --color-secondary-cream: #F5F0ED;
   --color-white: #FFFFFF;
-  --color-border: #D8D2C7;
+  --color-border: #E6E6E6;
   
   --font-heading: "Cormorant Garamond", serif;
   --font-body: "Inter", sans-serif;
@@ -21,42 +22,42 @@
 
 @layer base {
   body {
-    background-color: #F7F5F0;
-    color: #171717;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #FFFFFF;
+    color: #303030;
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  .font-serif, .font-brand-serif {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+  .font-brand-serif {
+    font-family: var(--font-sans), sans-serif;
   }
 }
 
 .bg-cream-primary {
-  background-color: #F7F5F0;
+  background-color: #FFFFFF;
 }
 
 .bg-cream-secondary {
-  background-color: #EEEAE2;
+  background-color: #F5F0ED;
 }
 
 .border-luxury {
-  border-color: #D8D2C7;
+  border-color: #E6E6E6;
 }
 
 .text-luxury-gold {
-  color: #B08A4A;
+  color: #CE967E;
 }
 
 .text-luxury-light-gold {
-  color: #C9A86A;
+  color: #DDB4A2;
 }
 
 /* Luxury Buttons - Sharp 0px to 2px max radius */
 .btn-primary-luxury {
-  background-color: #0A0A0A;
+  background-color: #222222;
   color: #FFFFFF;
-  border: 1px solid #0A0A0A;
+  border: 1px solid #222222;
   border-radius: 0px;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -72,15 +73,15 @@
 }
 
 .btn-primary-luxury:hover {
-  background-color: #B08A4A;
-  border-color: #B08A4A;
-  color: #0A0A0A;
+  background-color: #CE967E;
+  border-color: #CE967E;
+  color: #FFFFFF;
 }
 
 .btn-secondary-luxury {
   background-color: transparent;
-  color: #0A0A0A;
-  border: 1px solid #B08A4A;
+  color: #222222;
+  border: 1px solid #CE967E;
   border-radius: 0px;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -96,22 +97,22 @@
 }
 
 .btn-secondary-luxury:hover {
-  background-color: #0A0A0A;
-  border-color: #0A0A0A;
+  background-color: #222222;
+  border-color: #222222;
   color: #FFFFFF;
 }
 
 .btn-luxury-gold {
-  background-color: #0A0A0A;
+  background-color: #222222;
   color: #FFFFFF;
-  border: 1.5px solid #B08A4A;
+  border: 1.5px solid #CE967E;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 12.5px;
   letter-spacing: 2px;
   text-transform: uppercase;
   padding: 16px 28px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 0 12px rgba(176, 138, 74, 0.2);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 0 12px rgba(206,150,126, 0.2);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
@@ -120,17 +121,17 @@
 }
 
 .btn-luxury-gold:hover:not(:disabled) {
-  background-color: #B08A4A;
-  color: #0A0A0A;
-  border-color: #B08A4A;
-  box-shadow: 0 12px 30px -5px rgba(176, 138, 74, 0.45);
+  background-color: #CE967E;
+  color: #FFFFFF;
+  border-color: #CE967E;
+  box-shadow: 0 12px 30px -5px rgba(206,150,126, 0.45);
   transform: translateY(-1px);
 }
 
 .btn-outline-luxury {
   background-color: transparent;
-  color: #0A0A0A;
-  border: 1px solid #D8D2C7;
+  color: #222222;
+  border: 1px solid #E6E6E6;
   border-radius: 0px;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -145,8 +146,8 @@
 }
 
 .btn-outline-luxury:hover {
-  border-color: #0A0A0A;
-  background-color: #0A0A0A;
+  border-color: #222222;
+  background-color: #222222;
   color: #FFFFFF;
 }
 
@@ -169,7 +170,7 @@
   left: 0;
   width: 0%;
   height: 1.5px;
-  background-color: #B08A4A;
+  background-color: #CE967E;
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -178,7 +179,7 @@
 }
 
 .nav-link-luxury:hover {
-  color: #C9A86A;
+  color: #DDB4A2;
 }
 
 /* Shimmer Skeleton */
@@ -188,7 +189,7 @@
 }
 
 .shimmer-effect {
-  background: linear-gradient(90deg, #EEEAE2 25%, #F7F5F0 50%, #EEEAE2 75%);
+  background: linear-gradient(90deg, #F5F0ED 25%, #FFFFFF 50%, #F5F0ED 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -207,3 +208,52 @@
   animation-play-state: paused;
 }
 
+
+/* Logo wordmark keeps the brand serif */
+.font-logo {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+/* Solid accent button (square, like the reference store) */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #CE967E;
+  color: #FFFFFF;
+  border: 1px solid #CE967E;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-accent:hover {
+  background-color: #B9806A;
+  border-color: #B9806A;
+}
+
+/* Outline dark button */
+.btn-outline-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #222222;
+  border: 1.5px solid #222222;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-outline-dark:hover {
+  background-color: #222222;
+  color: #FFFFFF;
+}

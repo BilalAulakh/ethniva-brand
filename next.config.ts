@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Lets other devices on the local WiFi open the dev server (dev mode only)
+  allowedDevOrigins: ['192.168.100.25', '192.168.*.*'],
   reactStrictMode: true,
   poweredByHeader: false,
 };

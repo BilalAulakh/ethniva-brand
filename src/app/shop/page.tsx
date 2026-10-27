@@ -103,15 +103,15 @@ function ShopContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8 bg-[#FAF7F2] text-[#111111]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8 bg-[#FAFAFA] text-[#222222]">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F6F1E7] to-[#FAF7F2] rounded-3xl p-6 sm:p-10 text-stone-900 relative overflow-hidden shadow-2xs border border-[#E8E2D5]">
+      <div className="bg-gradient-to-r from-[#FAFAFA] via-[#F7F7F7] to-[#FAFAFA] rounded-3xl p-6 sm:p-10 text-stone-900 relative overflow-hidden shadow-2xs border border-[#EAEAEA]">
         <div className="max-w-xl space-y-2 z-10 relative">
-          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#C5A059] uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#CE967E] uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5 text-[#CE967E]" />
             <span>ETHNIVA CATALOG</span>
           </div>
-          <h1 className="font-brand-serif text-2xl sm:text-4xl font-bold text-[#111111] tracking-tight">
+          <h1 className="font-brand-serif text-2xl sm:text-4xl font-bold text-[#222222] tracking-tight">
             {selectedCategory ? selectedCategory.replace(/-/g, ' ').toUpperCase() : 'ALL DRESS DESIGNS'}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-normal">
@@ -125,8 +125,8 @@ function ShopContent() {
         {/* Left Filter Sidebar */}
         <div className="space-y-6 lg:col-span-1">
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-3 sm:space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#111111] uppercase tracking-wider pb-3 border-b border-stone-100">
-              <Filter className="w-4 h-4 text-[#C5A059]" />
+            <div className="flex items-center gap-2 text-xs font-bold text-[#222222] uppercase tracking-wider pb-3 border-b border-stone-100">
+              <Filter className="w-4 h-4 text-[#CE967E]" />
               <span>Filter By Category</span>
             </div>
 
@@ -135,7 +135,7 @@ function ShopContent() {
                 href="/shop"
                 className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                   !selectedCategory 
-                    ? 'bg-[#FAF7F2] text-[#C5A059] font-bold border border-[#C5A059]/40' 
+                    ? 'bg-[#FAFAFA] text-[#CE967E] font-bold border border-[#CE967E]/40' 
                     : 'text-stone-700 hover:bg-stone-50'
                 }`}
               >
@@ -149,7 +149,7 @@ function ShopContent() {
                   href={`/shop?category=${cat.slug}`}
                   className={`block px-3 py-2 rounded-xl transition-all font-semibold ${
                     selectedCategory === cat.slug 
-                      ? 'bg-[#FAF7F2] text-[#C5A059] font-bold border border-[#C5A059]/40' 
+                      ? 'bg-[#FAFAFA] text-[#CE967E] font-bold border border-[#CE967E]/40' 
                       : 'text-stone-700 hover:bg-stone-50'
                   }`}
                 >
@@ -175,7 +175,7 @@ function ShopContent() {
                 <Link
                   href={`/shop?${selectedCategory ? `category=${selectedCategory}&` : ''}sort=featured`}
                   className={`px-3 py-1.5 rounded-lg border font-bold ${
-                    selectedSort === 'featured' ? 'border-[#881337] bg-rose-50 text-[#881337]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
+                    selectedSort === 'featured' ? 'border-[#CE967E] bg-[#F5F0ED] text-[#B07A63]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
                   }`}
                 >
                   Featured
@@ -183,7 +183,7 @@ function ShopContent() {
                 <Link
                   href={`/shop?${selectedCategory ? `category=${selectedCategory}&` : ''}sort=price-low`}
                   className={`px-3 py-1.5 rounded-lg border font-bold ${
-                    selectedSort === 'price-low' ? 'border-[#881337] bg-rose-50 text-[#881337]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
+                    selectedSort === 'price-low' ? 'border-[#CE967E] bg-[#F5F0ED] text-[#B07A63]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
                   }`}
                 >
                   Price Low
@@ -191,7 +191,7 @@ function ShopContent() {
                 <Link
                   href={`/shop?${selectedCategory ? `category=${selectedCategory}&` : ''}sort=price-high`}
                   className={`px-3 py-1.5 rounded-lg border font-bold ${
-                    selectedSort === 'price-high' ? 'border-[#881337] bg-rose-50 text-[#881337]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
+                    selectedSort === 'price-high' ? 'border-[#CE967E] bg-[#F5F0ED] text-[#B07A63]' : 'border-stone-200 text-stone-600 hover:border-stone-300'
                   }`}
                 >
                   Price High
@@ -209,8 +209,8 @@ function ShopContent() {
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-stone-200 p-8 space-y-3 shadow-xs">
-              <Package className="w-12 h-12 text-[#C7A76C] mx-auto" />
-              <h3 className="text-lg font-bold text-[#18181B]">No Dress Designs Found</h3>
+              <Package className="w-12 h-12 text-[#CE967E] mx-auto" />
+              <h3 className="text-lg font-bold text-[#222222]">No Dress Designs Found</h3>
               <p className="text-xs text-stone-500">Try changing your search keywords or category filters.</p>
               <Link href="/shop" className="inline-block brand-btn-primary text-white text-xs font-bold px-6 py-2.5 rounded-full mt-2 shadow-md">
                 Reset All Filters

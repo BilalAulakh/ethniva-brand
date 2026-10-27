@@ -32,17 +32,17 @@ export const SizeGuideContent: React.FC = () => {
   return (
     <div className="space-y-10">
       {/* Overview Card */}
-      <div className="bg-white border border-[#D8D2C7] p-6 sm:p-8 rounded-2xl shadow-xs space-y-6">
+      <div className="bg-white border border-[#E6E6E6] p-6 sm:p-8 rounded-2xl shadow-xs space-y-6">
         
         {/* Controls Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#D8D2C7] pb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E6E6E6] pb-6">
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveTab('all')}
               className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
                 activeTab === 'all'
-                  ? 'bg-[#0A0A0A] text-white shadow-xs'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white shadow-xs'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               All Specifications
@@ -51,8 +51,8 @@ export const SizeGuideContent: React.FC = () => {
               onClick={() => setActiveTab('shirt')}
               className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
                 activeTab === 'shirt'
-                  ? 'bg-[#0A0A0A] text-white shadow-xs'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white shadow-xs'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               Shirt / Top
@@ -61,21 +61,21 @@ export const SizeGuideContent: React.FC = () => {
               onClick={() => setActiveTab('bottom')}
               className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
                 activeTab === 'bottom'
-                  ? 'bg-[#0A0A0A] text-white shadow-xs'
-                  : 'bg-[#FAF7F2] text-stone-600 hover:bg-[#EEEAE2]'
+                  ? 'bg-[#222222] text-white shadow-xs'
+                  : 'bg-[#FAFAFA] text-stone-600 hover:bg-[#F5F0ED]'
               }`}
             >
               Bottom / Trouser
             </button>
           </div>
 
-          <div className="flex items-center gap-1 bg-[#FAF7F2] border border-[#D8D2C7] p-1.5 rounded-xl self-end sm:self-auto">
+          <div className="flex items-center gap-1 bg-[#FAFAFA] border border-[#E6E6E6] p-1.5 rounded-xl self-end sm:self-auto">
             <span className="text-[11px] font-semibold text-stone-500 uppercase px-2">Unit:</span>
             <button
               onClick={() => setUnit('in')}
               className={`px-3 py-1.5 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer ${
                 unit === 'in'
-                  ? 'bg-[#B08A4A] text-white shadow-xs'
+                  ? 'bg-[#CE967E] text-white shadow-xs'
                   : 'text-stone-600 hover:text-black'
               }`}
             >
@@ -85,7 +85,7 @@ export const SizeGuideContent: React.FC = () => {
               onClick={() => setUnit('cm')}
               className={`px-3 py-1.5 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer ${
                 unit === 'cm'
-                  ? 'bg-[#B08A4A] text-white shadow-xs'
+                  ? 'bg-[#CE967E] text-white shadow-xs'
                   : 'text-stone-600 hover:text-black'
               }`}
             >
@@ -95,8 +95,8 @@ export const SizeGuideContent: React.FC = () => {
         </div>
 
         {/* Note on Picture Length */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FAF7F2] border border-[#D8D2C7] rounded-lg text-xs text-stone-600 font-sans">
-          <Info className="w-4 h-4 text-[#B08A4A] shrink-0" />
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg text-xs text-stone-600 font-sans">
+          <Info className="w-4 h-4 text-[#CE967E] shrink-0" />
           <span>Note: <strong>Length of the dress is as per the picture</strong> in catalog presentations.</span>
         </div>
 
@@ -105,38 +105,38 @@ export const SizeGuideContent: React.FC = () => {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-serif text-xl sm:text-2xl text-[#0A0A0A] font-normal">
+                <h2 className="font-serif text-xl sm:text-2xl text-[#222222] font-normal">
                   Shirt / Top Specifications
                 </h2>
                 <p className="text-xs text-stone-500 font-sans">Ready garment measurements across all standard sizes</p>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 bg-[#FAF7F2] border border-stone-200 rounded-md text-stone-600">
+              <span className="text-xs font-semibold px-2.5 py-1 bg-[#FAFAFA] border border-stone-200 rounded-md text-stone-600">
                 {unit.toUpperCase()}
               </span>
             </div>
 
-            <div className="overflow-x-auto border border-[#D8D2C7] rounded-xl">
+            <div className="overflow-x-auto border border-[#E6E6E6] rounded-xl">
               <table className="w-full text-left text-sm font-sans">
-                <thead className="bg-[#FAF7F2] text-[#0A0A0A] uppercase tracking-wider font-bold text-xs border-b border-[#D8D2C7]">
+                <thead className="bg-[#FAFAFA] text-[#222222] uppercase tracking-wider font-bold text-xs border-b border-[#E6E6E6]">
                   <tr>
                     <th className="py-3.5 px-4 sm:px-6">MEASUREMENT</th>
                     <th className="py-3.5 px-4 text-center">XS</th>
                     <th className="py-3.5 px-4 text-center">S</th>
-                    <th className="py-3.5 px-4 text-center bg-[#B08A4A]/10 text-[#B08A4A]">M (Standard)</th>
+                    <th className="py-3.5 px-4 text-center bg-[#CE967E]/10 text-[#CE967E]">M (Standard)</th>
                     <th className="py-3.5 px-4 text-center">L</th>
                     <th className="py-3.5 px-4 text-center">XL</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EEEAE2] text-stone-700">
+                <tbody className="divide-y divide-[#F5F0ED] text-stone-700">
                   {shirtMeasurements.map((row, idx) => (
-                    <tr key={row.name} className={`hover:bg-[#FAF7F2]/60 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF7F2]/30'}`}>
-                      <td className="py-3 px-4 sm:px-6 font-semibold text-[#0A0A0A]">
+                    <tr key={row.name} className={`hover:bg-[#FAFAFA]/60 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]/30'}`}>
+                      <td className="py-3 px-4 sm:px-6 font-semibold text-[#222222]">
                         <div>{row.name}</div>
                         <div className="text-[10px] text-stone-400 font-normal hidden sm:block">{row.desc}</div>
                       </td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.xs)}</td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.s)}</td>
-                      <td className="py-3 px-4 text-center font-mono font-bold text-[#B08A4A] bg-[#B08A4A]/5">
+                      <td className="py-3 px-4 text-center font-mono font-bold text-[#CE967E] bg-[#CE967E]/5">
                         {formatVal(row.m)}
                       </td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.l)}</td>
@@ -154,38 +154,38 @@ export const SizeGuideContent: React.FC = () => {
           <div className="space-y-3 pt-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-serif text-xl sm:text-2xl text-[#0A0A0A] font-normal">
+                <h2 className="font-serif text-xl sm:text-2xl text-[#222222] font-normal">
                   Bottom / Trouser Specifications
                 </h2>
                 <p className="text-xs text-stone-500 font-sans">Ready garment measurements across all standard sizes</p>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 bg-[#FAF7F2] border border-stone-200 rounded-md text-stone-600">
+              <span className="text-xs font-semibold px-2.5 py-1 bg-[#FAFAFA] border border-stone-200 rounded-md text-stone-600">
                 {unit.toUpperCase()}
               </span>
             </div>
 
-            <div className="overflow-x-auto border border-[#D8D2C7] rounded-xl">
+            <div className="overflow-x-auto border border-[#E6E6E6] rounded-xl">
               <table className="w-full text-left text-sm font-sans">
-                <thead className="bg-[#FAF7F2] text-[#0A0A0A] uppercase tracking-wider font-bold text-xs border-b border-[#D8D2C7]">
+                <thead className="bg-[#FAFAFA] text-[#222222] uppercase tracking-wider font-bold text-xs border-b border-[#E6E6E6]">
                   <tr>
                     <th className="py-3.5 px-4 sm:px-6">MEASUREMENT</th>
                     <th className="py-3.5 px-4 text-center">XS</th>
                     <th className="py-3.5 px-4 text-center">S</th>
-                    <th className="py-3.5 px-4 text-center bg-[#B08A4A]/10 text-[#B08A4A]">M (Standard)</th>
+                    <th className="py-3.5 px-4 text-center bg-[#CE967E]/10 text-[#CE967E]">M (Standard)</th>
                     <th className="py-3.5 px-4 text-center">L</th>
                     <th className="py-3.5 px-4 text-center">XL</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EEEAE2] text-stone-700">
+                <tbody className="divide-y divide-[#F5F0ED] text-stone-700">
                   {bottomMeasurements.map((row, idx) => (
-                    <tr key={row.name} className={`hover:bg-[#FAF7F2]/60 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF7F2]/30'}`}>
-                      <td className="py-3 px-4 sm:px-6 font-semibold text-[#0A0A0A]">
+                    <tr key={row.name} className={`hover:bg-[#FAFAFA]/60 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]/30'}`}>
+                      <td className="py-3 px-4 sm:px-6 font-semibold text-[#222222]">
                         <div>{row.name}</div>
                         <div className="text-[10px] text-stone-400 font-normal hidden sm:block">{row.desc}</div>
                       </td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.xs)}</td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.s)}</td>
-                      <td className="py-3 px-4 text-center font-mono font-bold text-[#B08A4A] bg-[#B08A4A]/5">
+                      <td className="py-3 px-4 text-center font-mono font-bold text-[#CE967E] bg-[#CE967E]/5">
                         {formatVal(row.m)}
                       </td>
                       <td className="py-3 px-4 text-center font-mono">{formatVal(row.l)}</td>
@@ -204,47 +204,47 @@ export const SizeGuideContent: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Card 1: How to Measure */}
-        <div className="bg-white border border-[#D8D2C7] p-6 sm:p-7 rounded-2xl space-y-4">
+        <div className="bg-white border border-[#E6E6E6] p-6 sm:p-7 rounded-2xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#D8D2C7] flex items-center justify-center text-[#B08A4A]">
+            <div className="w-10 h-10 rounded-full bg-[#FAFAFA] border border-[#E6E6E6] flex items-center justify-center text-[#CE967E]">
               <Ruler className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-normal text-[#0A0A0A]">How to Measure</h3>
+              <h3 className="font-serif text-lg font-normal text-[#222222]">How to Measure</h3>
               <p className="text-xs text-stone-500 font-sans">Garment measuring tips</p>
             </div>
           </div>
 
           <ul className="space-y-3 text-xs text-stone-600 font-sans leading-relaxed">
             <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-[#B08A4A] shrink-0 mt-0.5" />
+              <Check className="w-4 h-4 text-[#CE967E] shrink-0 mt-0.5" />
               <span><strong>Chest / Bust:</strong> Measure flat across the garment from armhole to armhole, then double for total circumference.</span>
             </li>
             <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-[#B08A4A] shrink-0 mt-0.5" />
+              <Check className="w-4 h-4 text-[#CE967E] shrink-0 mt-0.5" />
               <span><strong>Shoulder:</strong> Measure straight across the back from the edge of one shoulder seam to the other.</span>
             </li>
             <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-[#B08A4A] shrink-0 mt-0.5" />
+              <Check className="w-4 h-4 text-[#CE967E] shrink-0 mt-0.5" />
               <span><strong>Sleeves:</strong> Measure from the top shoulder seam straight down to the cuff edge.</span>
             </li>
             <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-[#B08A4A] shrink-0 mt-0.5" />
+              <Check className="w-4 h-4 text-[#CE967E] shrink-0 mt-0.5" />
               <span><strong>Trouser Length:</strong> Measure from the top edge of the waistband down along the side seam to the bottom hem.</span>
             </li>
           </ul>
         </div>
 
         {/* Card 2: Custom Made to Measure */}
-        <div className="bg-[#0A0A0A] text-white p-6 sm:p-7 rounded-2xl space-y-4 flex flex-col justify-between">
+        <div className="bg-[#222222] text-white p-6 sm:p-7 rounded-2xl space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#C5A059]">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#CE967E]">
                 <Scissors className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="font-serif text-lg font-normal text-white">Custom Stitching Available</h3>
-                <p className="text-xs text-[#C5A059] font-sans">Made exactly to your measurements</p>
+                <p className="text-xs text-[#CE967E] font-sans">Made exactly to your measurements</p>
               </div>
             </div>
 
@@ -255,7 +255,7 @@ export const SizeGuideContent: React.FC = () => {
 
           <Link
             href="/shop"
-            className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#B08A4A] hover:bg-white text-black font-sans font-bold text-xs uppercase tracking-[2px] rounded-xl transition-all"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#CE967E] hover:bg-white text-black font-sans font-bold text-xs uppercase tracking-[2px] rounded-xl transition-all"
           >
             <span>Explore Collection</span>
             <ArrowRight className="w-4 h-4" />

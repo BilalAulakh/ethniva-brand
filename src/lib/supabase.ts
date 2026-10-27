@@ -1031,6 +1031,48 @@ export async function getOrders(): Promise<Order[]> {
   return localOrders;
 }
 
+export interface RecentPurchase {
+  product_id: string;
+  title: string;
+  image: string;
+  city: string;
+  created_at: string;
+}
+
+// Real recent purchases for the storefront "someone purchased" popup.
+// Only reads product, city and time — never customer name, phone or address.
+export async function getRecentPurchases(days = 14, limit = 15): Promise<RecentPurchase[]> {
+  try {
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supabase
+      .from('orders')
+      .select('items, city, created_at, status')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return [];
+
+    const purchases: RecentPurchase[] = [];
+    for (const row of data as { items: OrderItem[]; city: string; created_at: string; status?: string }[]) {
+      if ((row.status || '').toLowerCase() === 'cancelled') continue;
+      const item = Array.isArray(row.items) ? row.items[0] : undefined;
+      if (!item?.title || !row.created_at) continue;
+      purchases.push({
+        product_id: item.product_id,
+        title: item.title,
+        image: item.image,
+        city: (row.city || '').trim(),
+        created_at: row.created_at,
+      });
+    }
+    return purchases;
+  } catch (err) {
+    console.warn('getRecentPurchases notice:', err);
+    return [];
+  }
+}
+
 export async function updateOrderStatus(orderId: string, status: string): Promise<{ success: boolean }> {
   // 1. Update in Supabase
   try {

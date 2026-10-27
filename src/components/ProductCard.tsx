@@ -53,7 +53,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Product Image Box */}
-        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#EEEAE2] mb-3">
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F5F0ED] mb-3.5">
           <Link href={`/product/${product.slug}`} className="block w-full h-full relative">
             {(() => {
               const currentSrc = (isHovered && product.images?.[1]) ? product.images[1] : (product.images?.[0] || '');
@@ -72,68 +72,77 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             })()}
           </Link>
 
-          {/* Optional Subtle Badge */}
-          {product.is_new && (
-            <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
-              <span className="bg-[#0A0A0A] text-white text-[9px] font-sans font-medium uppercase tracking-[1.5px] px-2 py-0.5">
-                NEW
+          {/* Discount badge (round, accent) */}
+          {discountPercent > 0 && (
+            <div className="absolute top-3 left-3 z-10 pointer-events-none">
+              <span className="w-10 h-10 rounded-full bg-[#CE967E] text-white text-[10px] font-medium flex items-center justify-center">
+                -{discountPercent}%
+              </span>
+            </div>
+          )}
+          {discountPercent === 0 && product.is_new && (
+            <div className="absolute top-3 left-3 z-10 pointer-events-none">
+              <span className="bg-white text-[#222222] text-[10px] font-medium uppercase tracking-[0.08em] px-2.5 py-1">
+                New
               </span>
             </div>
           )}
 
-          {/* Top Right Wishlist Minimal Outline Heart */}
+          {/* Wishlist heart */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-2.5 right-2.5 z-10 p-1.5 transition-all text-[#0A0A0A] hover:text-[#B08A4A]`}
+            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-[#222222] hover:text-[#CE967E] shadow-sm transition-colors"
             title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
           >
-            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-[#B08A4A] text-[#B08A4A]' : 'stroke-[1.5]'}`} />
+            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-[#CE967E] text-[#CE967E]' : 'stroke-[1.5]'}`} />
           </button>
 
-          {/* Quick Add Overlay on Hover */}
+          {/* Quick Add on hover */}
           <div className="absolute bottom-0 left-0 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               onClick={handleQuickBuy}
               disabled={isAddingToCart}
-              className="w-full bg-[#0A0A0A]/90 backdrop-blur-sm hover:bg-[#B08A4A] text-white hover:text-[#0A0A0A] font-sans font-medium text-[10px] uppercase tracking-[2px] py-3 transition-colors flex items-center justify-center gap-1.5"
+              className="w-full bg-[#CE967E] hover:bg-[#B9806A] text-white font-medium text-[11px] uppercase tracking-[0.1em] py-3 transition-colors flex items-center justify-center gap-1.5"
             >
               {isAddingToCart ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>ADDING...</span>
+                  <span>Adding...</span>
                 </>
               ) : (
-                <span>QUICK ADD</span>
+                <span>Quick Add</span>
               )}
             </button>
           </div>
         </div>
 
-        {/* Product Information */}
-        <div className="space-y-1 text-left font-sans">
-          <Link href={`/product/${product.slug}`} className="block group-hover:text-[#B08A4A] transition-colors">
-            <h3 className="text-xs sm:text-[13px] font-medium text-[#171717] tracking-[0.5px] uppercase line-clamp-1">
+        {/* Product Information (centered) */}
+        <div className="space-y-1.5 text-center px-1">
+          <Link href={`/product/${product.slug}`} className="block">
+            <h3 className="text-[13px] sm:text-[14px] text-[#222222] tracking-[0.03em] line-clamp-1 hover:text-[#CE967E] transition-colors">
               {product.title}
             </h3>
           </Link>
 
+          {/* Stars only when the product has a real rating */}
+          {typeof product.rating === 'number' && product.rating > 0 && (
+            <div className="flex items-center justify-center gap-0.5 text-[#F2B600]">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`w-3 h-3 ${i < Math.round(product.rating || 0) ? 'fill-current' : 'text-[#CCCCCC]'}`} />
+              ))}
+            </div>
+          )}
+
           {/* Price */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-[13px] font-medium text-[#171717]">
-              PKR {product.price.toLocaleString()}
-            </span>
+          <div className="flex flex-col items-center gap-0.5">
             {product.compare_at_price && (
-              <span className="text-[11px] text-neutral-400 line-through">
+              <span className="text-[12px] text-[#888888] line-through">
                 PKR {product.compare_at_price.toLocaleString()}
               </span>
             )}
-          </div>
-
-          {/* Color Swatches */}
-          <div className="flex items-center gap-1.5 pt-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0A0A0A] border border-neutral-300 inline-block cursor-pointer" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#EEEAE2] border border-neutral-300 inline-block cursor-pointer" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#B08A4A] border border-neutral-300 inline-block cursor-pointer" />
+            <span className="text-[13px] sm:text-[14px] font-semibold text-[#CE967E] tracking-[0.02em]">
+              PKR {product.price.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
@@ -153,9 +162,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
             <div className="space-y-4 flex flex-col justify-between">
               <div>
-                <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest">{product.fabric}</span>
-                <h3 className="font-brand-serif text-lg font-extrabold text-[#111111]">{product.title}</h3>
-                <div className="text-base font-black text-[#111111] mt-1">PKR {product.price.toLocaleString()}</div>
+                <span className="text-[10px] font-black text-[#CE967E] uppercase tracking-widest">{product.fabric}</span>
+                <h3 className="font-brand-serif text-lg font-extrabold text-[#222222]">{product.title}</h3>
+                <div className="text-base font-black text-[#222222] mt-1">PKR {product.price.toLocaleString()}</div>
                 <p className="text-xs text-stone-600 mt-2 line-clamp-3 leading-relaxed">{product.description}</p>
               </div>
 
@@ -167,7 +176,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                       key={sz}
                       onClick={() => setSelectedSize(sz)}
                       className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
-                        selectedSize === sz ? 'bg-[#111111] text-[#C5A059] border-[#111111] shadow-xs font-bold' : 'bg-white text-stone-700 border-stone-200 hover:border-[#C5A059]'
+                        selectedSize === sz ? 'bg-[#222222] text-[#CE967E] border-[#222222] shadow-xs font-bold' : 'bg-white text-stone-700 border-stone-200 hover:border-[#CE967E]'
                       }`}
                     >
                       {sz}
