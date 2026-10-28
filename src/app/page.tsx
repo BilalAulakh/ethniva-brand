@@ -25,17 +25,22 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
   );
 }
 
-// Per-photo crop for the hero (how far down the photo to show). Default: top.
-const HERO_IMAGE_POSITION: Record<string, string> = {
-  'senroa-white': 'center 30%',
-};
+// Hero slider: one product per slide, whole photo shown (head to toe).
+// Hero look:
+//   1 = blurred copy of the same photo fills the width, whole photo in the middle, text on the left
+//   2 = plain beige background, text left, whole photo right
+const HERO_STYLE: 1 | 2 = 2;
+
+// Hero: first 3 Dhanak (Replica) designs, then these other designs.
+// Change slugs here to change the hero.
+const HERO_DHANAK_COUNT = 3;
+const HERO_OTHER_SLUGS = ['heena', 'senroa-white', 'elva', 'moon-light', 'gul-green'];
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   // Load live data from Supabase / database
   useEffect(() => {
@@ -72,33 +77,32 @@ export default function HomePage() {
   // New Arrivals shows the Replica articles (4 on home, rest via VIEW ALL)
   const replicaProducts = products.filter(p => (p.category || '').trim().toLowerCase() === 'replica');
 
-  // Flagship hero products
-  const preferredHeroSlugs = ['heena', 'elva', 'senroa-white', 'moon-light'];
-  const preferredHeroes = preferredHeroSlugs
-    .map(slug => products.find(p => p.slug === slug))
-    .filter((p): p is Product => !!p && !!p.images?.length);
+  // Hero products
+  const heroProducts: Product[] = [
+    ...replicaProducts.filter(p => !!p.images?.length).slice(0, HERO_DHANAK_COUNT),
+    ...HERO_OTHER_SLUGS
+      .map(slug => products.find(p => p.slug === slug))
+      .filter((p): p is Product => !!p && !!p.images?.length),
+  ];
+  const heroCount = heroProducts.length;
+  const currentHero = heroProducts[activeSlide] || heroProducts[0];
 
-  const heroProducts = preferredHeroes.length >= 3
-    ? preferredHeroes
-    : products.filter(p => p.images && p.images.length > 0).slice(0, 4);
-
-  // Auto-advance slides if hero products exist
+  // Auto-advance every 6s (always runs; restarts after a manual arrow click)
   useEffect(() => {
-    if (isPaused || heroProducts.length <= 1) return;
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % heroProducts.length);
+    if (heroCount <= 1) return;
+    const timer = setTimeout(() => {
+      setActiveSlide((prev) => (prev + 1) % heroCount);
     }, 6000);
-    return () => clearInterval(timer);
-  }, [isPaused, heroProducts.length]);
+    return () => clearTimeout(timer);
+  }, [activeSlide, heroCount]);
 
   const nextSlide = () => {
-    if (heroProducts.length > 0) setActiveSlide((prev) => (prev + 1) % heroProducts.length);
+    if (heroCount > 0) setActiveSlide((prev) => (prev + 1) % heroCount);
   };
   const prevSlide = () => {
-    if (heroProducts.length > 0) setActiveSlide((prev) => (prev - 1 + heroProducts.length) % heroProducts.length);
+    if (heroCount > 0) setActiveSlide((prev) => (prev - 1 + heroCount) % heroCount);
   };
 
-  const currentHeroProduct = heroProducts[activeSlide] || heroProducts[0];
 
   // Two promo banners + "who we are" image, picked from real products
   const withImages = products.filter(p => p.images && p.images.length > 0);
@@ -108,11 +112,11 @@ export default function HomePage() {
   return (
     <div className="bg-white text-[#222222] font-sans overflow-x-hidden">
 
-      {/* 1. HERO: full-width image slider with text on top */}
+      {HERO_STYLE === 1 ? (
+        <>
+      {/* 1. HERO (style 1): blurred same-photo background, whole photo center, text left */}
       <section
-        className="relative w-full h-[calc(100svh-120px)] min-h-[520px] max-h-[900px] overflow-hidden bg-[#EFE7E2]"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        className="relative w-full h-[calc(100svh-120px)] min-h-[560px] max-h-[860px] overflow-hidden bg-[#2A2422]"
       >
         {heroProducts.map((prod, idx) => (
           <div
@@ -121,25 +125,41 @@ export default function HomePage() {
               activeSlide === idx ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           >
-            {prod.images?.[0] && (
-              <Image
-                src={prod.images[0]}
-                alt={prod.title}
-                fill
-                priority={idx === 0}
-                sizes="100vw"
-                className="object-cover"
-                style={{ objectPosition: HERO_IMAGE_POSITION[prod.slug] || 'center top' }}
-              />
-            )}
+            {/* Blurred copy fills the full width */}
+            <Image
+              src={prod.images[0]}
+              alt=""
+              aria-hidden
+              fill
+              sizes="100vw"
+              className="object-cover scale-110 blur-2xl"
+            />
+            <div className="absolute inset-0 bg-black/25" />
+            {/* Whole photo, head to toe */}
+            <Link
+              href={`/product/${prod.slug}`}
+              className="absolute inset-y-0 py-5 right-0 left-0 lg:left-[30%] lg:right-[6%]"
+              aria-label={prod.title}
+            >
+              <div className="relative w-full h-full">
+                <Image
+                  src={prod.images[0]}
+                  alt={prod.title}
+                  fill
+                  priority={idx === 0}
+                  sizes="(max-width: 1024px) 100vw, 64vw"
+                  className="object-contain object-center drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                />
+              </div>
+            </Link>
           </div>
         ))}
 
-        {/* Soft dark fade so white text stays readable */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
+        {/* Left fade so the text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none lg:hidden" />
 
-        {heroProducts.length > 1 && (
+        {heroCount > 1 && (
           <>
             <button
               onClick={prevSlide}
@@ -159,58 +179,171 @@ export default function HomePage() {
         )}
 
         {/* Text */}
-        <div className="relative z-10 h-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-20 flex items-end pb-14 sm:pb-20 pointer-events-none">
-          <div className="space-y-5 max-w-lg text-white pointer-events-auto">
-            <span className="block text-[11px] sm:text-xs tracking-[0.14em] uppercase text-white/90">
-              {currentHeroProduct?.category ? `${currentHeroProduct.category} Collection` : 'New Arrival'}
-            </span>
-            <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] tracking-[0.02em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
-              {currentHeroProduct ? currentHeroProduct.title : 'Elevate Your Style'}
-            </h1>
-            {currentHeroProduct && (
+        <div className="relative z-10 h-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-20 flex items-end lg:items-center pb-10 lg:pb-0 pointer-events-none">
+          {currentHero && (
+            <div key={currentHero.id} className="space-y-5 max-w-sm text-white pointer-events-auto animate-fade-in">
+              <span className="block text-[11px] sm:text-xs tracking-[0.14em] uppercase text-white/90">
+                {currentHero.category} Collection
+              </span>
+              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.08] tracking-[0.02em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
+                {currentHero.title}
+              </h1>
               <div className="flex items-baseline gap-3">
-                {currentHeroProduct.compare_at_price && (
-                  <span className="text-sm text-white/75 line-through">
-                    PKR {currentHeroProduct.compare_at_price.toLocaleString()}
+                {currentHero.compare_at_price && (
+                  <span className="text-sm text-white/70 line-through">
+                    PKR {currentHero.compare_at_price.toLocaleString()}
                   </span>
                 )}
-                <span className="text-xl font-semibold text-white">
-                  PKR {currentHeroProduct.price.toLocaleString()}
-                </span>
+                <span className="text-xl font-semibold">PKR {currentHero.price.toLocaleString()}</span>
+              </div>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Link href={`/product/${currentHero.slug}`} className="btn-accent">Shop Now</Link>
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center justify-center border-[1.5px] border-white text-white hover:bg-white hover:text-[#222222] text-xs font-medium tracking-[0.08em] uppercase px-7 py-[11px] transition-colors"
+                >
+                  View All
+                </Link>
+              </div>
+              {heroCount > 1 && (
+                <div className="flex items-center gap-2 pt-2">
+                  {heroProducts.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveSlide(idx)}
+                      className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${
+                        activeSlide === idx ? 'w-6 bg-[#CE967E]' : 'w-2 bg-white/60 hover:bg-white'
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+        </>
+      ) : (
+        <>
+      {/* 1. HERO (style 2): beige panel, text left, one full photo (head to toe) right */}
+      <section
+        className="relative w-full bg-[#F5F0ED] overflow-hidden"
+      >
+        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 lg:h-[calc(100svh-120px)] lg:min-h-[560px] lg:max-h-[860px]">
+
+          {/* Photo (shown first on mobile) */}
+          <div className="relative order-1 lg:order-2 h-[72svh] min-h-[440px] lg:h-full">
+            {loading && heroCount === 0 && (
+              <div className="absolute inset-0 py-4 lg:py-6 flex justify-center">
+                <div className="h-full aspect-[4/5] max-w-full shimmer-beige" />
               </div>
             )}
-            <div className="flex flex-wrap gap-3 pt-1">
+            {heroProducts.map((prod, idx) => (
               <Link
-                href={currentHeroProduct ? `/product/${currentHeroProduct.slug}` : '/shop'}
-                className="btn-accent"
+                key={prod.id}
+                href={`/product/${prod.slug}`}
+                className={`absolute inset-0 py-4 lg:py-6 transition-opacity duration-1000 ease-in-out ${
+                  activeSlide === idx ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}
+                aria-label={prod.title}
               >
-                Shop Now
-              </Link>
-              <Link
-                href="/shop"
-                className="inline-flex items-center justify-center border-[1.5px] border-white text-white hover:bg-white hover:text-[#222222] text-xs font-medium tracking-[0.08em] uppercase px-7 py-[11px] transition-colors"
-              >
-                View All
-              </Link>
-            </div>
-
-            {heroProducts.length > 1 && (
-              <div className="flex items-center gap-2 pt-2">
-                {heroProducts.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveSlide(idx)}
-                    className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${
-                      activeSlide === idx ? 'w-6 bg-[#CE967E]' : 'w-2 bg-white/60 hover:bg-white'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
+                <div className="relative w-full h-full">
+                  <Image
+                    src={prod.images[0]}
+                    alt={prod.title}
+                    fill
+                    priority={idx === 0}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-contain object-center drop-shadow-[0_18px_30px_rgba(0,0,0,0.12)]"
                   />
-                ))}
+                </div>
+              </Link>
+            ))}
+
+            {heroCount > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#222222] flex items-center justify-center shadow-md transition-colors cursor-pointer"
+                  aria-label="Previous Slide"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-3 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#222222] flex items-center justify-center shadow-md transition-colors cursor-pointer"
+                  aria-label="Next Slide"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Text */}
+          <div className="order-2 lg:order-1 flex items-center px-6 sm:px-10 lg:px-16 xl:px-20 py-10 lg:py-0">
+            {currentHero ? (
+              <div className="space-y-5 max-w-md">
+                {/* Only this part changes (and fades) with each slide */}
+                <div key={currentHero.id} className="min-h-[220px] sm:min-h-[240px] lg:min-h-[260px] flex flex-col justify-end gap-5 animate-fade-in">
+                <span className="block text-[11px] sm:text-xs tracking-[0.14em] text-[#222222] uppercase">
+                  {currentHero.category} Collection
+                </span>
+                <h1 className={`font-bold leading-[1.12] tracking-[0.02em] text-[#222222] uppercase ${
+                  currentHero.title.length > 20 ? 'text-2xl sm:text-3xl lg:text-[32px]' : 'text-4xl sm:text-5xl lg:text-[56px]'
+                }`}>
+                  {currentHero.title}
+                </h1>
+                <div className="flex items-baseline gap-3">
+                  {currentHero.compare_at_price && (
+                    <span className="text-sm text-[#888888] line-through">
+                      PKR {currentHero.compare_at_price.toLocaleString()}
+                    </span>
+                  )}
+                  <span className="text-xl font-semibold text-[#CE967E]">
+                    PKR {currentHero.price.toLocaleString()}
+                  </span>
+                </div>
+                {/* Product's own fabric line (falls back to a general line) */}
+                <p className="text-[13px] text-[#666666] leading-[1.9] tracking-[0.02em] line-clamp-2">
+                  {currentHero.fabric?.trim() || 'Thoughtful craftsmanship, premium fabrics, and contemporary silhouettes.'}
+                </p>
+                </div>
+                <div className="flex flex-wrap gap-3 pt-1">
+                  <Link href={`/product/${currentHero.slug}`} className="btn-accent">Shop Now</Link>
+                  <Link href="/shop" className="btn-outline-dark">View All</Link>
+                </div>
+
+              </div>
+            ) : loading ? (
+              <div className="w-full max-w-md space-y-5" aria-label="Loading">
+                <div className="h-3 w-40 shimmer-beige" />
+                <div className="space-y-3">
+                  <div className="h-10 w-full shimmer-beige" />
+                  <div className="h-10 w-3/4 shimmer-beige" />
+                </div>
+                <div className="h-6 w-32 shimmer-beige" />
+                <div className="space-y-2">
+                  <div className="h-3 w-full shimmer-beige" />
+                  <div className="h-3 w-5/6 shimmer-beige" />
+                </div>
+                <div className="flex gap-3 pt-1">
+                  <div className="h-[46px] w-36 shimmer-beige" />
+                  <div className="h-[46px] w-32 shimmer-beige" />
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <h1 className="text-4xl font-bold text-[#222222] uppercase">Elevate Your Style</h1>
+                <Link href="/shop" className="btn-accent">Explore Shop</Link>
               </div>
             )}
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* 2. BENEFITS STRIP (accent bar) */}
       <section className="bg-[#CE967E] text-white">
