@@ -14,18 +14,9 @@ import {
 import { 
   getProducts, getOrders, addProduct, updateProduct, deleteProduct, deleteAllProducts,
   updateOrderStatus, deleteOrder, deleteAllOrders, getStoredProducts, checkSupabaseHealth,
-  seedProductsToSupabase, Product, Order 
+  seedProductsToSupabase, verifyAdminLogin, changeAdminCredentials, Product, Order
 } from '@/lib/supabase';
 import { TableSkeleton, OrderSkeleton, ShimmerBox } from '@/components/Shimmer';
-
-// Admin Official Credentials
-const ADMIN_CREDENTIALS = {
-  email: 'ethnivabrand@gmail.com',
-  altEmail: 'admin@ethniva.com',
-  password: 'ethniva2026',
-  altPassword: 'admin12345',
-  pin: '7860'
-};
 
 export default function AdminDashboardPage() {
   // Authentication State
@@ -36,6 +27,16 @@ export default function AdminDashboardPage() {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Change Login Credentials Modal State
+  const [credModalOpen, setCredModalOpen] = useState(false);
+  const [credCurrentPassword, setCredCurrentPassword] = useState('');
+  const [credNewEmail, setCredNewEmail] = useState('');
+  const [credNewPassword, setCredNewPassword] = useState('');
+  const [credConfirmPassword, setCredConfirmPassword] = useState('');
+  const [credShowPasswords, setCredShowPasswords] = useState(false);
+  const [credError, setCredError] = useState('');
+  const [credSaving, setCredSaving] = useState(false);
 
   // Tab State: 'orders' | 'products' | 'analytics'
   const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'analytics'>('products');
@@ -222,29 +223,69 @@ export default function AdminDashboardPage() {
     setLoginError('');
     setIsLoggingIn(true);
 
-    // Authentication delay for UX feedback
-    await new Promise(resolve => setTimeout(resolve, 500));
+    const result = await verifyAdminLogin(loginEmail.trim(), loginPassword.trim());
 
-    const cleanEmail = loginEmail.trim().toLowerCase();
-    const cleanPass = loginPassword.trim();
-
-    if (
-      (cleanEmail === ADMIN_CREDENTIALS.email || cleanEmail === ADMIN_CREDENTIALS.altEmail || cleanEmail === 'admin' || cleanEmail === 'ethniva' || cleanEmail === 'admin@ethniva.com' || cleanEmail === 'zehra' || cleanEmail === 'zehrastudio3322@gmail.com') &&
-      (cleanPass === ADMIN_CREDENTIALS.password || cleanPass === ADMIN_CREDENTIALS.altPassword || cleanPass === ADMIN_CREDENTIALS.pin || cleanPass === 'zehra2026')
-    ) {
+    if (result.ok) {
       setIsAuthenticated(true);
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
       showFlash('Welcome, Administrator! Authenticated successfully.');
     } else {
-      setLoginError('Invalid credentials. Please use the demo credentials provided below.');
+      setLoginError(result.error || 'Invalid email or password.');
     }
     setIsLoggingIn(false);
   };
 
-  // Quick 1-Click Login Helper
-  const fillDemoCredentials = () => {
-    setLoginEmail(ADMIN_CREDENTIALS.email);
-    setLoginPassword(ADMIN_CREDENTIALS.password);
+  // Change Login Credentials
+  const resetCredForm = () => {
+    setCredCurrentPassword('');
+    setCredNewEmail('');
+    setCredNewPassword('');
+    setCredConfirmPassword('');
+    setCredShowPasswords(false);
+    setCredError('');
+  };
+
+  const closeCredModal = () => {
+    if (credSaving) return;
+    setCredModalOpen(false);
+    resetCredForm();
+  };
+
+  const handleChangeCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCredError('');
+
+    if (credNewPassword.length < 8) {
+      setCredError('New password must be at least 8 characters.');
+      return;
+    }
+    if (credNewPassword !== credConfirmPassword) {
+      setCredError('New password and confirmation do not match.');
+      return;
+    }
+
+    setCredSaving(true);
+    const result = await changeAdminCredentials(credCurrentPassword, credNewEmail.trim(), credNewPassword);
+    setCredSaving(false);
+
+    switch (result) {
+      case 'ok':
+        setCredModalOpen(false);
+        resetCredForm();
+        showFlash('Login credentials updated. Use the new ones next time you sign in.');
+        break;
+      case 'invalid_current':
+        setCredError('Current password is incorrect.');
+        break;
+      case 'invalid_email':
+        setCredError('Please enter a valid email address.');
+        break;
+      case 'weak_password':
+        setCredError('New password must be at least 8 characters.');
+        break;
+      default:
+        setCredError('Could not update credentials. Please try again.');
+    }
   };
 
   // Handle Logout
@@ -757,6 +798,15 @@ export default function AdminDashboardPage() {
               <span>View Storefront</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
+
+            <button
+              onClick={() => setCredModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl border border-stone-200 hover:border-[#881337] text-xs font-bold text-stone-700 hover:text-[#881337] flex items-center gap-1.5 transition-all bg-white shadow-2xs"
+              title="Change login email / password"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Change Login</span>
+            </button>
 
             <button
               onClick={handleLogout}
@@ -1625,6 +1675,132 @@ export default function AdminDashboardPage() {
                   ) : (
                     <span>{editingProduct ? 'Save Changes' : 'Publish Article'}</span>
                   )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* CHANGE LOGIN CREDENTIALS MODAL                                 */}
+      {/* ------------------------------------------------------------- */}
+      {credModalOpen && (
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl border border-[#E8DFC8] shadow-2xl max-w-md w-full p-6 sm:p-7 space-y-5 relative overflow-hidden animate-scale-in">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#C7A76C] via-[#881337] to-[#C7A76C]" />
+
+            <button
+              type="button"
+              onClick={closeCredModal}
+              disabled={credSaving}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center transition-colors disabled:opacity-40"
+              title="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="text-center space-y-2 pt-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#881337] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#881337]/20">
+                <KeyRound className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#18181B]">Change Login Credentials</h3>
+              <p className="text-xs text-stone-500 max-w-xs mx-auto">
+                Update the email and password used to sign in to this admin panel.
+              </p>
+            </div>
+
+            {credError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+                <span>{credError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleChangeCredentials} className="space-y-3.5">
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                    Current Password
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setCredShowPasswords(!credShowPasswords)}
+                    className="text-[10px] text-[#881337] font-semibold hover:underline"
+                  >
+                    {credShowPasswords ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                <input
+                  type={credShowPasswords ? 'text' : 'password'}
+                  required
+                  autoComplete="current-password"
+                  value={credCurrentPassword}
+                  onChange={e => setCredCurrentPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                  New Email <span className="normal-case font-medium text-stone-400">(leave empty to keep current)</span>
+                </label>
+                <input
+                  type="email"
+                  autoComplete="username"
+                  value={credNewEmail}
+                  onChange={e => setCredNewEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                  New Password <span className="normal-case font-medium text-stone-400">(min. 8 characters)</span>
+                </label>
+                <input
+                  type={credShowPasswords ? 'text' : 'password'}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={credNewPassword}
+                  onChange={e => setCredNewPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
+                  Confirm New Password
+                </label>
+                <input
+                  type={credShowPasswords ? 'text' : 'password'}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={credConfirmPassword}
+                  onChange={e => setCredConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#881337] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={closeCredModal}
+                  disabled={credSaving}
+                  className="flex-1 py-3 rounded-xl border border-stone-200 text-xs font-bold text-stone-700 hover:bg-stone-50 transition-all disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={credSaving}
+                  className="flex-1 py-3 bg-[#881337] hover:bg-[#6b0f2b] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-[#881337]/30 flex items-center justify-center gap-2 disabled:opacity-75"
+                >
+                  {credSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  <span>{credSaving ? 'Saving...' : 'Save'}</span>
                 </button>
               </div>
             </form>

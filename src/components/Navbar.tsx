@@ -10,6 +10,7 @@ import {
   Loader2, Lock, KeyRound, Eye, EyeOff, Phone
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { verifyAdminLogin } from '@/lib/supabase';
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
@@ -43,15 +44,10 @@ export const Navbar: React.FC = () => {
     e.preventDefault();
     setAdminLoginError('');
     setIsAdminLoggingIn(true);
-    await new Promise(r => setTimeout(r, 450));
 
-    const cleanEmail = adminEmail.trim().toLowerCase();
-    const cleanPass = adminPassword.trim();
+    const result = await verifyAdminLogin(adminEmail.trim(), adminPassword.trim());
 
-    if (
-      (cleanEmail === 'ethnivabrand@gmail.com' || cleanEmail === 'admin@ethniva.com' || cleanEmail === 'admin' || cleanEmail === 'ethniva' || cleanEmail === 'zehrastudio3322@gmail.com') &&
-      (cleanPass === 'ethniva2026' || cleanPass === 'zehra2026' || cleanPass === 'admin12345' || cleanPass === '7860')
-    ) {
+    if (result.ok) {
       localStorage.setItem('ethniva_admin_auth', 'authenticated_true');
       localStorage.setItem('zehra_admin_auth', 'authenticated_true');
       setIsAdminLoggingIn(false);
@@ -59,13 +55,8 @@ export const Navbar: React.FC = () => {
       router.push('/admin');
     } else {
       setIsAdminLoggingIn(false);
-      setAdminLoginError('Invalid credentials. Please enter valid email & password.');
+      setAdminLoginError(result.error || 'Invalid email or password.');
     }
-  };
-
-  const fillAdminDemo = () => {
-    setAdminEmail('ethnivabrand@gmail.com');
-    setAdminPassword('ethniva2026');
   };
 
   // Customer Account Login States

@@ -1293,3 +1293,35 @@ export async function getCategories(): Promise<Category[]> {
     };
   });
 }
+
+// ==============================================================================
+// ADMIN AUTH (credentials live in Supabase — see supabase_admin_auth.sql)
+// ==============================================================================
+
+export async function verifyAdminLogin(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+  const { data, error } = await supabase.rpc('admin_login', { p_email: email, p_password: password });
+  if (error) {
+    console.error('admin_login failed:', error);
+    return { ok: false, error: 'Could not reach the login service. Please try again.' };
+  }
+  return { ok: data === true };
+}
+
+export type ChangeAdminCredentialsResult = 'ok' | 'invalid_current' | 'invalid_email' | 'weak_password' | 'error';
+
+export async function changeAdminCredentials(
+  currentPassword: string,
+  newEmail: string,
+  newPassword: string
+): Promise<ChangeAdminCredentialsResult> {
+  const { data, error } = await supabase.rpc('admin_change_credentials', {
+    p_current_password: currentPassword,
+    p_new_email: newEmail,
+    p_new_password: newPassword,
+  });
+  if (error) {
+    console.error('admin_change_credentials failed:', error);
+    return 'error';
+  }
+  return data as ChangeAdminCredentialsResult;
+}
