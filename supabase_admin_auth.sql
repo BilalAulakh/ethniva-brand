@@ -45,8 +45,9 @@ END;
 $$;
 
 
--- Changes the admin email and/or password after verifying the current password.
--- Pass NULL / empty p_new_email to keep the current email.
+-- Changes the admin email/username and/or password after verifying the current password.
+-- p_new_email may be an email OR a plain username (min 3 chars, no spaces).
+-- Pass NULL / empty p_new_email to keep the current one.
 -- Returns: 'ok' | 'invalid_current' | 'invalid_email' | 'weak_password'
 CREATE OR REPLACE FUNCTION public.admin_change_credentials(
   p_current_password TEXT,
@@ -71,7 +72,7 @@ BEGIN
   v_email := lower(trim(coalesce(p_new_email, '')));
   IF v_email = '' THEN
     v_email := r.email;
-  ELSIF v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' THEN
+  ELSIF length(v_email) < 3 OR v_email ~ '\s' THEN
     RETURN 'invalid_email';
   END IF;
 

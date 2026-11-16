@@ -278,7 +278,7 @@ export default function AdminDashboardPage() {
         setCredError('Current password is incorrect.');
         break;
       case 'invalid_email':
-        setCredError('Please enter a valid email address.');
+        setCredError('Email / username must be at least 3 characters with no spaces.');
         break;
       case 'weak_password':
         setCredError('New password must be at least 8 characters.');
@@ -1743,14 +1743,16 @@ export default function AdminDashboardPage() {
 
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-[#18181B] uppercase tracking-wider">
-                  New Email <span className="normal-case font-medium text-stone-400">(leave empty to keep current)</span>
+                  New Email / Username <span className="normal-case font-medium text-stone-400">(leave empty to keep current)</span>
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   autoComplete="username"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={credNewEmail}
                   onChange={e => setCredNewEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder="email or username"
                   className="w-full px-4 py-3 bg-stone-50 border border-stone-200 focus:border-[#C5A059] rounded-xl text-xs text-[#18181B] focus:outline-none transition-all font-medium"
                 />
               </div>
